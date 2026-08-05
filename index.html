@@ -26,15 +26,24 @@
             <div class="monitor-bezel">
                 <div class="monitor-screen" id="monitor-screen">
                     
-                    <!-- LAYER 1: BIOS / POST Boot Screen -->
+                    <!-- LAYER 1: BIOS / POST Boot Error Screen -->
                     <div id="screen-bios" class="screen-layer hidden">
                         <div class="bios-text" id="bios-text"></div>
                     </div>
 
-                    <!-- LAYER 2: Desktop OS Environment -->
+                    <!-- LAYER 2: The New Boot/Loading Screen -->
+                    <div id="screen-boot" class="screen-layer boot-env hidden">
+                        <div class="boot-logo-wrapper">
+                            <!-- We use border-radius in CSS to make your square logo circular -->
+                            <img src="assets/logo.png" alt="Excellent Institute" id="boot-logo" class="rotating-logo" 
+                                 onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDBlNWZmIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4='">
+                        </div>
+                        <div class="boot-text-pulse">LOADING EXCELLENT OS...</div>
+                    </div>
+
+                    <!-- LAYER 3: Desktop OS Environment (with seamless wave grid) -->
                     <div id="screen-desktop" class="screen-layer desktop-env hidden">
-                        <div class="desktop-wallpaper"></div>
-                        <!-- Live Hardware Widgets -->
+                        <div class="wave-grid-wallpaper"></div>
                         <div class="widget-panel">
                             <div class="widget">
                                 <span class="wid-label">CPU LOAD</span>
@@ -58,12 +67,12 @@
                         <div class="os-watermark">EXCELLENT OS v2.0</div>
                     </div>
 
-                    <!-- LAYER 3: Error & Failure Overlays -->
+                    <!-- LAYER 4: Error & Failure Overlays (BSOD, CPU Freeze, etc.) -->
                     <div id="screen-error" class="screen-layer error-env hidden">
                         <div class="error-text" id="error-text"></div>
                     </div>
 
-                    <!-- LAYER 4: GPU Glitch & Artifacting Overlay -->
+                    <!-- LAYER 5: GPU Glitch & Artifacting Overlay -->
                     <div id="gpu-glitch" class="screen-layer gpu-artifact hidden"></div>
 
                     <!-- Visual Glass Effects -->
@@ -74,9 +83,7 @@
                 <div class="monitor-logo">EXCELLENT</div>
             </div>
             <!-- Monitor Stand -->
-            <div class="monitor-stand-neck">
-                <div class="neck-detail"></div>
-            </div>
+            <div class="monitor-stand-neck"><div class="neck-detail"></div></div>
             <div class="monitor-stand-base"></div>
         </div>
 
@@ -87,15 +94,42 @@
             <div class="data-display">
                 <div class="select-wrapper">
                     <select id="component-selector" class="cyber-select">
-                        <option value="CPU">Central Processing Unit (CPU)</option>
-                        <option value="GPU">Graphics Processing Unit (GPU)</option>
-                        <option value="RAM">Random Access Memory (RAM)</option>
+                        <!-- Core Systems -->
                         <option value="PSU">Power Supply Unit (PSU)</option>
-                        <option value="Fan">Thermal Cooling System (AIO/Air)</option>
+                        <option value="CPU">Central Processing Unit (CPU)</option>
+                        <option value="RAM">Random Access Memory (RAM)</option>
+                        <option value="GPU">Graphics Processing Unit (GPU)</option>
+                        <option value="Fan">Cooling Fan</option>
+                        
+                        <!-- Storage -->
                         <option value="SSD">NVMe Solid State Drive</option>
                         <option value="HDD">Mechanical Hard Drive (HDD)</option>
-                        <option value="NIC">Network Interface Card (NIC)</option>
+                        <option value="ODD">Optical Disk Drive (CD/DVD)</option>
+                        
+                        <!-- Motherboard Infrastructure -->
+                        <option value="Chipset">Motherboard Chipset</option>
+                        <option value="VRM">VRM Heatsink</option>
                         <option value="CMOS">CMOS Battery</option>
+                        <option value="TPM">Trusted Platform Module (TPM)</option>
+                        
+                        <!-- Power & Cabling -->
+                        <option value="ATX24">24-pin Main Power Cable</option>
+                        <option value="EPS8">8-pin CPU Power Cable</option>
+                        <option value="SATA">SATA Data Cable</option>
+                        
+                        <!-- Networking & Expansion -->
+                        <option value="NIC">Network Card (Ethernet)</option>
+                        <option value="WiFi">Wi-Fi / Bluetooth Module</option>
+                        <option value="SoundCard">Dedicated Sound Card</option>
+                        <option value="CaptureCard">Video Capture Card</option>
+                        <option value="Riser">PCIe Riser Cable</option>
+                        
+                        <!-- Customization & I/O -->
+                        <option value="RGB">RGB Lighting Controller</option>
+                        <option value="WaterPump">AIO Water Pump</option>
+                        <option value="M2Heatsink">M.2 SSD Heatsink</option>
+                        <option value="FrontPanel">Front Panel I/O</option>
+                        <option value="USB3">USB 3.0 Header</option>
                     </select>
                 </div>
                 
@@ -103,7 +137,7 @@
                     <h2 id="comp-title">Central Processing Unit</h2>
                     <span id="comp-badge" class="badge badge-active">PROCESSING</span>
                 </div>
-                <!-- Detailed explanation strictly stays here, not in the monitor -->
+                <!-- Explanations render here -->
                 <p id="comp-desc" class="typewriter-text">The central processor is executing logical instructions and managing the operating system lifecycle.</p>
                 
             </div>
@@ -123,55 +157,45 @@
         </div>
 
         <!-- ========================================== -->
-        <!-- 3. EXPANDED MOTHERBOARD GRID               -->
+        <!-- 3. MASSIVE 25-COMPONENT MOTHERBOARD GRID   -->
         <!-- ========================================== -->
         <div class="motherboard-section">
-            <h3 class="section-title">Motherboard Socket Interface</h3>
+            <h3 class="section-title">Motherboard Interactive Interface</h3>
             
-            <div id="motherboard-grid" class="motherboard-grid expanded-grid">
+            <div id="motherboard-grid" class="motherboard-grid massive-grid">
                 <div class="pcb-traces"></div>
                 
-                <!-- Core Power & Processing -->
-                <button class="cyber-btn plugged psu-btn" data-component="PSU" id="btn-PSU">
-                    <span class="icon">⚡</span>
-                    <span class="label">ATX PWR</span>
-                </button>
-                <button class="cyber-btn plugged cpu-btn" data-component="CPU" id="btn-CPU">
-                    <span class="icon">🧠</span>
-                    <span class="label">SOCKET AM5</span>
-                </button>
-                <button class="cyber-btn plugged fan-btn" data-component="Fan" id="btn-Fan">
-                    <span class="icon">❄️</span>
-                    <span class="label">CPU_FAN1</span>
-                </button>
+                <!-- STANDARD NAMES APPLIED TO ALL BUTTONS -->
+                <button class="cyber-btn plugged" data-component="PSU" id="btn-PSU"><span class="icon">🔌</span><span class="label">Power Supply</span></button>
+                <button class="cyber-btn plugged" data-component="CPU" id="btn-CPU"><span class="icon">🧠</span><span class="label">CPU</span></button>
+                <button class="cyber-btn plugged" data-component="RAM" id="btn-RAM"><span class="icon">📟</span><span class="label">RAM Memory</span></button>
+                <button class="cyber-btn plugged" data-component="GPU" id="btn-GPU"><span class="icon">🎮</span><span class="label">Graphics Card</span></button>
+                <button class="cyber-btn plugged" data-component="Fan" id="btn-Fan"><span class="icon">❄️</span><span class="label">Cooling Fan</span></button>
                 
-                <!-- Memory & Storage -->
-                <button class="cyber-btn plugged ram-btn" data-component="RAM" id="btn-RAM">
-                    <span class="icon">📟</span>
-                    <span class="label">DIMM_A1</span>
-                </button>
-                <button class="cyber-btn plugged ssd-btn" data-component="SSD" id="btn-SSD">
-                    <span class="icon">🗡️</span>
-                    <span class="label">M.2_1</span>
-                </button>
-                <button class="cyber-btn plugged hdd-btn" data-component="HDD" id="btn-HDD">
-                    <span class="icon">💽</span>
-                    <span class="label">SATA_1</span>
-                </button>
-
-                <!-- Expansion Cards & Board Power -->
-                <button class="cyber-btn plugged gpu-btn" data-component="GPU" id="btn-GPU">
-                    <span class="icon">🎮</span>
-                    <span class="label">PCIe_x16</span>
-                </button>
-                <button class="cyber-btn plugged nic-btn" data-component="NIC" id="btn-NIC">
-                    <span class="icon">🌐</span>
-                    <span class="label">PCIe_x1</span>
-                </button>
-                <button class="cyber-btn plugged cmos-btn" data-component="CMOS" id="btn-CMOS">
-                    <span class="icon">🔋</span>
-                    <span class="label">CR2032</span>
-                </button>
+                <button class="cyber-btn plugged" data-component="SSD" id="btn-SSD"><span class="icon">🗡️</span><span class="label">NVMe SSD</span></button>
+                <button class="cyber-btn plugged" data-component="HDD" id="btn-HDD"><span class="icon">💽</span><span class="label">Hard Drive</span></button>
+                <button class="cyber-btn plugged" data-component="ODD" id="btn-ODD"><span class="icon">💿</span><span class="label">Optical Drive</span></button>
+                
+                <button class="cyber-btn plugged" data-component="Chipset" id="btn-Chipset"><span class="icon">🔳</span><span class="label">Chipset</span></button>
+                <button class="cyber-btn plugged" data-component="VRM" id="btn-VRM"><span class="icon">🛡️</span><span class="label">VRM Heatsink</span></button>
+                <button class="cyber-btn plugged" data-component="CMOS" id="btn-CMOS"><span class="icon">🔋</span><span class="label">CMOS Battery</span></button>
+                <button class="cyber-btn plugged" data-component="TPM" id="btn-TPM"><span class="icon">🔐</span><span class="label">Security (TPM)</span></button>
+                
+                <button class="cyber-btn plugged" data-component="ATX24" id="btn-ATX24"><span class="icon">🐍</span><span class="label">24-pin Power</span></button>
+                <button class="cyber-btn plugged" data-component="EPS8" id="btn-EPS8"><span class="icon">⚡</span><span class="label">8-pin CPU Pwr</span></button>
+                <button class="cyber-btn plugged" data-component="SATA" id="btn-SATA"><span class="icon">🔗</span><span class="label">SATA Cable</span></button>
+                
+                <button class="cyber-btn plugged" data-component="NIC" id="btn-NIC"><span class="icon">🌐</span><span class="label">Network Card</span></button>
+                <button class="cyber-btn plugged" data-component="WiFi" id="btn-WiFi"><span class="icon">📶</span><span class="label">Wi-Fi Module</span></button>
+                <button class="cyber-btn plugged" data-component="SoundCard" id="btn-SoundCard"><span class="icon">🔊</span><span class="label">Sound Card</span></button>
+                <button class="cyber-btn plugged" data-component="CaptureCard" id="btn-CaptureCard"><span class="icon">📹</span><span class="label">Capture Card</span></button>
+                <button class="cyber-btn plugged" data-component="Riser" id="btn-Riser"><span class="icon">🎢</span><span class="label">PCIe Riser</span></button>
+                
+                <button class="cyber-btn plugged" data-component="RGB" id="btn-RGB"><span class="icon">🌈</span><span class="label">RGB Lights</span></button>
+                <button class="cyber-btn plugged" data-component="WaterPump" id="btn-WaterPump"><span class="icon">💧</span><span class="label">Water Pump</span></button>
+                <button class="cyber-btn plugged" data-component="M2Heatsink" id="btn-M2Heatsink"><span class="icon">🧊</span><span class="label">SSD Heatsink</span></button>
+                <button class="cyber-btn plugged" data-component="FrontPanel" id="btn-FrontPanel"><span class="icon">🔘</span><span class="label">Front Buttons</span></button>
+                <button class="cyber-btn plugged" data-component="USB3" id="btn-USB3"><span class="icon">🔌</span><span class="label">USB Headers</span></button>
                 
                 <div id="spark-container"></div>
             </div>
