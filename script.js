@@ -19,7 +19,7 @@ const plugStates = {
 
 const powerComponents = ['PSU', 'ATX24', 'EPS8', 'CMOS'];
 
-// Perfected 3D Viewing Angles for the Tower
+// Perfected 3D Viewing Angles for the Isolated Tower
 const componentViewingAngles = {
     'FrontPanel': 0, 'USB3': 0, 'ODD': 0,
     'PSU': -75, 'CPU': -75, 'RAM': -75, 'GPU': -75, 'WaterPump': -75,
@@ -52,14 +52,13 @@ const UI = {
     desc: document.getElementById('comp-desc'),
     viewer3D: document.getElementById('component-3d-viewer'),
     
-    // 3D Environment & Interactive Tower
-    cameraRig: document.getElementById('camera-rig'),
+    // Isolated 3D Tower Elements
     towerContainer: document.getElementById('pc-tower-container'),
     tower3D: document.getElementById('pc-tower'),
     sparkContainer: document.getElementById('global-spark-container'),
     sparkEmitter: document.getElementById('internal-spark-emitter'),
     
-    // Monitor Layers
+    // Monitor Layers (Static & Crisp)
     screenBios: document.getElementById('screen-bios'),
     screenBoot: document.getElementById('screen-boot'),
     screenDesktop: document.getElementById('screen-desktop'),
@@ -166,7 +165,7 @@ function setupTowerRotation() {
         isDraggingTower = false;
         const endX = e.type.includes('mouse') ? e.pageX : e.changedTouches[0].pageX;
         currentRotation += (endX - startX) * 0.5;
-        UI.tower3D.style.transition = 'transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)'; 
+        UI.tower3D.style.transition = 'transform 0.5s ease'; 
     };
 
     UI.towerContainer.addEventListener('mousedown', startDrag);
@@ -201,32 +200,33 @@ function setupEventListeners() {
 }
 
 // =========================================================
-// CINEMATIC CAMERA PAN (True 3D Spatial Rigging)
+// ISOLATED TOWER ZOOM (Does NOT affect Monitor/Desk)
 // =========================================================
 function triggerCinematicZoom(key) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // Move the physical camera rig in Z-Space (No Pixelation!)
-    UI.cameraRig.classList.add('cinematic-zoom-tower');
+    // Scale only the specific isolated wrapper containing the tower
+    UI.towerContainer.style.transition = 'transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1)';
+    UI.towerContainer.style.transform = 'scale(1.3) translateX(-30px)';
     
-    // Dynamically rotate the tower to the perfect viewing angle
+    // Rotate the tower dynamically
     const targetAngle = componentViewingAngles[key] !== undefined ? componentViewingAngles[key] : -35;
     currentRotation = targetAngle;
     UI.tower3D.style.transform = `rotateY(${currentRotation}deg)`;
 
     clearTimeout(zoomTimeout);
     zoomTimeout = setTimeout(() => {
-        UI.cameraRig.classList.remove('cinematic-zoom-tower');
-        document.querySelectorAll('.hw-mb, .hw-gpu, .hw-psu-shroud, .hw-fans-front, .hw-fan-rear, .hw-hdd-cage, .hw-cpu, .hw-pump, .hw-ram-slots, .hw-vrm, .hw-ssd, .hw-m2-heatsink, .hw-chipset, .hw-cmos, .zoom-target, .tower-front-io').forEach(z => z.classList.remove('xray-highlight'));
+        UI.towerContainer.style.transform = 'scale(1) translateX(0)';
+        document.querySelectorAll('.xray-highlight').forEach(z => z.classList.remove('xray-highlight'));
         
-        // Reset rotation gracefully
+        // Graceful rotation reset
         currentRotation = -35;
         UI.tower3D.style.transform = `rotateY(${currentRotation}deg)`;
-    }, 6000); 
+    }, 5000); 
 }
 
 function highlightPhysicalZone(key) {
-    document.querySelectorAll('.hw-mb, .hw-gpu, .hw-psu-shroud, .hw-fans-front, .hw-fan-rear, .hw-hdd-cage, .hw-cpu, .hw-pump, .hw-ram-slots, .hw-vrm, .hw-ssd, .hw-m2-heatsink, .hw-chipset, .hw-cmos, .zoom-target, .tower-front-io').forEach(z => z.classList.remove('xray-highlight'));
+    document.querySelectorAll('.xray-highlight').forEach(z => z.classList.remove('xray-highlight'));
     
     const targetZone = document.getElementById(`zone-${key}`);
     if (targetZone) {
@@ -235,7 +235,7 @@ function highlightPhysicalZone(key) {
 }
 
 // =========================================================
-// HIGH-TECH SPARK PARTICLE ENGINE (PHYSICAL PSU)
+// HIGH-TECH SPARK PARTICLE ENGINE
 // =========================================================
 function spawnInternalSparks() {
     if (!UI.sparkEmitter) return;
@@ -252,8 +252,8 @@ function spawnInternalSparks() {
         spark.style.left = centerX + 'px';
         spark.style.top = centerY + 'px';
         
-        let tx = (Math.random() - 0.5) * 800 + 'px'; 
-        let ty = (Math.random() - 0.8) * 800 + 'px'; 
+        let tx = (Math.random() - 0.5) * 500 + 'px'; 
+        let ty = (Math.random() - 0.8) * 500 + 'px'; 
         
         spark.style.setProperty('--tx', tx);
         spark.style.setProperty('--ty', ty);
@@ -357,7 +357,6 @@ function updateInspector(shouldZoom) {
         UI.badge.innerText = statusText;
     }
 
-    // Handles the GLB models dynamically based on selection
     if (data.model_url) {
         UI.viewer3D.setAttribute('src', data.model_url);
     } else {
@@ -393,7 +392,7 @@ function initiateBootSequence() {
     UI.screenBoot.classList.remove('hidden');
     
     UI.powerLed.className = 'power-led led-on';
-    if(plugStates['FrontPanel']) UI.towerPowerLed.style.backgroundColor = 'var(--cyan-glow)';
+    if(plugStates['FrontPanel']) UI.towerPowerLed.style.borderColor = 'var(--cyan-glow)';
 
     clearTimeout(bootTimeout);
     bootTimeout = setTimeout(() => {
@@ -411,20 +410,20 @@ function evaluateSystemState() {
     UI.screenDesktop.classList.add('hidden');
     UI.screenError.classList.add('hidden');
     UI.gpuGlitch.classList.add('hidden');
-    if (UI.towerPowerLed) UI.towerPowerLed.style.backgroundColor = 'transparent';
+    
+    if (UI.towerPowerLed) UI.towerPowerLed.style.borderColor = '#334155';
 
     if (!plugStates['PSU'] || !plugStates['ATX24']) {
         UI.powerLed.className = 'power-led led-off';
         return; 
     }
     
-    if(plugStates['FrontPanel'] && UI.towerPowerLed) UI.towerPowerLed.style.backgroundColor = 'var(--cyan-glow)';
+    if(plugStates['FrontPanel'] && UI.towerPowerLed) UI.towerPowerLed.style.borderColor = 'var(--cyan-glow)';
 
     if (!plugStates['GPU'] || !plugStates['Riser']) {
         UI.powerLed.className = 'power-led led-error';
         UI.screenError.classList.remove('hidden');
-        UI.screenError.style.backgroundColor = '#05060a';
-        UI.errorText.style.color = '#444';
+        UI.errorText.style.color = '#fff';
         UI.errorText.innerText = 'NO SIGNAL';
         UI.errorText.style.animation = 'pulse-text 2s infinite';
         return;
@@ -432,9 +431,8 @@ function evaluateSystemState() {
 
     if (isThermalShutdown) {
         UI.powerLed.className = 'power-led led-error';
-        if (UI.towerPowerLed) UI.towerPowerLed.style.backgroundColor = 'var(--red-glow)';
+        if (UI.towerPowerLed) UI.towerPowerLed.style.borderColor = 'var(--red-glow)';
         UI.screenError.classList.remove('hidden');
-        UI.screenError.style.background = 'radial-gradient(circle at center, rgba(255, 42, 95, 0.4), #000)';
         UI.errorText.style.color = 'var(--red-glow)';
         UI.errorText.innerHTML = 'FATAL: THERMAL TRIP DETECTED<br><br>CPU CORE EXCEEDED 110°C.<br>EMERGENCY HALT TRIGGERED.<br><br>Action: Reconnect cooling and power cycle.';
         UI.errorText.style.animation = 'none';
@@ -444,8 +442,7 @@ function evaluateSystemState() {
     if (!plugStates['RAM']) {
         UI.powerLed.className = 'power-led led-on';
         UI.screenError.classList.remove('hidden');
-        UI.screenError.style.background = '#0033cc'; 
-        UI.errorText.style.color = '#ffffff';
+        UI.errorText.style.color = '#3b82f6';
         UI.errorText.innerHTML = ':( <br><br>Your PC ran into a problem.<br><br>Stop code: MEMORY_MANAGEMENT';
         UI.errorText.style.animation = 'none';
         return;
@@ -454,8 +451,7 @@ function evaluateSystemState() {
     if (!plugStates['CPU'] || !plugStates['EPS8'] || !plugStates['Chipset']) {
         UI.powerLed.className = 'power-led led-on';
         UI.screenError.classList.remove('hidden');
-        UI.screenError.style.background = '#111';
-        UI.errorText.style.color = '#fff';
+        UI.errorText.style.color = '#ef4444';
         UI.errorText.innerHTML = 'SYSTEM HALT.<br>ERR_NO_PROCESSOR_OR_BUS_FOUND';
         UI.errorText.style.animation = 'none';
         return;
