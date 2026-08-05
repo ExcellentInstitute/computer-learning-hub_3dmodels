@@ -20,71 +20,132 @@
     <div class="lab-container">
         
         <!-- ========================================== -->
-        <!-- 1. THE ADVANCED ULTRAWIDE MONITOR          -->
+        <!-- 1. THE HIGH-TECH DESK ENVIRONMENT          -->
         <!-- ========================================== -->
-        <div class="monitor-wrapper">
-            <div class="monitor-bezel">
-                <div class="monitor-screen" id="monitor-screen">
-                    
-                    <!-- LAYER 1: BIOS / POST Boot Error Screen -->
-                    <div id="screen-bios" class="screen-layer hidden">
-                        <div class="bios-text" id="bios-text"></div>
-                    </div>
-
-                    <!-- LAYER 2: The New Boot/Loading Screen -->
-                    <div id="screen-boot" class="screen-layer boot-env hidden">
-                        <div class="boot-logo-wrapper">
-                            <!-- We use border-radius in CSS to make your square logo circular -->
-                            <img src="assets/logo.png" alt="Excellent Institute" id="boot-logo" class="rotating-logo" 
-                                 onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDBlNWZmIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4='">
-                        </div>
-                        <div class="boot-text-pulse">LOADING EXCELLENT OS...</div>
-                    </div>
-
-                    <!-- LAYER 3: Desktop OS Environment (with seamless wave grid) -->
-                    <div id="screen-desktop" class="screen-layer desktop-env hidden">
-                        <div class="wave-grid-wallpaper"></div>
-                        <div class="widget-panel">
-                            <div class="widget">
-                                <span class="wid-label">CPU LOAD</span>
-                                <div class="wid-bar"><div class="wid-fill" id="wid-cpu-bar" style="width: 4%;"></div></div>
-                                <span class="wid-val" id="wid-cpu-val">4%</span>
-                            </div>
-                            <div class="widget">
-                                <span class="wid-label">RAM ALLOC</span>
-                                <div class="wid-bar"><div class="wid-fill" id="wid-ram-bar" style="width: 18%;"></div></div>
-                                <span class="wid-val" id="wid-ram-val">18%</span>
-                            </div>
-                            <div class="widget">
-                                <span class="wid-label">CORE TEMP</span>
-                                <span class="wid-val temp-val" id="wid-temp-val">40°C</span>
-                            </div>
-                            <div class="widget">
-                                <span class="wid-label">NETWORK</span>
-                                <span class="wid-val net-val" id="wid-net-val">1GBPS LINK</span>
-                            </div>
-                        </div>
-                        <div class="os-watermark">EXCELLENT OS v2.0</div>
-                    </div>
-
-                    <!-- LAYER 4: Error & Failure Overlays (BSOD, CPU Freeze, etc.) -->
-                    <div id="screen-error" class="screen-layer error-env hidden">
-                        <div class="error-text" id="error-text"></div>
-                    </div>
-
-                    <!-- LAYER 5: GPU Glitch & Artifacting Overlay -->
-                    <div id="gpu-glitch" class="screen-layer gpu-artifact hidden"></div>
-
-                    <!-- Visual Glass Effects -->
-                    <div class="crt-scanline"></div>
-                    <div class="glass-reflection"></div>
-                    <div id="power-led" class="power-led led-off"></div>
-                </div>
-                <div class="monitor-logo">EXCELLENT</div>
+        <div class="desk-environment">
+            
+            <!-- Left Studio Speaker -->
+            <div class="speaker speaker-left" id="hl-speaker-l">
+                <div class="speaker-tweeter"></div>
+                <div class="speaker-woofer"></div>
             </div>
-            <!-- Monitor Stand -->
-            <div class="monitor-stand-neck"><div class="neck-detail"></div></div>
-            <div class="monitor-stand-base"></div>
+
+            <!-- The Advanced Ultrawide Monitor -->
+            <div class="monitor-wrapper" id="hl-monitor-zone">
+                <div class="monitor-bezel">
+                    <div class="monitor-screen" id="monitor-screen">
+                        
+                        <!-- LAYER 1: BIOS / POST Boot Error Screen -->
+                        <div id="screen-bios" class="screen-layer hidden">
+                            <div class="bios-text" id="bios-text"></div>
+                        </div>
+
+                        <!-- LAYER 2: The New Boot/Loading Screen -->
+                        <div id="screen-boot" class="screen-layer boot-env hidden">
+                            <div class="boot-logo-wrapper">
+                                <img src="assets/logo.png" alt="Excellent Institute" id="boot-logo" class="rotating-logo" 
+                                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDBlNWZmIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4='">
+                            </div>
+                            <div class="boot-text-pulse">LOADING EXCELLENT OS...</div>
+                        </div>
+
+                        <!-- LAYER 3: Desktop OS Environment -->
+                        <div id="screen-desktop" class="screen-layer desktop-env hidden">
+                            <div class="wave-grid-wallpaper"></div>
+                            <div class="widget-panel">
+                                <div class="widget">
+                                    <span class="wid-label">CPU LOAD</span>
+                                    <div class="wid-bar"><div class="wid-fill" id="wid-cpu-bar" style="width: 4%;"></div></div>
+                                    <span class="wid-val" id="wid-cpu-val">4%</span>
+                                </div>
+                                <div class="widget">
+                                    <span class="wid-label">RAM ALLOC</span>
+                                    <div class="wid-bar"><div class="wid-fill" id="wid-ram-bar" style="width: 18%;"></div></div>
+                                    <span class="wid-val" id="wid-ram-val">18%</span>
+                                </div>
+                                <div class="widget">
+                                    <span class="wid-label">CORE TEMP</span>
+                                    <span class="wid-val temp-val" id="wid-temp-val">40°C</span>
+                                </div>
+                                <div class="widget">
+                                    <span class="wid-label">NETWORK</span>
+                                    <span class="wid-val net-val" id="wid-net-val">1GBPS LINK</span>
+                                </div>
+                            </div>
+                            <div class="os-watermark">EXCELLENT OS v2.0</div>
+                        </div>
+
+                        <!-- LAYER 4: Error & Failure Overlays (BSOD, CPU Freeze, etc.) -->
+                        <div id="screen-error" class="screen-layer error-env hidden">
+                            <div class="error-text" id="error-text"></div>
+                        </div>
+
+                        <!-- LAYER 5: GPU Glitch & Artifacting Overlay -->
+                        <div id="gpu-glitch" class="screen-layer gpu-artifact hidden"></div>
+
+                        <!-- Visual Glass Effects -->
+                        <div class="crt-scanline"></div>
+                        <div class="glass-reflection"></div>
+                        <div id="power-led" class="power-led led-off"></div>
+                    </div>
+                    <div class="monitor-logo">EXCELLENT</div>
+                </div>
+                <!-- Monitor Stand -->
+                <div class="monitor-stand-neck"><div class="neck-detail"></div></div>
+                <div class="monitor-stand-base"></div>
+            </div>
+
+            <!-- The High-Tech PC Case (CPU Tower) -->
+            <div class="pc-tower" id="pc-tower">
+                <div class="tower-chassis">
+                    <div class="tower-glass-panel" id="tower-glass">
+                        <!-- X-Ray Physical Location Highlight Zones -->
+                        <div class="xray-zone zone-psu" id="zone-PSU"></div>
+                        <div class="xray-zone zone-hdd" id="zone-HDD"></div>
+                        <div class="xray-zone zone-mb" id="zone-MotherboardBase">
+                            <div class="xray-zone zone-cpu" id="zone-CPU"></div>
+                            <div class="xray-zone zone-pump" id="zone-WaterPump"></div>
+                            <div class="xray-zone zone-fan" id="zone-Fan"></div>
+                            <div class="xray-zone zone-ram" id="zone-RAM"></div>
+                            <div class="xray-zone zone-vrm" id="zone-VRM"></div>
+                            <div class="xray-zone zone-gpu" id="zone-GPU"></div>
+                            <div class="xray-zone zone-riser" id="zone-Riser"></div>
+                            <div class="xray-zone zone-ssd" id="zone-SSD"></div>
+                            <div class="xray-zone zone-m2" id="zone-M2Heatsink"></div>
+                            <div class="xray-zone zone-chipset" id="zone-Chipset"></div>
+                            <div class="xray-zone zone-cmos" id="zone-CMOS"></div>
+                            <div class="xray-zone zone-tpm" id="zone-TPM"></div>
+                            <div class="xray-zone zone-nic" id="zone-NIC"></div>
+                            <div class="xray-zone zone-wifi" id="zone-WiFi"></div>
+                            <div class="xray-zone zone-sound" id="zone-SoundCard"></div>
+                            <div class="xray-zone zone-capture" id="zone-CaptureCard"></div>
+                        </div>
+                        <div class="xray-zone zone-odd" id="zone-ODD"></div>
+                        <div class="xray-zone zone-front-io" id="zone-FrontPanel"></div>
+                        <div class="xray-zone zone-usb3" id="zone-USB3"></div>
+                        <div class="xray-zone zone-cables" id="zone-ATX24"></div>
+                        <div class="xray-zone zone-cables-cpu" id="zone-EPS8"></div>
+                        <div class="xray-zone zone-cables-sata" id="zone-SATA"></div>
+                        <div class="xray-zone zone-rgb" id="zone-RGB"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Studio Speaker -->
+            <div class="speaker speaker-right" id="hl-speaker-r">
+                <div class="speaker-tweeter"></div>
+                <div class="speaker-woofer"></div>
+            </div>
+
+            <!-- Desk Peripherals (Keyboard & Mouse) -->
+            <div class="desk-surface">
+                <div class="peripheral-keyboard" id="hl-keyboard">
+                    <div class="kb-glow"></div>
+                </div>
+                <div class="peripheral-mouse" id="hl-mouse">
+                    <div class="mouse-glow"></div>
+                </div>
+            </div>
         </div>
 
         <!-- ========================================== -->
@@ -137,7 +198,7 @@
                     <h2 id="comp-title">Central Processing Unit</h2>
                     <span id="comp-badge" class="badge badge-active">PROCESSING</span>
                 </div>
-                <!-- Explanations render here -->
+                <!-- Explanations render here (Will be synced to buttons via JS!) -->
                 <p id="comp-desc" class="typewriter-text">The central processor is executing logical instructions and managing the operating system lifecycle.</p>
                 
             </div>
@@ -197,11 +258,13 @@
                 <button class="cyber-btn plugged" data-component="FrontPanel" id="btn-FrontPanel"><span class="icon">🔘</span><span class="label">Front Buttons</span></button>
                 <button class="cyber-btn plugged" data-component="USB3" id="btn-USB3"><span class="icon">🔌</span><span class="label">USB Headers</span></button>
                 
-                <div id="spark-container"></div>
             </div>
         </div>
 
     </div>
+    
+    <!-- Global Container for High-Quality Spark/Explosion Animations -->
+    <div id="global-spark-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999;"></div>
 
     <script src="script.js"></script>
 </body>
