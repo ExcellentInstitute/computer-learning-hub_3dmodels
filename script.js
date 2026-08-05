@@ -16,6 +16,9 @@ const plugStates = {
     'RGB': true, 'WaterPump': true, 'M2Heatsink': true, 'FrontPanel': true, 'USB3': true
 };
 
+// Power components that trigger explosive sparks when disconnected
+const powerComponents = ['PSU', 'ATX24', 'EPS8', 'CMOS'];
+
 // System Variables
 let sysTemp = 40;
 let isThermalShutdown = false;
@@ -23,6 +26,7 @@ let isBooting = false;
 let heatingInterval = null;
 let desktopLoop = null;
 let bootTimeout = null;
+let zoomTimeout = null;
 
 // =========================================================
 // DOM ELEMENT MAPPING
@@ -34,9 +38,11 @@ const UI = {
     desc: document.getElementById('comp-desc'),
     viewer3D: document.getElementById('component-3d-viewer'),
     
-    // Tower X-Ray Glass
-    towerGlass: document.getElementById('tower-glass'),
+    // 3D Environment & Tower X-Ray
+    deskScene: document.querySelector('.desk-scene'),
+    tower3D: document.getElementById('pc-tower'),
     sparkContainer: document.getElementById('global-spark-container'),
+    sparkEmitter: document.getElementById('internal-spark-emitter'),
     
     // Monitor Layers
     screenBios: document.getElementById('screen-bios'),
@@ -49,6 +55,7 @@ const UI = {
     biosText: document.getElementById('bios-text'),
     errorText: document.getElementById('error-text'),
     powerLed: document.getElementById('power-led'),
+    towerPowerLed: document.getElementById('tower-power-led'),
     
     // Desktop Widgets
     widCpuBar: document.getElementById('wid-cpu-bar'),
@@ -87,7 +94,7 @@ async function fetchHardwareData() {
         dbData = generateAdvancedFallback();
     }
     isFetching = false;
-    updateInspector(); // Will also trigger the first X-Ray highlight
+    updateInspector(false); // First load doesn't trigger cinematic zoom
 }
 
 function generateAdvancedFallback() {
@@ -124,39 +131,71 @@ function generateAdvancedFallback() {
 // EVENT LISTENERS & SYNCHRONIZATION
 // =========================================================
 function setupEventListeners() {
-    // Select from Dropdown
     UI.selector.addEventListener('change', (e) => {
         selectedComponent = e.target.value;
-        updateInspector();
+        updateInspector(true); // Trigger Cinematic Zoom
     });
 
-    // Motherboard Grid Buttons
     const buttons = document.querySelectorAll('.cyber-btn');
     buttons.forEach(btn => {
         btn.addEventListener('click', () => {
             const compKey = btn.getAttribute('data-component');
             
-            // Sync selection: Set global component to this button, update dropdown UI & Inspector immediately
+            // Sync selection globally
             selectedComponent = compKey;
             UI.selector.value = compKey;
-            updateInspector();
             
-            // Proceed to toggle the physical hardware power state
+            // Toggle Hardware Physics
             toggleHardware(compKey, btn);
+            
+            // Update UI & Zoom into the tower
+            updateInspector(true);
         });
     });
 }
 
 // =========================================================
-// HIGH-TECH SPARK PARTICLE ENGINE
+// CINEMATIC AUTO-SCROLL & 3D ZOOM ENGINE
 // =========================================================
-function spawnSparks(btnElement) {
-    const rect = btnElement.getBoundingClientRect();
+function triggerCinematicZoom() {
+    // 1. Smooth scroll instantly to the Desk Area
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // 2. Add cinematic 3D transform classes
+    UI.deskScene.classList.add('cinematic-mode');
+    UI.tower3D.classList.add('xray-active');
+
+    // 3. Reset zoom automatically after 5 seconds to view the whole desk again
+    clearTimeout(zoomTimeout);
+    zoomTimeout = setTimeout(() => {
+        UI.deskScene.classList.remove('cinematic-mode');
+        UI.tower3D.classList.remove('xray-active');
+        // Clear specific component highlight
+        document.querySelectorAll('.comp-3d, .zoom-target').forEach(z => z.classList.remove('xray-highlight'));
+    }, 5000);
+}
+
+function highlightPhysicalZone(key) {
+    document.querySelectorAll('.comp-3d, .zoom-target').forEach(z => z.classList.remove('xray-highlight'));
+    
+    const targetZone = document.getElementById(`zone-${key}`);
+    if (targetZone) {
+        targetZone.classList.add('xray-highlight');
+    }
+}
+
+// =========================================================
+// HIGH-TECH SPARK PARTICLE ENGINE (INTERNAL TOWER SPECIFIC)
+// =========================================================
+function spawnInternalSparks() {
+    if (!UI.sparkEmitter) return;
+    
+    // Calculate global coordinates of the physical PSU inside the tower
+    const rect = UI.sparkEmitter.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
     
-    // Spawn 15-20 sparks per disconnect
-    const sparkCount = Math.floor(Math.random() * 10) + 15; 
+    const sparkCount = Math.floor(Math.random() * 15) + 20; // Massive spark shower
     
     for(let i = 0; i < sparkCount; i++) {
         let spark = document.createElement('div');
@@ -164,38 +203,18 @@ function spawnSparks(btnElement) {
         spark.style.left = centerX + 'px';
         spark.style.top = centerY + 'px';
         
-        // Random explosive trajectory (Bursting outwards and upwards)
-        let tx = (Math.random() - 0.5) * 300 + 'px'; 
-        let ty = (Math.random() - 0.8) * 300 + 'px'; 
+        // Explode outward in random directions
+        let tx = (Math.random() - 0.5) * 800 + 'px'; 
+        let ty = (Math.random() - 0.8) * 800 + 'px'; 
         
         spark.style.setProperty('--tx', tx);
         spark.style.setProperty('--ty', ty);
         
         UI.sparkContainer.appendChild(spark);
         
-        // Cleanup DOM after animation ends
         setTimeout(() => {
             if (spark.parentNode) spark.parentNode.removeChild(spark);
         }, 800);
-    }
-}
-
-// =========================================================
-// X-RAY HIGHLIGHT ENGINE
-// =========================================================
-function highlightXRayZone(activeKey) {
-    // Remove active class from all zones
-    document.querySelectorAll('.xray-zone').forEach(z => z.classList.remove('xray-active'));
-    
-    // Find the specific zone for the selected component
-    const targetZone = document.getElementById(`zone-${activeKey}`);
-    
-    if (targetZone) {
-        // Clear the glass and light up the specific physical location
-        UI.towerGlass.classList.add('xray-active-glass');
-        targetZone.classList.add('xray-active');
-    } else {
-        UI.towerGlass.classList.remove('xray-active-glass');
     }
 }
 
@@ -206,15 +225,18 @@ function toggleHardware(key, btnElement) {
     plugStates[key] = !plugStates[key];
     const isPlugged = plugStates[key];
 
-    // Trigger explosive sparks if unplugged!
     if (!isPlugged) {
         btnElement.classList.replace('plugged', 'unplugged');
-        spawnSparks(btnElement);
+        
+        // SPARKS ONLY FIRE FOR SPECIFIC POWER COMPONENTS
+        if (powerComponents.includes(key)) {
+            spawnInternalSparks();
+        }
     } else {
         btnElement.classList.replace('unplugged', 'plugged');
     }
 
-    // Advanced Thermal Engine (Checks Fan AND WaterPump)
+    // Advanced Thermal Engine
     if (key === 'PSU' || key === 'ATX24') {
         if (!plugStates['PSU'] || !plugStates['ATX24']) {
             clearInterval(heatingInterval);
@@ -237,8 +259,6 @@ function toggleHardware(key, btnElement) {
             isThermalShutdown = false;
         }
     }
-
-    if (key === selectedComponent) updateInspector();
 
     // Trigger Boot or Evaluate current state
     if ((key === 'PSU' || key === 'ATX24' || key === 'FrontPanel') && plugStates['PSU'] && plugStates['ATX24']) {
@@ -263,7 +283,7 @@ function startThermalClimb(rate) {
 // =========================================================
 // UI & MONITOR RENDER ENGINE
 // =========================================================
-function updateInspector() {
+function updateInspector(shouldZoom) {
     if (isFetching) return;
 
     const data = dbData[selectedComponent] || {};
@@ -272,7 +292,6 @@ function updateInspector() {
     
     UI.title.innerText = data.title || selectedComponent;
     
-    // Refresh Typewriter Effect
     UI.desc.style.animation = 'none';
     UI.desc.offsetHeight; 
     UI.desc.innerText = isPlugged ? (data.descOn || '') : (data.descOff || '');
@@ -302,8 +321,13 @@ function updateInspector() {
         UI.viewer3D.removeAttribute('src'); 
     }
     
-    // Highlight physical location in the PC Tower!
-    highlightXRayZone(selectedComponent);
+    // Highlight physical location inside the PC Tower
+    highlightPhysicalZone(selectedComponent);
+    
+    // Trigger Cinematic Camera Pan
+    if(shouldZoom) {
+        triggerCinematicZoom();
+    }
 }
 
 function initiateBootSequence() {
@@ -318,7 +342,7 @@ function initiateBootSequence() {
     }
 
     isBooting = true;
-    updateInspector();
+    updateInspector(false);
     
     UI.screenBios.classList.add('hidden');
     UI.screenDesktop.classList.add('hidden');
@@ -326,14 +350,17 @@ function initiateBootSequence() {
     UI.gpuGlitch.classList.add('hidden');
     
     UI.screenBoot.classList.remove('hidden');
+    
+    // Front Panel I/O Tower LED power check
     UI.powerLed.className = 'power-led led-on';
+    if(plugStates['FrontPanel']) UI.towerPowerLed.style.backgroundColor = 'var(--cyan-glow)';
 
     clearTimeout(bootTimeout);
     bootTimeout = setTimeout(() => {
         isBooting = false;
-        updateInspector();
+        updateInspector(false);
         evaluateSystemState();
-    }, 2500); 
+    }, 3000); // 3 Second Boot Time applied
 }
 
 function evaluateSystemState() {
@@ -345,11 +372,17 @@ function evaluateSystemState() {
     UI.screenError.classList.add('hidden');
     UI.gpuGlitch.classList.add('hidden');
 
+    // Reset Tower LED
+    UI.towerPowerLed.style.backgroundColor = 'transparent';
+
     // 1. HARDWARE POWER LOSS
     if (!plugStates['PSU'] || !plugStates['ATX24']) {
         UI.powerLed.className = 'power-led led-off';
         return; 
     }
+    
+    // Main Power is active, so tower LED turns on (if front panel is plugged)
+    if(plugStates['FrontPanel']) UI.towerPowerLed.style.backgroundColor = 'var(--cyan-glow)';
 
     // 2. NO SIGNAL 
     if (!plugStates['GPU'] || !plugStates['Riser']) {
@@ -365,6 +398,7 @@ function evaluateSystemState() {
     // 3. THERMAL MELTDOWN
     if (isThermalShutdown) {
         UI.powerLed.className = 'power-led led-error';
+        UI.towerPowerLed.style.backgroundColor = 'var(--red-glow)';
         UI.screenError.classList.remove('hidden');
         UI.screenError.style.background = 'radial-gradient(circle at center, rgba(255, 42, 95, 0.4), #000)';
         UI.errorText.style.color = 'var(--red-glow)';
