@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
-    <!-- 3D Engine for Hardware Components -->
+    <!-- 3D Engine for Hardware Components (Optimized for GLB/GLTF) -->
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
     
     <!-- External Stylesheet -->
@@ -22,10 +22,10 @@
         <!-- ========================================== -->
         <!-- 1. FULL 3D DESK SCENE                      -->
         <!-- ========================================== -->
-        <!-- The camera-rig wraps the desk to allow cinematic panning without breaking the layout -->
         <div id="camera-rig" class="camera-rig">
             <div class="desk-scene" id="desk-scene">
                 
+                <!-- Ambient Desk Illumination -->
                 <div class="desk-light-bar"></div>
                 
                 <!-- Left Speaker -->
@@ -37,9 +37,7 @@
                 <div class="monitor-wrapper" id="hl-monitor-zone">
                     <div class="monitor-bezel">
                         <div class="monitor-screen" id="monitor-screen">
-                            
                             <div id="screen-bios" class="screen-layer hidden"><div class="bios-text" id="bios-text"></div></div>
-
                             <div id="screen-boot" class="screen-layer boot-env hidden">
                                 <div class="boot-logo-wrapper">
                                     <img src="assets/logo.png" alt="Excellent Institute" id="boot-logo" class="rotating-logo" 
@@ -47,7 +45,6 @@
                                 </div>
                                 <div class="boot-text-pulse">LOADING EXCELLENT OS...</div>
                             </div>
-
                             <div id="screen-desktop" class="screen-layer desktop-env hidden">
                                 <div class="wave-grid-wallpaper"></div>
                                 <div class="widget-panel">
@@ -58,10 +55,8 @@
                                 </div>
                                 <div class="os-watermark">EXCELLENT OS v2.0</div>
                             </div>
-
                             <div id="screen-error" class="screen-layer error-env hidden"><div class="error-text" id="error-text"></div></div>
                             <div id="gpu-glitch" class="screen-layer gpu-artifact hidden"></div>
-
                             <div class="crt-scanline"></div>
                             <div class="glass-reflection"></div>
                             <div id="power-led" class="power-led led-off"></div>
@@ -72,51 +67,33 @@
                     <div class="monitor-stand-base"></div>
                 </div>
 
-                <!-- THE TRUE 3D PC TOWER (No parts sticking out!) -->
+                <!-- THE TRUE 3D PC TOWER -->
                 <div class="tower-3d-container" id="pc-tower-container">
                     <div class="tower-3d" id="pc-tower">
                         
-                        <!-- Outer Chassis Solid Faces -->
+                        <!-- 1. BACK & INNER PANELS (Drawn First) -->
                         <div class="face back-face"><div class="rear-io-shield"></div></div>
                         <div class="face right-face"></div>
                         <div class="face top-face"><div class="top-vent"></div></div>
                         <div class="face bottom-face"><div class="case-feet"></div></div>
-                        
-                        <!-- Front Face with I/O -->
-                        <div class="face front-face" id="zone-FrontPanel">
-                            <div class="front-glass-panel"></div>
-                            <div class="front-io-panel">
-                                <div class="io-power-btn" id="tower-power-btn"></div>
-                                <div class="io-led" id="tower-power-led"></div>
-                                <div class="io-usb"></div>
-                                <div class="io-usb"></div>
-                                <div class="io-audio"></div>
-                            </div>
-                        </div>
 
-                        <!-- STRICTLY BOUNDED INTERNAL 3D COMPONENTS -->
+                        <!-- 2. STRICTLY BOUNDED INTERNAL 3D COMPONENTS -->
                         <div class="internals-3d">
                             
-                            <!-- 3 Front Intake RGB Fans -->
+                            <!-- Fans & Cooling -->
                             <div class="hw-fans-front">
                                 <div class="rgb-case-fan"></div>
                                 <div class="rgb-case-fan"></div>
                                 <div class="rgb-case-fan"></div>
                             </div>
-                            
-                            <!-- Rear Exhaust Fan -->
                             <div class="hw-fan-rear" id="zone-Fan"><div class="rgb-case-fan"></div></div>
-                            
-                            <!-- AIO Top Radiator -->
                             <div class="hw-radiator"></div>
 
-                            <!-- Motherboard Tray & Components -->
+                            <!-- Motherboard Tray & Core Components -->
                             <div class="hw-mb" id="zone-MotherboardBase">
-                                <!-- CPU & Water Block -->
                                 <div class="hw-cpu" id="zone-CPU"></div>
                                 <div class="hw-pump" id="zone-WaterPump"><div class="pump-ring"></div></div>
                                 
-                                <!-- RAM (Sticks built in CSS) -->
                                 <div class="hw-ram-slots" id="zone-RAM">
                                     <div class="ram-stick"></div>
                                     <div class="ram-stick"></div>
@@ -134,23 +111,20 @@
                             <!-- Massive 3D GPU -->
                             <div class="hw-gpu" id="zone-GPU">
                                 <div class="gpu-backplate">GEFORCE RTX 4090</div>
-                                <div class="gpu-side-panel">
-                                    <div class="gpu-rgb-text">EXCELLENT</div>
-                                </div>
+                                <div class="gpu-side-panel"><div class="gpu-rgb-text">EXCELLENT</div></div>
                             </div>
 
-                            <!-- PSU Basement Shroud (Sparks emit from here) -->
+                            <!-- PSU Basement & Storage -->
                             <div class="hw-psu-shroud" id="zone-PSU">
                                 <div class="psu-cutout"><span class="psu-wattage">850W SMPS</span></div>
                                 <div id="internal-spark-emitter"></div>
                             </div>
-
                             <div class="hw-hdd-cage" id="zone-HDD">
                                 <div class="hdd-drive"></div>
                                 <div class="hdd-drive"></div>
                             </div>
                             
-                            <!-- Invisible Target Nodes for specific zoom areas -->
+                            <!-- Invisible Target Nodes for Auto-Rotation/Zoom -->
                             <div class="zoom-target" id="zone-ATX24"></div>
                             <div class="zoom-target" id="zone-EPS8"></div>
                             <div class="zoom-target" id="zone-SATA"></div>
@@ -165,7 +139,18 @@
                             <div class="zoom-target" id="zone-ODD"></div>
                         </div>
 
-                        <!-- Edge-to-Edge Clear Glass Panel (Left Face) -->
+                        <!-- 3. FRONT PANEL & GLASS (Drawn Last to trap internals inside) -->
+                        <div class="face front-face" id="zone-FrontPanel">
+                            <div class="front-glass-panel"></div>
+                            <div class="front-io-panel">
+                                <div class="io-power-btn" id="tower-power-btn"></div>
+                                <div class="io-led" id="tower-power-led"></div>
+                                <div class="io-usb"></div>
+                                <div class="io-usb"></div>
+                                <div class="io-audio"></div>
+                            </div>
+                        </div>
+
                         <div class="face left-face glass-panel" id="tower-glass">
                             <div class="glass-glare"></div>
                             <div class="glass-screws top-left"></div>
@@ -183,24 +168,25 @@
 
                 <!-- Fully Visible 3D Desk Peripherals -->
                 <div class="desk-surface-3d">
-                    <div class="desk-mat">
-                        <div class="keyboard-3d">
-                            <div class="kb-keys">
-                                <div class="kb-row"><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div></div>
-                                <div class="kb-row"><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div></div>
-                                <div class="kb-row"><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key spacebar"></div><div class="key"></div><div class="key"></div></div>
-                            </div>
-                            <div class="kb-rgb-glow"></div>
+                    <!-- Desk Mat is now separated from the peripherals in the Z-axis -->
+                    <div class="desk-mat"></div>
+                    
+                    <div class="keyboard-3d">
+                        <div class="kb-keys">
+                            <div class="kb-row"><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div></div>
+                            <div class="kb-row"><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div></div>
+                            <div class="kb-row"><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key spacebar"></div><div class="key"></div><div class="key"></div></div>
                         </div>
-                        
-                        <div class="mouse-3d">
-                            <div class="mouse-body">
-                                <div class="mouse-click-l"></div>
-                                <div class="mouse-scroll-wheel"></div>
-                                <div class="mouse-click-r"></div>
-                            </div>
-                            <div class="mouse-rgb-glow"></div>
+                        <div class="kb-rgb-glow"></div>
+                    </div>
+                    
+                    <div class="mouse-3d">
+                        <div class="mouse-body">
+                            <div class="mouse-click-l"></div>
+                            <div class="mouse-scroll-wheel"></div>
+                            <div class="mouse-click-r"></div>
                         </div>
+                        <div class="mouse-rgb-glow"></div>
                     </div>
                 </div>
             </div>
@@ -249,7 +235,17 @@
             </div>
 
             <div class="model-chamber">
-                <model-viewer id="component-3d-viewer" src="" alt="3D Hardware Component" auto-rotate camera-controls disable-zoom shadow-intensity="1" exposure="1.2"></model-viewer>
+                <!-- Data-attribute hints for GLB integration -->
+                <model-viewer id="component-3d-viewer" 
+                              src="" 
+                              alt="3D Hardware Component" 
+                              auto-rotate 
+                              camera-controls 
+                              disable-zoom 
+                              shadow-intensity="1" 
+                              exposure="1.2"
+                              ar>
+                </model-viewer>
                 <div class="chamber-scanner"></div>
             </div>
         </div>
