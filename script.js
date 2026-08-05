@@ -19,7 +19,7 @@ const plugStates = {
 
 const powerComponents = ['PSU', 'ATX24', 'EPS8', 'CMOS'];
 
-// Optimal Viewing Angles for the 3D Tower based on component location
+// Perfected 3D Viewing Angles for the Tower
 const componentViewingAngles = {
     'FrontPanel': 0, 'USB3': 0, 'ODD': 0,
     'PSU': -75, 'CPU': -75, 'RAM': -75, 'GPU': -75, 'WaterPump': -75,
@@ -201,7 +201,7 @@ function setupEventListeners() {
 }
 
 // =========================================================
-// CINEMATIC CAMERA PAN & DYNAMIC ROTATION
+// CINEMATIC CAMERA PAN (True 3D Spatial Rigging)
 // =========================================================
 function triggerCinematicZoom(key) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -217,7 +217,7 @@ function triggerCinematicZoom(key) {
     clearTimeout(zoomTimeout);
     zoomTimeout = setTimeout(() => {
         UI.cameraRig.classList.remove('cinematic-zoom-tower');
-        document.querySelectorAll('.hw-mb, .hw-gpu, .hw-psu-shroud, .hw-fans-front, .hw-fan-rear, .hw-hdd-cage, .hw-cpu, .hw-pump, .hw-ram-slots, .hw-vrm, .hw-ssd, .hw-m2-heatsink, .hw-chipset, .hw-cmos, .zoom-target').forEach(z => z.classList.remove('xray-highlight'));
+        document.querySelectorAll('.hw-mb, .hw-gpu, .hw-psu-shroud, .hw-fans-front, .hw-fan-rear, .hw-hdd-cage, .hw-cpu, .hw-pump, .hw-ram-slots, .hw-vrm, .hw-ssd, .hw-m2-heatsink, .hw-chipset, .hw-cmos, .zoom-target, .tower-front-io').forEach(z => z.classList.remove('xray-highlight'));
         
         // Reset rotation gracefully
         currentRotation = -35;
@@ -226,7 +226,7 @@ function triggerCinematicZoom(key) {
 }
 
 function highlightPhysicalZone(key) {
-    document.querySelectorAll('.hw-mb, .hw-gpu, .hw-psu-shroud, .hw-fans-front, .hw-fan-rear, .hw-hdd-cage, .hw-cpu, .hw-pump, .hw-ram-slots, .hw-vrm, .hw-ssd, .hw-m2-heatsink, .hw-chipset, .hw-cmos, .zoom-target').forEach(z => z.classList.remove('xray-highlight'));
+    document.querySelectorAll('.hw-mb, .hw-gpu, .hw-psu-shroud, .hw-fans-front, .hw-fan-rear, .hw-hdd-cage, .hw-cpu, .hw-pump, .hw-ram-slots, .hw-vrm, .hw-ssd, .hw-m2-heatsink, .hw-chipset, .hw-cmos, .zoom-target, .tower-front-io').forEach(z => z.classList.remove('xray-highlight'));
     
     const targetZone = document.getElementById(`zone-${key}`);
     if (targetZone) {
@@ -423,8 +423,8 @@ function evaluateSystemState() {
     if (!plugStates['GPU'] || !plugStates['Riser']) {
         UI.powerLed.className = 'power-led led-error';
         UI.screenError.classList.remove('hidden');
-        UI.screenError.style.backgroundColor = '#111';
-        UI.errorText.style.color = '#555';
+        UI.screenError.style.backgroundColor = '#05060a';
+        UI.errorText.style.color = '#444';
         UI.errorText.innerText = 'NO SIGNAL';
         UI.errorText.style.animation = 'pulse-text 2s infinite';
         return;
@@ -454,7 +454,7 @@ function evaluateSystemState() {
     if (!plugStates['CPU'] || !plugStates['EPS8'] || !plugStates['Chipset']) {
         UI.powerLed.className = 'power-led led-on';
         UI.screenError.classList.remove('hidden');
-        UI.screenError.style.background = '#222';
+        UI.screenError.style.background = '#111';
         UI.errorText.style.color = '#fff';
         UI.errorText.innerHTML = 'SYSTEM HALT.<br>ERR_NO_PROCESSOR_OR_BUS_FOUND';
         UI.errorText.style.animation = 'none';
