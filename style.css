@@ -30,11 +30,10 @@ body {
         linear-gradient(rgba(0, 229, 255, 0.02) 1px, transparent 1px),
         linear-gradient(90deg, rgba(0, 229, 255, 0.02) 1px, transparent 1px);
     background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
-    scroll-behavior: smooth;
 }
 
 .lab-container {
-    max-width: 1400px;
+    max-width: 1500px;
     margin: 0 auto;
     padding: 15px;
     display: flex;
@@ -43,76 +42,85 @@ body {
 }
 
 /* =========================================================
-   1. FULL 3D DESK SCENE
+   1. FULL 3D DESK SCENE & LIGHTING
 ========================================================= */
 .desk-scene {
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    gap: 30px;
-    padding: 60px 20px 40px 20px;
-    border-bottom: 15px solid #0a0a0a; /* Desk Edge */
-    background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.8));
-    perspective: 1500px; /* Crucial for 3D depth */
+    gap: 50px; /* Forces spacing so tower doesn't block monitor */
+    padding: 100px 40px 40px 40px;
+    border-bottom: 20px solid #080808; 
+    background: linear-gradient(to bottom, transparent 30%, rgba(10,12,18,0.95) 100%);
+    perspective: 1800px; /* High perspective for 3D depth without distortion */
     position: relative;
-    transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
     transform-style: preserve-3d;
 }
 
-/* Cinematic Zoom Active State */
-.desk-scene.cinematic-mode {
-    transform: scale(1.35) translate3d(-150px, 50px, 200px);
+/* The Top-Down Ambient Light Bar */
+.desk-light-bar {
+    position: absolute;
+    top: -20px; left: 10%; right: 10%; height: 10px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 
+        0 0 20px #fff,
+        0 50px 150px 40px rgba(0, 229, 255, 0.15),
+        0 150px 300px 80px rgba(255, 255, 255, 0.05);
+    z-index: 0;
+}
+
+/* True 3D Camera Zoom (Avoids Scale Pixelation) */
+.desk-scene.cinematic-zoom-tower {
+    transform: translate3d(-300px, 80px, 400px) rotateY(-5deg);
 }
 
 /* =========================================================
    3D STUDIO SPEAKERS
 ========================================================= */
 .speaker-3d {
-    width: 80px; height: 220px;
+    width: 80px; height: 240px;
     background: linear-gradient(145deg, #1f2233, #0a0c14);
-    border-radius: 6px;
-    border: 2px solid #222;
-    box-shadow: 15px 15px 25px rgba(0,0,0,0.9), inset 2px 2px 5px rgba(255,255,255,0.1);
-    transform: translateZ(-50px) rotateY(15deg);
+    border-radius: 6px; border: 2px solid #222;
+    box-shadow: 15px 15px 25px rgba(0,0,0,0.9), inset 2px 2px 10px rgba(255,255,255,0.05);
+    transform: translateZ(-30px);
     display: flex; justify-content: center; align-items: center;
+    z-index: 5;
 }
-.speaker-right { transform: translateZ(-50px) rotateY(-15deg); }
+.speaker-left { transform: translateZ(-30px) rotateY(15deg); }
+.speaker-right { transform: translateZ(-30px) rotateY(-15deg); }
 
 .speaker-face {
     width: 90%; height: 95%; background: #050505; border-radius: 4px;
     display: flex; flex-direction: column; align-items: center; justify-content: space-evenly;
 }
-.tweeter { width: 30px; height: 30px; border-radius: 50%; background: radial-gradient(circle, #333, #000); border: 2px solid #222; box-shadow: inset 0 0 10px #000; }
-.woofer { width: 60px; height: 60px; border-radius: 50%; background: radial-gradient(circle, #444, #050505); border: 3px solid #111; box-shadow: inset 0 0 15px #000, 0 5px 10px rgba(0,0,0,0.5); }
-
-@media (max-width: 1100px) { .speaker-3d { display: none; } }
+.tweeter { width: 35px; height: 35px; border-radius: 50%; background: radial-gradient(circle, #333, #000); border: 2px solid #222; box-shadow: inset 0 0 10px #000; }
+.woofer { width: 65px; height: 65px; border-radius: 50%; background: radial-gradient(circle, #444, #050505); border: 3px solid #111; box-shadow: inset 0 0 15px #000, 0 5px 10px rgba(0,0,0,0.5); }
 
 /* =========================================================
    ULTRAWIDE MONITOR
 ========================================================= */
 .monitor-wrapper {
-    flex: 1 1 600px; max-width: 800px;
+    flex: 1 1 700px; max-width: 900px;
     display: flex; flex-direction: column; align-items: center;
     transform: translateZ(0px);
     z-index: 10;
 }
 .monitor-bezel {
     width: 100%; aspect-ratio: 21 / 9;
-    background: linear-gradient(145deg, #1f2233, #0a0c14);
+    background: linear-gradient(145deg, #181a26, #0a0c14);
     border-radius: 12px; padding: 12px 12px 30px 12px;
     box-shadow: 0 30px 60px rgba(0,0,0,0.9), inset 0 1px 2px rgba(255,255,255,0.1), 0 0 30px rgba(0, 229, 255, 0.05);
     position: relative;
 }
 .monitor-screen { width: 100%; height: 100%; background-color: #000; border-radius: 6px; position: relative; overflow: hidden; box-shadow: inset 0 0 30px rgba(0,0,0,0.9); }
-.monitor-logo { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); font-size: 10px; color: #666; letter-spacing: 3px; font-weight: 900; }
+.monitor-logo { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); font-size: 11px; color: #666; letter-spacing: 3px; font-weight: 900; }
+.monitor-stand-neck { width: 70px; height: 45px; background: linear-gradient(to bottom, #0a0c14, #181a26); border-left: 2px solid #222; border-right: 2px solid #222; }
+.neck-detail { width: 35px; height: 100%; margin: 0 auto; background: rgba(0,0,0,0.5); border-radius: 20px; }
+.monitor-stand-base { width: 280px; height: 12px; background: linear-gradient(to bottom, #333, #0a0c14); border-radius: 10px 10px 0 0; box-shadow: 0 15px 25px rgba(0,0,0,0.9); }
 
-.monitor-stand-neck { width: 60px; height: 40px; background: linear-gradient(to bottom, #0a0c14, #1f2233); border-left: 2px solid #222; border-right: 2px solid #222; }
-.neck-detail { width: 30px; height: 100%; margin: 0 auto; background: rgba(0,0,0,0.5); border-radius: 20px; }
-.monitor-stand-base { width: 250px; height: 12px; background: linear-gradient(to bottom, #333, #0a0c14); border-radius: 10px 10px 0 0; box-shadow: 0 15px 25px rgba(0,0,0,0.9); }
-
-/* =========================================================
-   MONITOR LAYERS & OS
-========================================================= */
+/* Monitor Layers */
 .screen-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: flex; flex-direction: column; }
 .hidden { display: none !important; }
 
@@ -127,16 +135,10 @@ body {
 
 .desktop-env { background: linear-gradient(45deg, #090b14, #1a0b1c, #0b1c1a); background-size: 400% 400%; animation: gradientBG 15s ease infinite; position: relative; overflow: hidden; }
 @keyframes gradientBG { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
-.wave-grid-wallpaper {
-    position: absolute; width: 200%; height: 200%; top: -50%; left: -50%;
-    background-image: linear-gradient(rgba(0, 229, 255, 0.15) 2px, transparent 2px), linear-gradient(90deg, rgba(0, 229, 255, 0.15) 2px, transparent 2px);
-    background-size: 60px 60px; transform: perspective(600px) rotateX(60deg) translateY(0);
-    animation: waveGridAnim 3s linear infinite; z-index: -1;
-}
+.wave-grid-wallpaper { position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background-image: linear-gradient(rgba(0, 229, 255, 0.15) 2px, transparent 2px), linear-gradient(90deg, rgba(0, 229, 255, 0.15) 2px, transparent 2px); background-size: 60px 60px; transform: perspective(600px) rotateX(60deg) translateY(0); animation: waveGridAnim 3s linear infinite; z-index: -1; }
 @keyframes waveGridAnim { 0% { transform: perspective(600px) rotateX(60deg) translateY(0); } 100% { transform: perspective(600px) rotateX(60deg) translateY(60px); } }
-.os-watermark { position: absolute; bottom: 15px; right: 20px; font-size: 16px; font-weight: 900; color: rgba(255,255,255,0.2); letter-spacing: 2px; }
 
-.widget-panel { position: absolute; top: 15px; right: 15px; background: rgba(0, 0, 0, 0.6); border: 1px solid var(--cyan-glow); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 10px; backdrop-filter: blur(5px); width: 200px; box-shadow: 0 0 15px rgba(0,229,255,0.1); }
+.widget-panel { position: absolute; top: 20px; right: 20px; background: rgba(0, 0, 0, 0.6); border: 1px solid var(--cyan-glow); border-radius: 8px; padding: 15px; display: flex; flex-direction: column; gap: 12px; backdrop-filter: blur(5px); width: 220px; box-shadow: 0 0 15px rgba(0,229,255,0.1); }
 .widget { display: flex; flex-direction: column; gap: 4px; }
 .wid-label { font-size: 10px; color: var(--text-dim); letter-spacing: 1px; }
 .wid-bar { width: 100%; height: 6px; background: #222; border-radius: 3px; overflow: hidden; }
@@ -148,13 +150,9 @@ body {
 
 .error-env { justify-content: center; align-items: center; padding: 20px; text-align: center; }
 .error-text { font-family: var(--font-mono); color: #fff; font-size: 16px; line-height: 1.5; }
-.gpu-artifact { background: repeating-linear-gradient(transparent 0, rgba(255, 0, 255, 0.2) 2px, transparent 4px), repeating-linear-gradient(90deg, rgba(0, 255, 255, 0.2) 0, transparent 3px); mix-blend-mode: screen; animation: artifactGlitch 0.1s infinite; pointer-events: none; z-index: 10; }
-@keyframes artifactGlitch { 0% { clip-path: inset(10% 0 80% 0); transform: translate(-2px, 1px); } 100% { clip-path: inset(30% 0 50% 0); transform: translate(2px, -1px); } }
 
 .crt-scanline { position: absolute; top: 0; left: 0; width: 100%; height: 15px; background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.05), transparent); animation: scan 5s linear infinite; pointer-events: none; z-index: 20; }
 @keyframes scan { 0% { transform: translateY(-50px); } 100% { transform: translateY(1000px); } }
-.glass-reflection { position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(to bottom right, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 40%); transform: rotate(30deg); pointer-events: none; z-index: 21; }
-
 .power-led { position: absolute; bottom: 12px; right: 20px; width: 6px; height: 6px; border-radius: 50%; z-index: 30; }
 .led-on { background-color: var(--cyan-glow); box-shadow: 0 0 10px var(--cyan-glow); }
 .led-error { background-color: var(--red-glow); box-shadow: 0 0 10px var(--red-glow); animation: flash 0.5s infinite; }
@@ -164,170 +162,178 @@ body {
 @keyframes pulse-text { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 
 /* =========================================================
-   VOLUMETRIC 3D PC TOWER & FRONT I/O
+   VOLUMETRIC 3D PC TOWER (Interactive & Transparent)
 ========================================================= */
 .tower-3d-container {
-    width: 200px; height: 400px;
+    width: 240px; height: 480px;
     position: relative;
-    perspective: 2000px;
+    perspective: 2500px;
     z-index: 20;
-    margin-left: 20px;
-    transform: translateZ(50px);
+    cursor: grab; /* Indicates it can be rotated via JS */
 }
+.tower-3d-container:active { cursor: grabbing; }
 
 .tower-3d {
     width: 100%; height: 100%;
     position: absolute;
     transform-style: preserve-3d;
-    transform: rotateY(-25deg); /* Default isometric angle */
-    transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+    transform: rotateY(-35deg); /* Base angle */
+    transition: transform 0.1s; /* Fast for smooth JS dragging */
 }
 
-/* Cinematic rotation applied via JS */
-.tower-3d.cinematic-rotate {
-    transform: rotateY(15deg) scale3d(1.1, 1.1, 1.1);
-}
-
-/* Tower Dimensions: 200w x 400h x 400d */
+/* Tower Dimensions: 240w x 480h x 450d */
 .face {
-    position: absolute;
-    border: 2px solid #222;
-    background: #080a10;
+    position: absolute; border: 2px solid #1a1c24; background: #0b0d14;
 }
 
-.front-face { width: 200px; height: 400px; transform: rotateY(0deg) translateZ(200px); background: linear-gradient(to bottom, #151824, #05070a); }
-.back-face  { width: 200px; height: 400px; transform: rotateY(180deg) translateZ(200px); }
-.right-face { width: 400px; height: 400px; transform: rotateY(90deg) translateZ(100px); left: -100px; }
-.top-face   { width: 200px; height: 400px; transform: rotateX(90deg) translateZ(200px); top: -100px; background: #0f111a; }
-.bottom-face{ width: 200px; height: 400px; transform: rotateX(-90deg) translateZ(200px); top: -100px; }
+.front-face { width: 240px; height: 480px; transform: rotateY(0deg) translateZ(225px); background: linear-gradient(to bottom, #151824, #05070a); }
+.back-face  { width: 240px; height: 480px; transform: rotateY(180deg) translateZ(225px); }
+.right-face { width: 450px; height: 480px; transform: rotateY(90deg) translateZ(120px); left: -105px; }
+.top-face   { width: 240px; height: 450px; transform: rotateX(90deg) translateZ(225px); top: 15px; background: #0f111a; }
+.bottom-face{ width: 240px; height: 450px; transform: rotateX(-90deg) translateZ(255px); top: 15px; }
 
-/* The Glass Panel (Left Face) */
+/* 🌟 Permanent Transparent Glass Panel (Left Face) 🌟 */
 .left-face {
-    width: 400px; height: 400px;
-    transform: rotateY(-90deg) translateZ(100px);
-    left: -100px;
-    background: rgba(5, 7, 10, 0.95); /* Opaque by default */
-    border: 4px solid #1a1c23;
-    transition: background 0.8s ease;
-    overflow: hidden;
+    width: 450px; height: 480px;
+    transform: rotateY(-90deg) translateZ(120px);
+    left: -105px;
+    background: rgba(10, 15, 25, 0.15); /* Permanently see-through */
+    border: 6px solid #11131a; /* Thick metal rim */
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(1px);
     transform-style: preserve-3d;
-}
-
-/* See-through mode */
-.tower-3d.xray-active .left-face {
-    background: rgba(0, 10, 20, 0.2);
-    box-shadow: inset 0 0 50px rgba(0, 229, 255, 0.1);
 }
 
 .glass-glare {
     position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 50%);
+    background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 40%);
     pointer-events: none;
 }
 
 /* Front Panel I/O Details */
-.front-io {
-    position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
-    width: 80%; height: 120px; display: flex; flex-direction: column; align-items: center; gap: 8px;
-}
-.io-power-btn { width: 30px; height: 30px; border-radius: 50%; background: #111; border: 2px solid #333; box-shadow: inset 0 2px 5px rgba(0,0,0,0.8); cursor: pointer; position: relative; }
-.io-power-btn::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 12px; height: 12px; border: 2px solid var(--cyan-glow); border-radius: 50%; border-top-color: transparent; }
-.io-power-btn::before { content: ''; position: absolute; top: 20%; left: 50%; transform: translateX(-50%); width: 2px; height: 8px; background: var(--cyan-glow); }
-
-.io-led { width: 40px; height: 2px; background: var(--cyan-glow); box-shadow: 0 0 10px var(--cyan-glow); margin-bottom: 5px; }
-.io-usb { width: 25px; height: 8px; background: #000; border: 1px solid #333; border-bottom: 2px solid #0033cc; }
-.io-usb-c { width: 15px; height: 6px; background: #000; border: 1px solid #333; border-radius: 3px; }
-.io-audio { width: 12px; height: 12px; border-radius: 50%; background: #000; border: 2px solid #333; }
-.front-grill { position: absolute; bottom: 20px; left: 10%; width: 80%; height: 200px; background: repeating-linear-gradient(0deg, #111 0, #111 4px, #050505 4px, #050505 8px); border-radius: 4px; }
+.front-io { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: 80%; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.io-power-btn { width: 35px; height: 35px; border-radius: 50%; background: #111; border: 2px solid #333; box-shadow: inset 0 2px 5px rgba(0,0,0,0.8); position: relative; }
+.io-power-btn::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 14px; height: 14px; border: 2px solid var(--cyan-glow); border-radius: 50%; border-top-color: transparent; }
+.io-led { width: 45px; height: 3px; background: var(--cyan-glow); box-shadow: 0 0 10px var(--cyan-glow); }
+.io-usb { width: 30px; height: 10px; background: #000; border: 1px solid #333; border-bottom: 2px solid #0033cc; }
+.io-usb-c { width: 18px; height: 6px; background: #000; border: 1px solid #333; border-radius: 3px; }
+.io-audio { width: 14px; height: 14px; border-radius: 50%; background: #000; border: 2px solid #333; border-inner: 2px solid green; }
+.front-grill { position: absolute; bottom: 20px; left: 10%; width: 80%; height: 220px; background: repeating-linear-gradient(0deg, #111 0, #111 5px, #050505 5px, #050505 10px); border-radius: 4px; box-shadow: inset 0 10px 20px rgba(0,0,0,0.9); }
 
 /* =========================================================
-   INTERNAL 3D COMPONENTS (X-RAY ZONES)
+   HIGH-DETAIL INTERNAL HARDWARE
 ========================================================= */
 .internals-3d {
     position: absolute; width: 100%; height: 100%; top: 0; left: 0;
     transform-style: preserve-3d;
-    opacity: 0; transition: opacity 0.8s ease;
 }
-.tower-3d.xray-active .internals-3d { opacity: 1; }
 
-.comp-3d { position: absolute; background: #1a1c24; border: 1px solid #333; transform-style: preserve-3d; transition: all 0.5s ease; }
-.comp-3d.xray-highlight {
-    background: rgba(0, 229, 255, 0.2);
+/* X-Ray Highlight System */
+.hw-detail { position: absolute; transform-style: preserve-3d; transition: all 0.5s ease; border-radius: 4px; }
+.hw-detail.xray-highlight, .zoom-target.xray-highlight {
+    box-shadow: 0 0 30px var(--cyan-glow), inset 0 0 20px var(--cyan-glow);
     border: 2px solid var(--cyan-glow);
-    box-shadow: 0 0 20px var(--cyan-glow), inset 0 0 15px var(--cyan-glow);
+    background: rgba(0, 229, 255, 0.15);
+    animation: pulse-glow 1.5s infinite alternate;
 }
+@keyframes pulse-glow { from { filter: brightness(1); } to { filter: brightness(1.5); box-shadow: 0 0 50px var(--cyan-glow); } }
 
-/* Mapping internal blocks inside the 400x400 glass left face */
-.comp-psu { bottom: 10px; left: 10px; width: 150px; height: 80px; transform: translateZ(50px); border: 2px solid #444; background: #111; display: flex; justify-content: center; align-items: center;}
-.psu-fan { width: 60px; height: 60px; border-radius: 50%; border: 2px solid #222; background: repeating-conic-gradient(#111 0 15deg, #222 15deg 30deg); animation: spinEarth 2s linear infinite; }
-#internal-spark-emitter { position: absolute; top: 10px; right: 10px; width: 10px; height: 10px; }
+/* Motherboard Base */
+.hw-mb { top: 40px; left: 40px; width: 320px; height: 320px; transform: translateZ(10px); background: #0a0d14; border: 2px solid #1a1c24; }
 
-.comp-hdd { bottom: 10px; right: 20px; width: 80px; height: 100px; transform: translateZ(30px); }
-.comp-mb { top: 30px; left: 30px; width: 280px; height: 250px; transform: translateZ(10px); background: #080a0f; border-color: #222; }
+/* SMPS / PSU */
+.hw-psu { bottom: 10px; left: 10px; width: 200px; height: 90px; transform: translateZ(80px); background: #111; border: 2px solid #333; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: inset 0 0 20px #000; }
+.psu-grill { width: 70px; height: 70px; border-radius: 50%; border: 4px solid #222; background: repeating-radial-gradient(circle, transparent 0, transparent 4px, #333 4px, #333 6px); position: absolute; left: 20px; }
+.psu-fan-blade { width: 60px; height: 60px; border-radius: 50%; background: repeating-conic-gradient(#000 0 20deg, #222 20deg 40deg); position: absolute; left: 25px; animation: spinEarth 1s linear infinite; }
+.psu-label { position: absolute; right: 10px; color: #555; font-size: 10px; font-weight: bold; border: 1px solid #333; padding: 2px 4px; }
+#internal-spark-emitter { position: absolute; top: 10px; right: 10px; width: 1px; height: 1px; }
 
-/* Inside Motherboard */
-.comp-cpu { top: 15%; left: 35%; width: 50px; height: 50px; transform: translateZ(10px); background: #333; border: 2px solid #555; }
-.comp-pump { top: 12%; left: 32%; width: 62px; height: 62px; transform: translateZ(20px); border-radius: 50%; background: #111; border: 2px solid var(--cyan-glow); }
-.comp-ram { top: 15%; right: 15%; width: 30px; height: 80px; transform: translateZ(15px); background: #222; border-left: 2px solid var(--purple-glow); }
-.comp-vrm { top: 5%; left: 30%; width: 80px; height: 15px; transform: translateZ(15px); background: #444; }
-.comp-gpu { top: 50%; left: 10%; width: 220px; height: 40px; transform: translateZ(30px); background: #1a1c24; border-bottom: 2px solid var(--green-glow); display: flex; justify-content: space-evenly; align-items: center;}
-.gpu-fans { width: 30px; height: 30px; border-radius: 50%; border: 1px solid #333; }
-.comp-ssd { top: 40%; left: 40%; width: 60px; height: 15px; transform: translateZ(5px); }
-.comp-m2 { top: 38%; left: 38%; width: 64px; height: 19px; transform: translateZ(8px); background: #444; }
-.comp-chipset { bottom: 10%; right: 10%; width: 40px; height: 40px; transform: translateZ(10px); }
-.comp-cmos { bottom: 30%; left: 20%; width: 20px; height: 20px; border-radius: 50%; transform: translateZ(5px); background: silver; }
-.comp-tpm { bottom: 10%; left: 30%; width: 20px; height: 20px; transform: translateZ(5px); }
-.comp-fan { top: 30px; right: 20px; width: 30px; height: 80px; transform: translateZ(40px); border-radius: 4px; border: 2px solid #333; }
+/* CPU & AIO Liquid Cooler */
+.hw-cpu { top: 15%; left: 35%; width: 60px; height: 60px; transform: translateZ(5px); background: #222; border: 2px solid #555; display: flex; justify-content: center; align-items: center; }
+.cpu-ihs { color: #888; font-size: 10px; font-weight: bold; }
+.hw-pump { top: 12%; left: 32%; width: 75px; height: 75px; transform: translateZ(25px); border-radius: 50%; background: #0b0b0b; border: 3px solid #222; display: flex; justify-content: center; align-items: center; }
+.pump-screen { width: 50px; height: 50px; border-radius: 50%; background: #000; border: 2px solid var(--cyan-glow); box-shadow: inset 0 0 10px var(--cyan-glow); }
+.pump-tubes { position: absolute; right: -80px; top: -50px; width: 100px; height: 100px; border-radius: 50%; border: 6px solid #111; border-bottom: none; border-left: none; transform: translateZ(-10px); }
 
-/* Abstract Zoom Targets (For cables and small ports) */
-.zoom-target { position: absolute; width: 20px; height: 20px; transform-style: preserve-3d; transition: all 0.5s ease; border-radius: 50%; }
-.zoom-target.xray-highlight { background: rgba(0, 229, 255, 0.4); box-shadow: 0 0 30px var(--cyan-glow); animation: pulse-text 1s infinite; }
+/* Detailed RAM Sticks */
+.hw-ram-slots { top: 12%; right: 15%; width: 45px; height: 95px; transform: translateZ(20px); display: flex; gap: 8px; }
+.ram-stick { width: 12px; height: 100%; background: #1a1a1a; border-radius: 2px; position: relative; border: 1px solid #333; }
+.ram-rgb { position: absolute; top: 0; left: 0; width: 100%; height: 10px; background: linear-gradient(to bottom, var(--purple-glow), var(--cyan-glow)); box-shadow: 0 0 10px var(--purple-glow); }
+.ram-contacts { position: absolute; bottom: 0; left: 0; width: 100%; height: 5px; border-bottom: 3px dashed gold; }
+
+/* Triple-Fan GPU */
+.hw-gpu { top: 52%; left: 5%; width: 260px; height: 55px; transform: translateZ(50px); background: linear-gradient(to bottom, #222, #111); border: 2px solid #333; border-bottom: 3px solid var(--green-glow); display: flex; flex-direction: column; justify-content: space-between; padding: 4px; box-shadow: 0 15px 20px rgba(0,0,0,0.8); }
+.gpu-backplate { width: 100%; height: 12px; background: #333; color: #aaa; font-size: 8px; display: flex; align-items: center; padding-left: 10px; font-weight: bold; border-bottom: 1px solid #111; }
+.gpu-fans { display: flex; justify-content: space-evenly; align-items: center; height: 100%; }
+.g-fan { width: 35px; height: 35px; border-radius: 50%; border: 2px solid #222; background: repeating-conic-gradient(#111 0 30deg, #2a2a2a 30deg 60deg); animation: spinEarth 1.5s linear infinite; box-shadow: inset 0 0 5px #000; }
+.gpu-side-rgb { position: absolute; right: -20px; top: 15px; transform: rotate(90deg); color: var(--green-glow); font-size: 8px; font-weight: 900; text-shadow: 0 0 5px var(--green-glow); }
+
+/* Other Motherboard Components */
+.hw-vrm { top: 5%; left: 30%; width: 90px; height: 18px; transform: translateZ(15px); background: repeating-linear-gradient(90deg, #333 0, #333 2px, #222 2px, #222 4px); border: 1px solid #444; }
+.hw-ssd { top: 40%; left: 40%; width: 70px; height: 18px; transform: translateZ(5px); background: #111; border: 1px solid #333; display: flex; gap: 4px; padding: 2px; }
+.ssd-chips { width: 12px; height: 100%; background: #050505; }
+.hw-m2-heatsink { top: 38%; left: 38%; width: 74px; height: 22px; transform: translateZ(10px); background: repeating-linear-gradient(45deg, #444 0, #444 3px, #333 3px, #333 6px); }
+.hw-chipset { bottom: 10%; right: 10%; width: 45px; height: 45px; transform: translateZ(10px); background: #151515; border: 2px solid #333; display: flex; justify-content: center; align-items: center; }
+.chipset-logo { width: 25px; height: 25px; background: #222; transform: rotate(45deg); }
+.hw-cmos { bottom: 30%; left: 20%; width: 22px; height: 22px; border-radius: 50%; transform: translateZ(6px); background: radial-gradient(circle, silver, #555); border: 1px solid #333; }
+.battery-shine { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.4); position: absolute; top: 2px; left: 2px; }
+.hw-tpm { bottom: 10%; left: 30%; width: 20px; height: 20px; transform: translateZ(5px); background: #111; border: 1px solid gold; }
+
+/* Extra Cooling & Storage */
+.hw-hdd { bottom: 110px; right: 20px; width: 90px; height: 110px; transform: translateZ(40px); background: #1a1a1a; border: 2px solid #333; position: relative; }
+.hdd-platter { width: 70px; height: 70px; border-radius: 50%; border: 1px solid #444; background: repeating-radial-gradient(circle, #222 0, #222 2px, #333 2px, #333 4px); position: absolute; top: 10px; left: 10px; }
+.hdd-arm { width: 30px; height: 4px; background: silver; position: absolute; top: 20px; right: 10px; transform: rotate(30deg); transform-origin: right center; }
+.hw-rgb-fan { top: 30px; right: 10px; width: 35px; height: 90px; transform: translateZ(50px); border-radius: 4px; background: #111; border: 2px solid #222; position: relative; }
+.rgb-ring { position: absolute; top: 5px; bottom: 5px; left: 5px; right: 5px; border-radius: 50px; border: 2px solid var(--purple-glow); box-shadow: 0 0 10px var(--purple-glow); }
+
+/* Zoom Targets (Invisible click areas for tiny ports/cables) */
+.zoom-target { position: absolute; width: 25px; height: 25px; border-radius: 50%; transform-style: preserve-3d; transition: all 0.5s ease; opacity: 0; }
 
 /* =========================================================
-   3D DESK PERIPHERALS (Keyboard & Mouse)
+   ILLUMINATED 3D DESK PERIPHERALS
 ========================================================= */
 .desk-surface-3d {
-    position: absolute; bottom: -80px; left: 50%; transform: translateX(-50%) rotateX(60deg);
+    position: absolute; bottom: -60px; left: 50%; transform: translateX(-50%) rotateX(65deg);
     display: flex; gap: 40px; z-index: 20; transform-style: preserve-3d;
 }
 
 .keyboard-3d {
-    width: 350px; height: 120px;
-    background: #151824; border-radius: 8px;
+    width: 380px; height: 130px;
+    background: #11131a; border-radius: 8px;
     position: relative; transform-style: preserve-3d;
-    box-shadow: 0 20px 20px rgba(0,0,0,0.9), inset 0 2px 5px rgba(255,255,255,0.1);
-    border-bottom: 10px solid #080a10; /* Physical thickness */
-    padding: 10px; display: flex; flex-direction: column; gap: 4px;
+    box-shadow: 0 30px 30px rgba(0,0,0,0.9), inset 0 2px 5px rgba(255,255,255,0.1);
+    border-bottom: 12px solid #050608; 
+    padding: 12px; display: flex; flex-direction: column; gap: 6px;
 }
-.kb-row { display: flex; gap: 4px; width: 100%; justify-content: center; }
-.key { flex: 1; height: 25px; background: #222; border-radius: 4px; border-bottom: 4px solid #111; border-top: 1px solid #444; }
-.spacebar { flex: 5; }
+.kb-row { display: flex; gap: 6px; width: 100%; justify-content: center; }
+.key { flex: 1; height: 26px; background: #1a1c24; border-radius: 4px; border-bottom: 4px solid #080a0f; border-top: 1px solid #333; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+.spacebar { flex: 6; }
 .kb-rgb-glow {
     position: absolute; top: -5px; left: -5px; right: -5px; bottom: -5px;
     background: repeating-linear-gradient(90deg, var(--red-glow), var(--yellow-glow), var(--green-glow), var(--cyan-glow), var(--purple-glow));
-    background-size: 200% 200%; border-radius: 12px; opacity: 0.3; filter: blur(10px);
-    animation: rgbCycle 5s linear infinite; z-index: -1; transform: translateZ(-1px);
+    background-size: 200% 200%; border-radius: 12px; opacity: 0.4; filter: blur(12px);
+    animation: rgbCycle 6s linear infinite; z-index: -1; transform: translateZ(-1px);
 }
 
 .mouse-3d {
-    width: 70px; height: 110px;
-    background: #151824; border-radius: 35px 35px 20px 20px;
+    width: 75px; height: 120px;
+    background: #11131a; border-radius: 35px 35px 20px 20px;
     position: relative; transform-style: preserve-3d;
-    box-shadow: 0 20px 20px rgba(0,0,0,0.9), inset 0 2px 5px rgba(255,255,255,0.1);
-    border-bottom: 10px solid #080a10;
-    display: flex; justify-content: center; padding-top: 10px;
+    box-shadow: 0 30px 30px rgba(0,0,0,0.9), inset 0 2px 5px rgba(255,255,255,0.1);
+    border-bottom: 12px solid #050608;
+    display: flex; justify-content: center; padding-top: 12px;
 }
-.mouse-body { display: flex; gap: 4px; width: 80%; height: 40px; }
-.mouse-click-l, .mouse-click-r { flex: 1; background: #222; border-radius: 10px 10px 4px 4px; border-bottom: 2px solid #111; }
-.mouse-scroll-wheel { width: 8px; height: 25px; background: #000; border-radius: 4px; border: 1px solid #333; margin-top: 5px; box-shadow: inset 0 0 5px var(--cyan-glow); }
+.mouse-body { display: flex; gap: 4px; width: 80%; height: 45px; }
+.mouse-click-l, .mouse-click-r { flex: 1; background: #1a1c24; border-radius: 10px 10px 4px 4px; border-bottom: 3px solid #080a0f; }
+.mouse-scroll-wheel { width: 10px; height: 28px; background: #000; border-radius: 4px; border: 1px solid #333; margin-top: 5px; box-shadow: inset 0 0 5px var(--cyan-glow); }
 .mouse-rgb-glow {
     position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%) translateZ(-1px);
-    width: 50px; height: 50px; background: var(--cyan-glow); border-radius: 50%; filter: blur(15px); opacity: 0.5; animation: pulse-text 2s infinite; z-index: -1;
+    width: 60px; height: 60px; background: var(--cyan-glow); border-radius: 50%; filter: blur(15px); opacity: 0.6; animation: pulse-text 2s infinite; z-index: -1;
 }
 @keyframes rgbCycle { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
 
 /* =========================================================
-   HIGH-QUALITY PARTICLE SPARKS
+   HIGH-QUALITY PHYSICS SPARKS (Z-SPACE)
 ========================================================= */
 .spark {
     position: absolute; width: 6px; height: 6px;
@@ -338,7 +344,7 @@ body {
 }
 @keyframes spark-fly {
     0% { transform: translate3d(0, 0, 0) scale(1); opacity: 1; }
-    100% { transform: translate3d(var(--tx), var(--ty), 100px) scale(0); opacity: 0; } /* Explodes outward in Z space too */
+    100% { transform: translate3d(var(--tx), var(--ty), 100px) scale(0); opacity: 0; } 
 }
 
 /* =========================================================
@@ -365,7 +371,7 @@ body {
 .model-chamber { background: #05070a; border-radius: 12px; border: 1px solid rgba(0, 229, 255, 0.3); height: 250px; box-shadow: inset 0 0 40px rgba(0,0,0,1); position: relative; }
 model-viewer { width: 100%; height: 100%; --poster-color: transparent; }
 
-.motherboard-section { background: var(--panel-bg); border-radius: 16px; border: 1px solid var(--border-accent); padding: 20px; display: flex; flex-direction: column; align-items: center; }
+.motherboard-section { background: var(--panel-bg); border-radius: 16px; border: 1px solid var(--border-accent); padding: 20px; display: flex; flex-direction: column; align-items: center; margin-bottom: 50px; }
 .section-title { color: var(--text-dim); font-size: 14px; letter-spacing: 2px; margin-bottom: 20px; text-align: center; }
 
 .massive-grid {
