@@ -34,6 +34,10 @@ const UI = {
     desc: document.getElementById('comp-desc'),
     viewer3D: document.getElementById('component-3d-viewer'),
     
+    // Tower X-Ray Glass
+    towerGlass: document.getElementById('tower-glass'),
+    sparkContainer: document.getElementById('global-spark-container'),
+    
     // Monitor Layers
     screenBios: document.getElementById('screen-bios'),
     screenBoot: document.getElementById('screen-boot'),
@@ -83,7 +87,7 @@ async function fetchHardwareData() {
         dbData = generateAdvancedFallback();
     }
     isFetching = false;
-    updateInspector();
+    updateInspector(); // Will also trigger the first X-Ray highlight
 }
 
 function generateAdvancedFallback() {
@@ -117,21 +121,82 @@ function generateAdvancedFallback() {
 }
 
 // =========================================================
-// EVENT LISTENERS
+// EVENT LISTENERS & SYNCHRONIZATION
 // =========================================================
 function setupEventListeners() {
+    // Select from Dropdown
     UI.selector.addEventListener('change', (e) => {
         selectedComponent = e.target.value;
         updateInspector();
     });
 
+    // Motherboard Grid Buttons
     const buttons = document.querySelectorAll('.cyber-btn');
     buttons.forEach(btn => {
         btn.addEventListener('click', () => {
             const compKey = btn.getAttribute('data-component');
+            
+            // Sync selection: Set global component to this button, update dropdown UI & Inspector immediately
+            selectedComponent = compKey;
+            UI.selector.value = compKey;
+            updateInspector();
+            
+            // Proceed to toggle the physical hardware power state
             toggleHardware(compKey, btn);
         });
     });
+}
+
+// =========================================================
+// HIGH-TECH SPARK PARTICLE ENGINE
+// =========================================================
+function spawnSparks(btnElement) {
+    const rect = btnElement.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    
+    // Spawn 15-20 sparks per disconnect
+    const sparkCount = Math.floor(Math.random() * 10) + 15; 
+    
+    for(let i = 0; i < sparkCount; i++) {
+        let spark = document.createElement('div');
+        spark.className = 'spark';
+        spark.style.left = centerX + 'px';
+        spark.style.top = centerY + 'px';
+        
+        // Random explosive trajectory (Bursting outwards and upwards)
+        let tx = (Math.random() - 0.5) * 300 + 'px'; 
+        let ty = (Math.random() - 0.8) * 300 + 'px'; 
+        
+        spark.style.setProperty('--tx', tx);
+        spark.style.setProperty('--ty', ty);
+        
+        UI.sparkContainer.appendChild(spark);
+        
+        // Cleanup DOM after animation ends
+        setTimeout(() => {
+            if (spark.parentNode) spark.parentNode.removeChild(spark);
+        }, 800);
+    }
+}
+
+// =========================================================
+// X-RAY HIGHLIGHT ENGINE
+// =========================================================
+function highlightXRayZone(activeKey) {
+    // Remove active class from all zones
+    document.querySelectorAll('.xray-zone').forEach(z => z.classList.remove('xray-active'));
+    
+    // Find the specific zone for the selected component
+    const targetZone = document.getElementById(`zone-${activeKey}`);
+    
+    if (targetZone) {
+        // Clear the glass and light up the specific physical location
+        UI.towerGlass.classList.add('xray-active-glass');
+        targetZone.classList.add('xray-active');
+    } else {
+        UI.towerGlass.classList.remove('xray-active-glass');
+    }
 }
 
 // =========================================================
@@ -141,10 +206,12 @@ function toggleHardware(key, btnElement) {
     plugStates[key] = !plugStates[key];
     const isPlugged = plugStates[key];
 
-    if (isPlugged) {
-        btnElement.classList.replace('unplugged', 'plugged');
-    } else {
+    // Trigger explosive sparks if unplugged!
+    if (!isPlugged) {
         btnElement.classList.replace('plugged', 'unplugged');
+        spawnSparks(btnElement);
+    } else {
+        btnElement.classList.replace('unplugged', 'plugged');
     }
 
     // Advanced Thermal Engine (Checks Fan AND WaterPump)
@@ -155,10 +222,10 @@ function toggleHardware(key, btnElement) {
             isThermalShutdown = false;
         } else if (!plugStates['Fan'] && !plugStates['WaterPump']) {
             sysTemp = 40;
-            startThermalClimb(15); // Both dead = fast heat
+            startThermalClimb(15);
         } else if (!plugStates['Fan'] || !plugStates['WaterPump']) {
             sysTemp = 40;
-            startThermalClimb(6); // One dead = slow heat
+            startThermalClimb(6); 
         }
     } else if (key === 'Fan' || key === 'WaterPump') {
         if ((!plugStates['Fan'] || !plugStates['WaterPump']) && plugStates['PSU'] && plugStates['ATX24']) {
@@ -173,7 +240,7 @@ function toggleHardware(key, btnElement) {
 
     if (key === selectedComponent) updateInspector();
 
-    // If power is restored, trigger boot sequence. Otherwise evaluate immediately.
+    // Trigger Boot or Evaluate current state
     if ((key === 'PSU' || key === 'ATX24' || key === 'FrontPanel') && plugStates['PSU'] && plugStates['ATX24']) {
         initiateBootSequence();
     } else {
@@ -205,6 +272,7 @@ function updateInspector() {
     
     UI.title.innerText = data.title || selectedComponent;
     
+    // Refresh Typewriter Effect
     UI.desc.style.animation = 'none';
     UI.desc.offsetHeight; 
     UI.desc.innerText = isPlugged ? (data.descOn || '') : (data.descOff || '');
@@ -233,6 +301,9 @@ function updateInspector() {
     } else {
         UI.viewer3D.removeAttribute('src'); 
     }
+    
+    // Highlight physical location in the PC Tower!
+    highlightXRayZone(selectedComponent);
 }
 
 function initiateBootSequence() {
@@ -241,7 +312,6 @@ function initiateBootSequence() {
         return;
     }
     
-    // Test for immediate fatal pre-POST errors
     if (!plugStates['CPU'] || !plugStates['EPS8'] || !plugStates['Chipset']) {
         evaluateSystemState();
         return;
@@ -250,7 +320,6 @@ function initiateBootSequence() {
     isBooting = true;
     updateInspector();
     
-    // Hide everything, show Boot Logo
     UI.screenBios.classList.add('hidden');
     UI.screenDesktop.classList.add('hidden');
     UI.screenError.classList.add('hidden');
@@ -264,11 +333,11 @@ function initiateBootSequence() {
         isBooting = false;
         updateInspector();
         evaluateSystemState();
-    }, 2500); // 2.5 second boot logo delay
+    }, 2500); 
 }
 
 function evaluateSystemState() {
-    if (isBooting) return; // Don't interrupt the boot sequence
+    if (isBooting) return; 
 
     UI.screenBios.classList.add('hidden');
     UI.screenBoot.classList.add('hidden');
@@ -282,7 +351,7 @@ function evaluateSystemState() {
         return; 
     }
 
-    // 2. NO SIGNAL (Monitor powered, but GPU/Riser severed)
+    // 2. NO SIGNAL 
     if (!plugStates['GPU'] || !plugStates['Riser']) {
         UI.powerLed.className = 'power-led led-error';
         UI.screenError.classList.remove('hidden');
@@ -315,7 +384,7 @@ function evaluateSystemState() {
         return;
     }
 
-    // 5. HARDWARE FREEZE (CPU/Chipset Missing)
+    // 5. HARDWARE FREEZE 
     if (!plugStates['CPU'] || !plugStates['EPS8'] || !plugStates['Chipset']) {
         UI.powerLed.className = 'power-led led-on';
         UI.screenError.classList.remove('hidden');
@@ -326,7 +395,7 @@ function evaluateSystemState() {
         return;
     }
 
-    // 6. BIOS & OS BOOT ERRORS
+    // 6. BIOS BOOT ERRORS
     if (!plugStates['SSD']) {
         UI.powerLed.className = 'power-led led-on';
         UI.screenBios.classList.remove('hidden');
@@ -352,9 +421,8 @@ function evaluateSystemState() {
     UI.powerLed.className = 'power-led led-on';
     UI.screenDesktop.classList.remove('hidden');
 
-    // Minor Effects
     if (!plugStates['VRM']) {
-        UI.gpuGlitch.classList.remove('hidden'); // Simulate power instability on screen
+        UI.gpuGlitch.classList.remove('hidden'); 
     }
 }
 
@@ -364,7 +432,7 @@ function startDesktopLoop() {
         if (!plugStates['PSU'] || isThermalShutdown || !plugStates['CPU'] || !plugStates['RAM'] || !plugStates['SSD']) return;
 
         let cpuLoad = Math.floor(Math.random() * 12) + 2;
-        if (!plugStates['VRM']) cpuLoad = 100; // Throttling simulation
+        if (!plugStates['VRM']) cpuLoad = 100; 
         UI.widCpuBar.style.width = `${cpuLoad}%`;
         UI.widCpuVal.innerText = `${cpuLoad}%`;
 
@@ -389,6 +457,5 @@ function startDesktopLoop() {
             UI.widNetVal.innerText = 'OFFLINE';
             UI.widNetVal.style.color = 'var(--red-glow)';
         }
-        
     }, 1500);
 }
