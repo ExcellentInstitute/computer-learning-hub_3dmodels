@@ -7,24 +7,22 @@ let dbData = {};
 let selectedComponent = 'CPU';
 let isFetching = true;
 
-// Hardware Plug States (All default to true/plugged)
+// 25 Component Hardware Plug States (Default to ON)
 const plugStates = {
-    'PSU': true,
-    'CPU': true,
-    'Fan': true,
-    'RAM': true,
-    'SSD': true,
-    'HDD': true,
-    'GPU': true,
-    'NIC': true,
-    'CMOS': true
+    'PSU': true, 'CPU': true, 'RAM': true, 'GPU': true, 'Fan': true,
+    'SSD': true, 'HDD': true, 'ODD': true, 'Chipset': true, 'VRM': true,
+    'CMOS': true, 'TPM': true, 'ATX24': true, 'EPS8': true, 'SATA': true,
+    'NIC': true, 'WiFi': true, 'SoundCard': true, 'CaptureCard': true, 'Riser': true,
+    'RGB': true, 'WaterPump': true, 'M2Heatsink': true, 'FrontPanel': true, 'USB3': true
 };
 
 // System Variables
 let sysTemp = 40;
 let isThermalShutdown = false;
+let isBooting = false;
 let heatingInterval = null;
 let desktopLoop = null;
+let bootTimeout = null;
 
 // =========================================================
 // DOM ELEMENT MAPPING
@@ -38,11 +36,12 @@ const UI = {
     
     // Monitor Layers
     screenBios: document.getElementById('screen-bios'),
+    screenBoot: document.getElementById('screen-boot'),
     screenDesktop: document.getElementById('screen-desktop'),
     screenError: document.getElementById('screen-error'),
     gpuGlitch: document.getElementById('gpu-glitch'),
     
-    // Text Areas
+    // Text & LEDs
     biosText: document.getElementById('bios-text'),
     errorText: document.getElementById('error-text'),
     powerLed: document.getElementById('power-led'),
@@ -63,10 +62,11 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchHardwareData();
     setupEventListeners();
     startDesktopLoop();
+    initiateBootSequence();
 });
 
 // =========================================================
-// DATA FETCHING & FALLBACK ENGINE
+// DATA FETCHING & 25-COMPONENT FALLBACK ENGINE
 // =========================================================
 async function fetchHardwareData() {
     try {
@@ -74,7 +74,6 @@ async function fetchHardwareData() {
         const response = await fetch(cacheBusterUrl);
         if (response.ok) {
             const serverData = await response.json();
-            // Merge server data with our advanced fallback to ensure no missing keys
             dbData = { ...generateAdvancedFallback(), ...serverData };
         } else {
             dbData = generateAdvancedFallback();
@@ -83,23 +82,37 @@ async function fetchHardwareData() {
         console.error("Firebase fetch failed, loading local logic engine.", error);
         dbData = generateAdvancedFallback();
     }
-    
     isFetching = false;
     updateInspector();
-    evaluateSystemState();
 }
 
 function generateAdvancedFallback() {
     return {
-        'PSU': { title: '850W Power Supply Unit (PSU)', statusOn: 'POWER DELIVERING', statusOff: 'NO POWER', descOn: 'Converting AC wall electricity into clean DC voltage for all motherboard components.', descOff: 'Critical: The system has lost all power. The motherboard is dead, and the monitor receives no signal.', model_url: '' },
-        'CPU': { title: 'Central Processing Unit (CPU)', statusOn: 'EXECUTING', statusOff: 'SOCKET EMPTY', descOn: 'The primary processor is handling OS instructions, logic execution, and IPC routing.', descOff: 'Fatal Error: Without a CPU, the motherboard cannot POST. The system freezes completely before BIOS initialization.', model_url: '' },
-        'Fan': { title: 'Thermal Cooling System', statusOn: 'COOLING (2400 RPM)', statusOff: 'FAN STOPPED', descOn: 'Active heat dissipation is maintaining stable core temperatures across the silicon die.', descOff: 'Warning: Active cooling lost. Thermal energy is rapidly building. If temperatures exceed 110°C, the CPU will trip a thermal shutdown to prevent melting.', model_url: '' },
-        'RAM': { title: 'DDR5 Random Access Memory', statusOn: 'ALLOCATED', statusOff: 'NO MEMORY', descOn: 'Providing ultra-fast, volatile storage for the OS kernel and active desktop applications.', descOff: 'Fatal Error: The CPU has no workspace. The OS kernel immediately panics, triggering a Memory Management Blue Screen of Death (BSOD).', model_url: '' },
-        'SSD': { title: 'NVMe M.2 Solid State Drive', statusOn: 'MOUNTED (C:\\)', statusOff: 'UNMOUNTED', descOn: 'High-speed PCIe storage hosting the primary bootloader and ExcellentOS system files.', descOff: 'Boot Error: The motherboard cannot locate an operating system. The BIOS halts with a "Boot Device Not Found" error.', model_url: '' },
-        'HDD': { title: 'Mechanical Hard Drive (SATA)', statusOn: 'MOUNTED (D:\\)', statusOff: 'DISCONNECTED', descOn: 'Secondary mass storage spinning at 7200 RPM, holding archive files and heavy media.', descOff: 'Degraded: The OS remains functional via the SSD, but secondary archive paths are broken. Pagefile overflow may increase RAM usage.', model_url: '' },
-        'GPU': { title: 'PCIe Graphics Processing Unit', statusOn: 'RENDERING (144Hz)', statusOff: 'NO SIGNAL', descOn: 'Processing complex 3D rasterization and pushing high-framerate pixel data to the display.', descOff: 'Display Error: The display pipeline is severed. The OS is technically still running in the background, but the monitor is completely blind.', model_url: '' },
-        'NIC': { title: 'Gigabit Network Interface Card', statusOn: 'CONNECTED (1Gbps)', statusOff: 'OFFLINE', descOn: 'Handling TCP/IP packet routing, keeping the machine connected to the local LAN and external internet.', descOff: 'Isolated: The machine is fully functional but strictly offline. All web traffic, updates, and external API calls will fail.', model_url: '' },
-        'CMOS': { title: 'CR2032 CMOS Battery', statusOn: 'VOLTAGE OK (3.3V)', statusOff: 'VOLTAGE DROP', descOn: 'Providing trickle power to the RTC (Real Time Clock) and volatile BIOS memory chips.', descOff: 'Warning: BIOS settings wiped. System time resets to factory defaults. The POST sequence halts requiring user F1 confirmation.', model_url: '' }
+        'PSU': { title: '850W Power Supply', statusOn: 'DELIVERING', statusOff: 'NO POWER', descOn: 'Converting AC to DC voltage for the system.', descOff: 'Critical: System lost all power. Blackout.', model_url: '' },
+        'CPU': { title: 'Central Processing Unit', statusOn: 'EXECUTING', statusOff: 'SOCKET EMPTY', descOn: 'Handling OS instructions and IPC routing.', descOff: 'Fatal Error: System freezes before POST.', model_url: '' },
+        'RAM': { title: 'DDR5 Memory', statusOn: 'ALLOCATED', statusOff: 'NO MEMORY', descOn: 'Providing volatile storage for the OS.', descOff: 'Fatal Error: Memory Management BSOD.', model_url: '' },
+        'GPU': { title: 'PCIe Graphics Card', statusOn: 'RENDERING', statusOff: 'NO SIGNAL', descOn: 'Pushing high-framerate pixel data.', descOff: 'Display Error: Monitor receives no video signal.', model_url: '' },
+        'Fan': { title: 'CPU Cooling Fan', statusOn: '2400 RPM', statusOff: 'STOPPED', descOn: 'Dissipating thermal energy from the heatsink.', descOff: 'Warning: Cooling lost. Temperatures rising.', model_url: '' },
+        'SSD': { title: 'NVMe M.2 Drive', statusOn: 'MOUNTED (C:\\)', statusOff: 'UNMOUNTED', descOn: 'Hosting the primary bootloader and OS.', descOff: 'Boot Error: Boot Device Not Found.', model_url: '' },
+        'HDD': { title: 'Mechanical Hard Drive', statusOn: 'MOUNTED (D:\\)', statusOff: 'DISCONNECTED', descOn: 'Secondary mass storage archive.', descOff: 'Degraded: Secondary storage paths broken.', model_url: '' },
+        'ODD': { title: 'Optical Disk Drive', statusOn: 'READY', statusOff: 'OFFLINE', descOn: 'Reading legacy CD/DVD media.', descOff: 'Non-critical: Disc media unavailable.', model_url: '' },
+        'Chipset': { title: 'Motherboard Chipset', statusOn: 'ROUTING', statusOff: 'FAILED', descOn: 'Managing data flow between CPU and peripherals.', descOff: 'Fatal: I/O communication severed.', model_url: '' },
+        'VRM': { title: 'VRM Heatsink', statusOn: 'STABLE', statusOff: 'OVERHEATING', descOn: 'Cooling the voltage regulator modules.', descOff: 'Warning: Power delivery unstable. CPU throttling.', model_url: '' },
+        'CMOS': { title: 'CMOS Battery', statusOn: '3.3V', statusOff: 'DEAD', descOn: 'Powering volatile BIOS memory.', descOff: 'BIOS Error: CMOS Checksum invalid. Time reset.', model_url: '' },
+        'TPM': { title: 'Security Module (TPM 2.0)', statusOn: 'SECURE', statusOff: 'MISSING', descOn: 'Providing hardware-level cryptographic keys.', descOff: 'OS Error: ExcellentOS requires TPM 2.0 to boot.', model_url: '' },
+        'ATX24': { title: '24-pin Main Cable', statusOn: 'POWERED', statusOff: 'UNPLUGGED', descOn: 'Delivering primary 12V/5V/3.3V to the board.', descOff: 'Critical: Motherboard has no power.', model_url: '' },
+        'EPS8': { title: '8-pin CPU Power', statusOn: 'DELIVERING', statusOff: 'UNPLUGGED', descOn: 'Delivering dedicated 12V power to the CPU.', descOff: 'Fatal: CPU receives no power. System halt.', model_url: '' },
+        'SATA': { title: 'SATA Data Cable', statusOn: 'LINKED', statusOff: 'UNPLUGGED', descOn: 'Connecting the HDD to the motherboard.', descOff: 'Degraded: HDD communication lost.', model_url: '' },
+        'NIC': { title: 'Network Card', statusOn: '1Gbps LINK', statusOff: 'OFFLINE', descOn: 'Handling wired TCP/IP packet routing.', descOff: 'Network: Wired LAN disconnected.', model_url: '' },
+        'WiFi': { title: 'Wi-Fi/BT Module', statusOn: 'BROADCASTING', statusOff: 'DISABLED', descOn: 'Managing wireless networks and Bluetooth.', descOff: 'Network: Wireless connectivity lost.', model_url: '' },
+        'SoundCard': { title: 'Dedicated Sound Card', statusOn: 'PROCESSING AUDIO', statusOff: 'SILENT', descOn: 'Rendering high-fidelity DAC audio.', descOff: 'Audio: System sound disabled.', model_url: '' },
+        'CaptureCard': { title: 'Video Capture Card', statusOn: 'STANDBY', statusOff: 'UNPLUGGED', descOn: 'Handling HDMI passthrough recording.', descOff: 'Non-critical: Recording unavailable.', model_url: '' },
+        'Riser': { title: 'PCIe Riser Cable', statusOn: 'LINKED (x16)', statusOff: 'SEVERED', descOn: 'Extending the GPU PCIe connection.', descOff: 'Display Error: GPU disconnected from bus. No signal.', model_url: '' },
+        'RGB': { title: 'RGB Controller', statusOn: 'SYNCED', statusOff: 'DARK', descOn: 'Managing ARGB lighting profiles.', descOff: 'Aesthetic: System lights disabled.', model_url: '' },
+        'WaterPump': { title: 'AIO Water Pump', statusOn: 'PUMPING', statusOff: 'STOPPED', descOn: 'Circulating liquid coolant over the CPU.', descOff: 'Warning: Liquid flow stopped. Extreme thermal risk.', model_url: '' },
+        'M2Heatsink': { title: 'SSD Heatsink', statusOn: 'DISSIPATING', statusOff: 'REMOVED', descOn: 'Preventing NVMe thermal throttling.', descOff: 'Warning: SSD running hot, speeds reduced.', model_url: '' },
+        'FrontPanel': { title: 'Front Panel I/O', statusOn: 'ACTIVE', statusOff: 'DISCONNECTED', descOn: 'Connecting power button and front USBs.', descOff: 'Non-critical: Case buttons disabled.', model_url: '' },
+        'USB3': { title: 'USB 3.0 Header', statusOn: 'LINKED', statusOff: 'UNPLUGGED', descOn: 'Enabling high-speed external I/O.', descOff: 'Non-critical: Front USB ports dead.', model_url: '' }
     };
 }
 
@@ -107,13 +120,11 @@ function generateAdvancedFallback() {
 // EVENT LISTENERS
 // =========================================================
 function setupEventListeners() {
-    // Dropdown change
     UI.selector.addEventListener('change', (e) => {
         selectedComponent = e.target.value;
         updateInspector();
     });
 
-    // Motherboard Buttons
     const buttons = document.querySelectorAll('.cyber-btn');
     buttons.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -130,85 +141,56 @@ function toggleHardware(key, btnElement) {
     plugStates[key] = !plugStates[key];
     const isPlugged = plugStates[key];
 
-    // Update Button Visuals
     if (isPlugged) {
         btnElement.classList.replace('unplugged', 'plugged');
     } else {
         btnElement.classList.replace('plugged', 'unplugged');
     }
 
-    // Thermal Engine
-    if (key === 'PSU') {
-        if (!isPlugged) {
+    // Advanced Thermal Engine (Checks Fan AND WaterPump)
+    if (key === 'PSU' || key === 'ATX24') {
+        if (!plugStates['PSU'] || !plugStates['ATX24']) {
             clearInterval(heatingInterval);
-            sysTemp = 25; // Instant ambient cooldown
+            sysTemp = 25; 
             isThermalShutdown = false;
-        } else if (!plugStates['Fan']) {
+        } else if (!plugStates['Fan'] && !plugStates['WaterPump']) {
             sysTemp = 40;
-            startThermalClimb();
+            startThermalClimb(15); // Both dead = fast heat
+        } else if (!plugStates['Fan'] || !plugStates['WaterPump']) {
+            sysTemp = 40;
+            startThermalClimb(6); // One dead = slow heat
         }
-    } else if (key === 'Fan') {
-        if (!isPlugged && plugStates['PSU']) {
-            startThermalClimb();
-        } else {
+    } else if (key === 'Fan' || key === 'WaterPump') {
+        if ((!plugStates['Fan'] || !plugStates['WaterPump']) && plugStates['PSU'] && plugStates['ATX24']) {
+            let heatRate = (!plugStates['Fan'] && !plugStates['WaterPump']) ? 15 : 6;
+            startThermalClimb(heatRate);
+        } else if (plugStates['Fan'] && plugStates['WaterPump']) {
             clearInterval(heatingInterval);
-            sysTemp = 40; // Simulated cooling recovery
+            sysTemp = 40; 
             isThermalShutdown = false;
         }
     }
 
     if (key === selectedComponent) updateInspector();
-    evaluateSystemState();
+
+    // If power is restored, trigger boot sequence. Otherwise evaluate immediately.
+    if ((key === 'PSU' || key === 'ATX24' || key === 'FrontPanel') && plugStates['PSU'] && plugStates['ATX24']) {
+        initiateBootSequence();
+    } else {
+        evaluateSystemState();
+    }
 }
 
-function startThermalClimb() {
+function startThermalClimb(rate) {
     clearInterval(heatingInterval);
     heatingInterval = setInterval(() => {
-        sysTemp += 8; // Heats up fast
+        sysTemp += rate; 
         if (sysTemp >= 110) {
             isThermalShutdown = true;
             clearInterval(heatingInterval);
-            evaluateSystemState(); // Force crash
+            evaluateSystemState(); 
         }
     }, 1000);
-}
-
-// Background loop to animate desktop widgets
-function startDesktopLoop() {
-    desktopLoop = setInterval(() => {
-        if (!plugStates['PSU'] || isThermalShutdown || !plugStates['CPU'] || !plugStates['RAM'] || !plugStates['SSD']) return;
-
-        // CPU Load (Random fluctuation)
-        let cpuLoad = Math.floor(Math.random() * 12) + 2;
-        UI.widCpuBar.style.width = `${cpuLoad}%`;
-        UI.widCpuVal.innerText = `${cpuLoad}%`;
-
-        // RAM Usage (Spikes if HDD is missing, simulating lost pagefile)
-        let ramUsage = plugStates['HDD'] ? 18 : 64; 
-        UI.widRamBar.style.width = `${ramUsage}%`;
-        UI.widRamVal.innerText = `${ramUsage}%`;
-        UI.widRamBar.style.backgroundColor = plugStates['HDD'] ? 'var(--cyan-glow)' : 'var(--yellow-glow)';
-
-        // Temperature (Slight fluctuation if normal)
-        if (plugStates['Fan']) {
-            let fluctuate = Math.floor(Math.random() * 3) + 38;
-            UI.widTempVal.innerText = `${fluctuate}°C`;
-            UI.widTempVal.className = 'wid-val temp-val';
-        } else {
-            UI.widTempVal.innerText = `${sysTemp}°C`;
-            UI.widTempVal.className = 'wid-val temp-val temp-hot';
-        }
-
-        // Network Status
-        if (plugStates['NIC']) {
-            UI.widNetVal.innerText = '1GBPS LINK';
-            UI.widNetVal.style.color = 'var(--cyan-glow)';
-        } else {
-            UI.widNetVal.innerText = 'OFFLINE';
-            UI.widNetVal.style.color = 'var(--red-glow)';
-        }
-        
-    }, 1500);
 }
 
 // =========================================================
@@ -219,52 +201,89 @@ function updateInspector() {
 
     const data = dbData[selectedComponent] || {};
     const isPlugged = plugStates[selectedComponent];
-    const isSystemDead = !plugStates['PSU'] || isThermalShutdown;
+    const isSystemDead = !plugStates['PSU'] || !plugStates['ATX24'] || isThermalShutdown;
     
     UI.title.innerText = data.title || selectedComponent;
     
-    // Typewriter effect reset
     UI.desc.style.animation = 'none';
-    UI.desc.offsetHeight; // Trigger reflow
+    UI.desc.offsetHeight; 
     UI.desc.innerText = isPlugged ? (data.descOn || '') : (data.descOff || '');
     UI.desc.style.animation = 'fadeIn 0.5s ease-in';
 
     let statusText = isPlugged ? (data.statusOn || 'ACTIVE') : (data.statusOff || 'DISCONNECTED');
     
-    // Badge styling logic
     UI.badge.className = 'badge';
     if (!isPlugged || isSystemDead) {
         UI.badge.classList.add('badge-critical');
-    } else if (selectedComponent === 'HDD' && !isPlugged) {
-        UI.badge.classList.add('badge-warning'); // Degraded, not dead
+    } else if (['HDD', 'ODD', 'NIC', 'WiFi', 'SoundCard', 'RGB', 'FrontPanel', 'USB3'].includes(selectedComponent) && !isPlugged) {
+        UI.badge.classList.add('badge-warning'); 
     } else {
         UI.badge.classList.add('badge-active');
     }
-    UI.badge.innerText = statusText;
+    
+    if (isBooting) {
+        UI.badge.innerText = 'BOOTING...';
+        UI.badge.classList.replace('badge-active', 'badge-booting');
+    } else {
+        UI.badge.innerText = statusText;
+    }
 
-    // Handle 3D Model URL
     if (data.model_url) {
         UI.viewer3D.setAttribute('src', data.model_url);
     } else {
-        UI.viewer3D.removeAttribute('src'); // Defaults to grey box if missing
+        UI.viewer3D.removeAttribute('src'); 
     }
 }
 
-function evaluateSystemState() {
-    // Hide all layers first
+function initiateBootSequence() {
+    if (!plugStates['PSU'] || !plugStates['ATX24'] || isThermalShutdown) {
+        evaluateSystemState();
+        return;
+    }
+    
+    // Test for immediate fatal pre-POST errors
+    if (!plugStates['CPU'] || !plugStates['EPS8'] || !plugStates['Chipset']) {
+        evaluateSystemState();
+        return;
+    }
+
+    isBooting = true;
+    updateInspector();
+    
+    // Hide everything, show Boot Logo
     UI.screenBios.classList.add('hidden');
+    UI.screenDesktop.classList.add('hidden');
+    UI.screenError.classList.add('hidden');
+    UI.gpuGlitch.classList.add('hidden');
+    
+    UI.screenBoot.classList.remove('hidden');
+    UI.powerLed.className = 'power-led led-on';
+
+    clearTimeout(bootTimeout);
+    bootTimeout = setTimeout(() => {
+        isBooting = false;
+        updateInspector();
+        evaluateSystemState();
+    }, 2500); // 2.5 second boot logo delay
+}
+
+function evaluateSystemState() {
+    if (isBooting) return; // Don't interrupt the boot sequence
+
+    UI.screenBios.classList.add('hidden');
+    UI.screenBoot.classList.add('hidden');
     UI.screenDesktop.classList.add('hidden');
     UI.screenError.classList.add('hidden');
     UI.gpuGlitch.classList.add('hidden');
 
     // 1. HARDWARE POWER LOSS
-    if (!plugStates['PSU']) {
+    if (!plugStates['PSU'] || !plugStates['ATX24']) {
         UI.powerLed.className = 'power-led led-off';
-        return; // Complete black screen
+        return; 
     }
 
-    // 2. NO SIGNAL (Monitor has power from wall, but PC gives no video)
-    if (!plugStates['GPU']) {
+    // 2. NO SIGNAL (Monitor powered, but GPU/Riser severed)
+    if (!plugStates['GPU'] || !plugStates['Riser']) {
         UI.powerLed.className = 'power-led led-error';
         UI.screenError.classList.remove('hidden');
         UI.screenError.style.backgroundColor = '#111';
@@ -280,7 +299,7 @@ function evaluateSystemState() {
         UI.screenError.classList.remove('hidden');
         UI.screenError.style.background = 'radial-gradient(circle at center, rgba(255, 42, 95, 0.4), #000)';
         UI.errorText.style.color = 'var(--red-glow)';
-        UI.errorText.innerHTML = 'FATAL: THERMAL TRIP DETECTED<br><br>CPU CORE EXCEEDED 110°C.<br>EMERGENCY HALT TRIGGERED TO PREVENT SILICON DAMAGE.<br><br>Action: Reconnect cooling fan and power cycle.';
+        UI.errorText.innerHTML = 'FATAL: THERMAL TRIP DETECTED<br><br>CPU CORE EXCEEDED 110°C.<br>EMERGENCY HALT TRIGGERED.<br><br>Action: Reconnect cooling and power cycle.';
         UI.errorText.style.animation = 'none';
         return;
     }
@@ -289,40 +308,87 @@ function evaluateSystemState() {
     if (!plugStates['RAM']) {
         UI.powerLed.className = 'power-led led-on';
         UI.screenError.classList.remove('hidden');
-        UI.screenError.style.background = '#0033cc'; // Windows Blue
+        UI.screenError.style.background = '#0033cc'; 
         UI.errorText.style.color = '#ffffff';
-        UI.errorText.innerHTML = ':( <br><br>Your PC ran into a problem and needs to restart.<br><br>Stop code: MEMORY_MANAGEMENT<br>Address: 0x0000001A';
+        UI.errorText.innerHTML = ':( <br><br>Your PC ran into a problem.<br><br>Stop code: MEMORY_MANAGEMENT';
         UI.errorText.style.animation = 'none';
         return;
     }
 
-    // 5. HARDWARE FREEZE (CPU Missing)
-    if (!plugStates['CPU']) {
+    // 5. HARDWARE FREEZE (CPU/Chipset Missing)
+    if (!plugStates['CPU'] || !plugStates['EPS8'] || !plugStates['Chipset']) {
         UI.powerLed.className = 'power-led led-on';
         UI.screenError.classList.remove('hidden');
         UI.screenError.style.background = '#222';
         UI.errorText.style.color = '#fff';
-        UI.errorText.innerHTML = 'SYSTEM HALT.<br>ERR_NO_PROCESSOR_FOUND';
+        UI.errorText.innerHTML = 'SYSTEM HALT.<br>ERR_NO_PROCESSOR_OR_BUS_FOUND';
         UI.errorText.style.animation = 'none';
         return;
     }
 
-    // 6. BIOS BOOT ERRORS
+    // 6. BIOS & OS BOOT ERRORS
     if (!plugStates['SSD']) {
         UI.powerLed.className = 'power-led led-on';
         UI.screenBios.classList.remove('hidden');
-        UI.biosText.innerHTML = 'American Megatrends BIOS v4.0.1<br>CPU: Detected<br>Memory: OK<br><br>Auto-Detecting SATA/NVMe Ports...<br>Port 1: None<br>Port 2: None<br><br>ERROR: Boot Device Not Found.<br>Please install an operating system on your hard disk.';
+        UI.biosText.innerHTML = 'Excellent BIOS v4.0.1<br>CPU: Detected<br>Memory: OK<br><br>ERROR: Boot Device Not Found.<br>Please install an operating system.';
+        return;
+    }
+
+    if (!plugStates['TPM']) {
+        UI.powerLed.className = 'power-led led-on';
+        UI.screenBios.classList.remove('hidden');
+        UI.biosText.innerHTML = 'Excellent BIOS v4.0.1<br>CPU: Detected<br>Memory: OK<br><br>ERROR: Trusted Platform Module (TPM 2.0) not detected.<br>ExcellentOS requires TPM for secure boot.';
         return;
     }
 
     if (!plugStates['CMOS']) {
         UI.powerLed.className = 'power-led led-on';
         UI.screenBios.classList.remove('hidden');
-        UI.biosText.innerHTML = 'American Megatrends BIOS v4.0.1<br>CPU: Detected<br>Memory: OK<br><br>WARNING: CMOS Checksum Error.<br>CMOS Battery Voltage Low or Missing.<br>System Time and Date have been reset.<br><br>Press F1 to Run SETUP<br>Press F2 to load default values and continue.';
+        UI.biosText.innerHTML = 'Excellent BIOS v4.0.1<br><br>WARNING: CMOS Checksum Error.<br>CMOS Battery Voltage Low or Missing.<br>System Time has been reset.<br><br>Press F1 to Run SETUP';
         return;
     }
 
     // 7. DESKTOP OS (FULLY FUNCTIONAL)
     UI.powerLed.className = 'power-led led-on';
     UI.screenDesktop.classList.remove('hidden');
+
+    // Minor Effects
+    if (!plugStates['VRM']) {
+        UI.gpuGlitch.classList.remove('hidden'); // Simulate power instability on screen
+    }
+}
+
+// Background loop to animate desktop widgets
+function startDesktopLoop() {
+    desktopLoop = setInterval(() => {
+        if (!plugStates['PSU'] || isThermalShutdown || !plugStates['CPU'] || !plugStates['RAM'] || !plugStates['SSD']) return;
+
+        let cpuLoad = Math.floor(Math.random() * 12) + 2;
+        if (!plugStates['VRM']) cpuLoad = 100; // Throttling simulation
+        UI.widCpuBar.style.width = `${cpuLoad}%`;
+        UI.widCpuVal.innerText = `${cpuLoad}%`;
+
+        let ramUsage = plugStates['HDD'] ? 18 : 64; 
+        UI.widRamBar.style.width = `${ramUsage}%`;
+        UI.widRamVal.innerText = `${ramUsage}%`;
+        UI.widRamBar.style.backgroundColor = plugStates['HDD'] ? 'var(--cyan-glow)' : 'var(--yellow-glow)';
+
+        if (plugStates['Fan'] && plugStates['WaterPump']) {
+            let fluctuate = Math.floor(Math.random() * 3) + 38;
+            UI.widTempVal.innerText = `${fluctuate}°C`;
+            UI.widTempVal.className = 'wid-val temp-val';
+        } else {
+            UI.widTempVal.innerText = `${sysTemp}°C`;
+            UI.widTempVal.className = 'wid-val temp-val temp-hot';
+        }
+
+        if (plugStates['NIC'] || plugStates['WiFi']) {
+            UI.widNetVal.innerText = plugStates['NIC'] ? '1GBPS LINK' : 'WI-FI CONNECTED';
+            UI.widNetVal.style.color = 'var(--cyan-glow)';
+        } else {
+            UI.widNetVal.innerText = 'OFFLINE';
+            UI.widNetVal.style.color = 'var(--red-glow)';
+        }
+        
+    }, 1500);
 }
