@@ -235,30 +235,29 @@ function highlightPhysicalZone(key) {
 }
 
 // =========================================================
-// HIGH-TECH SPARK PARTICLE ENGINE
+// FIXED: HIGH-TECH SPARK PARTICLE ENGINE
 // =========================================================
 function spawnInternalSparks() {
     if (!UI.sparkEmitter) return;
-    
-    const rect = UI.sparkEmitter.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
     
     const sparkCount = Math.floor(Math.random() * 15) + 20; 
     
     for(let i = 0; i < sparkCount; i++) {
         let spark = document.createElement('div');
         spark.className = 'spark';
-        spark.style.left = centerX + 'px';
-        spark.style.top = centerY + 'px';
         
-        let tx = (Math.random() - 0.5) * 500 + 'px'; 
-        let ty = (Math.random() - 0.8) * 500 + 'px'; 
+        // Fix: Appending directly to the 3D emitter node requires relative 0px coordinates
+        spark.style.left = '0px';
+        spark.style.top = '0px';
+        
+        let tx = (Math.random() - 0.5) * 300 + 'px'; 
+        let ty = (Math.random() - 0.5) * 300 + 'px'; 
         
         spark.style.setProperty('--tx', tx);
         spark.style.setProperty('--ty', ty);
         
-        UI.sparkContainer.appendChild(spark);
+        // Append directly to the 3D element so it stays inside the chassis
+        UI.sparkEmitter.appendChild(spark);
         
         setTimeout(() => {
             if (spark.parentNode) spark.parentNode.removeChild(spark);
@@ -276,6 +275,10 @@ function toggleHardware(key, btnElement) {
     if (!isPlugged) {
         btnElement.classList.replace('plugged', 'unplugged');
         if (powerComponents.includes(key)) spawnInternalSparks();
+        
+        // FIX: Instantly kill the boot timeout and evaluate system if a part is ripped out
+        isBooting = false;
+        clearTimeout(bootTimeout);
     } else {
         btnElement.classList.replace('unplugged', 'plugged');
     }
@@ -303,7 +306,7 @@ function toggleHardware(key, btnElement) {
         }
     }
 
-    if ((key === 'PSU' || key === 'ATX24' || key === 'FrontPanel') && plugStates['PSU'] && plugStates['ATX24']) {
+    if (isPlugged && (key === 'PSU' || key === 'ATX24' || key === 'FrontPanel') && plugStates['PSU'] && plugStates['ATX24']) {
         initiateBootSequence();
     } else {
         evaluateSystemState();
@@ -411,7 +414,7 @@ function initiateBootSequence() {
 }
 
 function evaluateSystemState() {
-    if (isBooting) return; 
+    // FIX: Removed `if(isBooting) return;` so screen updates instantly on unplug
 
     // Hide everything to start fresh
     UI.screenBios.classList.add('hidden');
@@ -495,9 +498,13 @@ function evaluateSystemState() {
         return;
     }
 
-    // 9. PERFECT BOOT -> SHOW DESKTOP
-    UI.powerLed.className = 'power-led led-on';
-    UI.screenDesktop.classList.remove('hidden');
+    // 9. PERFECT BOOT -> SHOW DESKTOP (Unless currently booting)
+    if(isBooting) {
+        UI.screenBoot.classList.remove('hidden');
+    } else {
+        UI.powerLed.className = 'power-led led-on';
+        UI.screenDesktop.classList.remove('hidden');
+    }
     
     // Aesthetic Glitch if VRM missing but still boots
     if (!plugStates['VRM'] && UI.gpuGlitch) {
@@ -505,9 +512,16 @@ function evaluateSystemState() {
     }
 }
 
-// Background loop to animate desktop widgets
+// Background loop to animate desktop widgets & check heating
 function startDesktopLoop() {
     desktopLoop = setInterval(() => {
+        // FIX: Add visual overheating class to tower
+        if (sysTemp > 75) {
+            UI.tower3D.classList.add('overheating');
+        } else {
+            UI.tower3D.classList.remove('overheating');
+        }
+
         if (!plugStates['PSU'] || isThermalShutdown || !plugStates['CPU'] || !plugStates['RAM'] || !plugStates['SSD']) return;
 
         let cpuLoad = Math.floor(Math.random() * 12) + 2;
