@@ -118,8 +118,20 @@ body {
 .bios-env { background-color: #020617; padding: 40px; }
 .bios-text { font-family: var(--font-mono); color: #cbd5e1; font-size: 17px; white-space: pre-wrap; font-weight: bold; line-height: 1.5; }
 
-.desktop-env { background: linear-gradient(135deg, #0f172a, #1e1b4b); position: relative; }
-.clean-grid-wallpaper { position: absolute; width: 100%; height: 100%; background-image: linear-gradient(rgba(0, 229, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 229, 255, 0.1) 1px, transparent 1px); background-size: 50px 50px; }
+/* FIX: Restored the animated wave grid */
+.desktop-env { background: linear-gradient(135deg, #0f172a, #1e1b4b); position: relative; overflow: hidden; }
+.clean-grid-wallpaper { 
+    position: absolute; width: 200%; height: 200%; top: -50%; left: -50%;
+    background-image: linear-gradient(rgba(0, 229, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 229, 255, 0.1) 1px, transparent 1px); 
+    background-size: 50px 50px; 
+    transform: perspective(600px) rotateX(60deg) translateY(0); 
+    animation: waveGridAnim 3s linear infinite; 
+}
+@keyframes waveGridAnim { 
+    0% { transform: perspective(600px) rotateX(60deg) translateY(0); } 
+    100% { transform: perspective(600px) rotateX(60deg) translateY(50px); } 
+}
+
 .widget-panel { position: absolute; top: 25px; right: 25px; background: rgba(15, 23, 42, 0.9); border: 1px solid var(--cyan-glow); border-radius: 8px; padding: 18px; width: 260px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 0 20px rgba(0,229,255,0.15); backdrop-filter: blur(10px); }
 .widget { display: flex; flex-direction: column; gap: 6px; }
 .wid-label { font-size: 12px; color: #94a3b8; letter-spacing: 1px; font-weight: bold; }
@@ -127,7 +139,7 @@ body {
 .wid-fill { height: 100%; background: var(--cyan-glow); transition: width 0.3s; }
 .wid-val { font-family: var(--font-mono); font-size: 15px; color: #fff; align-self: flex-end; }
 .temp-val { color: var(--green-glow); font-weight: bold; }
-.temp-hot { color: var(--red-glow); animation: shake 0.3s infinite; }
+.temp-hot { color: var(--red-glow); }
 .net-val { color: var(--cyan-glow); }
 .os-watermark { position: absolute; bottom: 20px; right: 30px; font-size: 20px; font-weight: 900; color: rgba(255,255,255,0.3); letter-spacing: 3px; }
 
@@ -141,7 +153,6 @@ body {
 @keyframes pulse-text { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 
 /* --- 2D DESK PERIPHERALS --- */
-/* The desk mat has a tiny CSS perspective to look laid down, but NOTHING ELSE DOES */
 .desk-mat-2d {
     width: 850px; height: 260px;
     background: #0b0f19;
@@ -213,7 +224,6 @@ body {
 }
 
 /* --- THE STRICT CHASSIS CABINET --- */
-/* Center is Z=0. Front Face is +230px, Back is -230px. Math is locked. */
 .face {
     position: absolute; 
     border: 2px solid #1e293b; 
@@ -232,9 +242,9 @@ body {
     left: -105px;
     background: rgba(20, 30, 40, 0.05); /* Extremely clear */
     border: 8px solid #020617; 
-    box-shadow: inset 0 0 20px rgba(255,255,255,0.05); /* Edge glare */
+    box-shadow: inset 0 0 20px rgba(255,255,255,0.05);
     transform-style: preserve-3d;
-    z-index: 100; /* Physically overlays everything */
+    z-index: 100;
 }
 
 /* Front I/O */
@@ -249,8 +259,31 @@ body {
 .chassis-internals {
     position: absolute; width: 100%; height: 100%; top: 0; left: 0;
     transform-style: preserve-3d;
-    /* Ambient light inside the bright case */
     filter: drop-shadow(0 0 15px rgba(0, 229, 255, 0.1));
+}
+
+/* FIX: Added thermal glow styles for overheating state */
+.tower-3d.overheating .chassis-internals {
+    filter: drop-shadow(0 0 30px rgba(255, 42, 95, 0.5));
+}
+.tower-3d.overheating .mb-cpu {
+    background: var(--red-glow);
+    box-shadow: 0 0 20px var(--red-glow);
+    border-color: #fff;
+}
+.tower-3d.overheating .pump-lcd {
+    color: var(--red-glow);
+    border-color: var(--red-glow);
+    box-shadow: 0 0 15px var(--red-glow);
+    animation: shake 0.3s infinite;
+}
+@keyframes shake {
+    0%, 100% { transform: translateZ(12px) translateX(0); }
+    50% { transform: translateZ(12px) translateX(2px); }
+}
+
+.internal-mb, .internal-gpu, .internal-psu, .internal-fans-front, .internal-fan-rear, .internal-hdd {
+    position: absolute; transform-style: preserve-3d; transition: all 0.3s ease;
 }
 
 .xray-highlight {
@@ -266,7 +299,7 @@ body {
 }
 
 /* --- Volumetric CPU & Pump --- */
-.mb-cpu { position: absolute; top: 15%; left: 30%; width: 50px; height: 50px; background: #334155; border: 1px solid #475569; transform: translateZ(5px); }
+.mb-cpu { position: absolute; top: 15%; left: 30%; width: 50px; height: 50px; background: #334155; border: 1px solid #475569; transform: translateZ(5px); transition: all 0.4s ease; }
 .vol-pump { position: absolute; top: 12%; left: 27%; width: 62px; height: 62px; transform-style: preserve-3d; transform: translateZ(10px); transition: all 0.3s ease;}
 .pump-cylinder { position: absolute; width: 100%; height: 100%; border-radius: 50%; background: #020617; border: 2px solid #1e293b; transform: translateZ(0px); }
 .pump-lcd { position: absolute; width: 80%; height: 80%; top: 10%; left: 10%; border-radius: 50%; border: 2px solid var(--cyan-glow); background: #000; box-shadow: 0 0 15px var(--cyan-glow); transform: translateZ(12px); color: var(--cyan-glow); font-size: 14px; display: flex; justify-content: center; align-items: center; font-weight: bold; }
@@ -290,30 +323,22 @@ body {
 .mb-cmos { position: absolute; bottom: 35%; left: 15%; width: 20px; height: 20px; border-radius: 50%; background: radial-gradient(silver, gray); transform: translateZ(6px); box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
 
 /* --- VOLUMETRIC GPU (6-Sided Box) --- */
-/* GPU is 220px W x 50px H x 120px D */
-/* Sits above MB: Z is -100px. Front of GPU is Z: -40px. (Well inside 225px) */
 .vol-gpu { 
     position: absolute; top: 250px; left: 15px; width: 220px; height: 50px; 
     transform-style: preserve-3d; transform: translate3d(0, 0, -100px); 
     transition: all 0.3s ease;
 }
 .gpu-face { position: absolute; background: #1e293b; border: 1px solid #0f172a; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: #fff;}
-/* Front Face */
 .gpu-front { width: 220px; height: 50px; transform: translateZ(60px); border-bottom: 3px solid var(--green-glow); justify-content: space-between; padding: 0 10px;}
 .gpu-front::after { content: 'GEFORCE'; color: var(--green-glow); text-shadow: 0 0 10px var(--green-glow); }
-/* Back Face */
 .gpu-back { width: 220px; height: 50px; transform: rotateY(180deg) translateZ(60px); }
-/* Left & Right */
 .gpu-left { width: 120px; height: 50px; transform: rotateY(-90deg) translateZ(110px); }
 .gpu-right { width: 120px; height: 50px; transform: rotateY(90deg) translateZ(110px); }
-/* Top (Backplate) */
 .gpu-top { width: 220px; height: 120px; transform: rotateX(90deg) translateZ(25px); background: #0f172a; border: 2px solid #334155; }
-/* Bottom (Fans) */
 .gpu-bottom { width: 220px; height: 120px; transform: rotateX(-90deg) translateZ(25px); background: #020617; display: flex; justify-content: space-evenly; align-items: center; }
 .gpu-mini-fan { width: 50px; height: 50px; border-radius: 50%; background: #111; border: 2px solid #333; }
 
 /* --- VOLUMETRIC PSU (6-Sided Box in Basement) --- */
-/* W: 250px, H: 100px, D: 180px */
 .vol-psu { 
     position: absolute; bottom: 0; left: 0; width: 250px; height: 100px; 
     transform-style: preserve-3d; transform: translate3d(0, 0, -80px); 
@@ -325,7 +350,9 @@ body {
 .psu-left { width: 180px; height: 100px; transform: rotateY(-90deg) translateZ(125px); }
 .psu-right { width: 180px; height: 100px; transform: rotateY(90deg) translateZ(125px); }
 .psu-label { background: #020617; color: #cbd5e1; border: 1px solid #334155; padding: 5px 10px; font-weight: bold; }
-#internal-spark-emitter { position: absolute; left: 120px; top: 10px; width: 1px; height: 1px; }
+
+/* FIX: Ensure spark emitter is mapped in 3D relative to the PSU */
+#internal-spark-emitter { position: absolute; left: 120px; top: 10px; width: 1px; height: 1px; z-index: 999; transform-style: preserve-3d; }
 
 /* --- VOLUMETRIC HDD --- */
 .vol-hdd {
@@ -344,23 +371,19 @@ body {
 .fan-hub { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) translateZ(8px); width: 25px; height: 25px; border-radius: 50%; background: #1e293b; }
 .fan-blades { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; background: repeating-conic-gradient(transparent 0 30deg, rgba(255,255,255,0.15) 30deg 60deg); transform: translateZ(4px); }
 
-/* Front Intake stays directly behind front panel (+220px max) */
 .internal-fans-front { position: absolute; top: 30px; left: 80px; transform-style: preserve-3d; transform: translate3d(0, 0, 200px); display: flex; flex-direction: column; gap: 15px; transition: all 0.3s ease;}
-/* Rear Exhaust stays inside back panel (-220px max) */
 .internal-fan-rear { position: absolute; top: 40px; left: 80px; transform-style: preserve-3d; transform: translate3d(0, 0, -210px); transition: all 0.3s ease;}
 
-/* 5. Target Nodes */
 .zoom-target { position: absolute; width: 20px; height: 20px; border-radius: 50%; opacity: 0; z-index: 50; transition: opacity 0.3s; }
 
 /* =========================================================
-   HIGH-QUALITY PHYSICS SPARKS
+   FIXED: HIGH-QUALITY PHYSICS SPARKS
 ========================================================= */
 .spark {
     position: absolute; width: 6px; height: 6px;
     background-color: var(--orange-glow); border-radius: 50%; pointer-events: none;
     box-shadow: 0 0 15px var(--orange-glow), 0 0 25px var(--yellow-glow);
     animation: spark-fly 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-    z-index: 99999;
 }
 @keyframes spark-fly {
     0% { transform: translate3d(0, 0, 0) scale(1); opacity: 1; }
