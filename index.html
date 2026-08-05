@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Ensures proper scaling and prevents unwanted zooming on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Excellent Institute - Hardware Lab</title>
+    
+    <!-- High-Tech Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <!-- 3D Engine for Hardware Components -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+    
+    <!-- External Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="lab-container">
+        
+        <!-- ========================================== -->
+        <!-- 1. THE CSS ULTRAWIDE MONITOR               -->
+        <!-- ========================================== -->
+        <div class="monitor-wrapper">
+            <div class="monitor-bezel">
+                <div class="monitor-screen" id="monitor-screen">
+                    <!-- Dynamic Content Container -->
+                    <div id="screen-content" class="screen-content state-boot">
+                        <div class="system-log" id="system-log">EXCELLENTOS v1.0.9 INITIALIZING...</div>
+                    </div>
+                    <!-- Visual Effects Layers -->
+                    <div class="scanline"></div>
+                    <div id="glitch-overlay" class="glitch-overlay hidden"></div>
+                    <div id="power-led" class="power-led led-on"></div>
+                </div>
+                <div class="monitor-logo">EXCELLENT</div>
+            </div>
+            <!-- Monitor Stand -->
+            <div class="monitor-stand-neck">
+                <div class="neck-detail"></div>
+            </div>
+            <div class="monitor-stand-base"></div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 2. DATA INSPECTOR & 3D CHAMBER             -->
+        <!-- ========================================== -->
+        <div class="inspection-panel">
+            <div class="data-display">
+                <div class="select-wrapper">
+                    <select id="component-selector" class="cyber-select">
+                        <option value="CPU">Central Processing Unit</option>
+                        <option value="GPU">Graphics Processing Unit</option>
+                        <option value="RAM">Random Access Memory</option>
+                        <option value="PSU">Power Supply Unit</option>
+                        <option value="Fan">Thermal Cooling System</option>
+                        <option value="SSD">NVMe Solid State Drive</option>
+                    </select>
+                </div>
+                
+                <div class="status-indicator">
+                    <h2 id="comp-title">Central Processing Unit</h2>
+                    <span id="comp-badge" class="badge badge-active">PROCESSING</span>
+                </div>
+                <p id="comp-desc" class="typewriter-text">The 'Brain' is actively executing billions of instructions per second...</p>
+                
+                <!-- System Temperature Readout -->
+                <div class="temp-readout">
+                    <span>SYS TEMP:</span>
+                    <span id="temp-value" class="temp-normal">40°C</span>
+                </div>
+            </div>
+
+            <div class="model-chamber">
+                <!-- 3D Models will be injected here via JS -->
+                <model-viewer id="component-3d-viewer" 
+                              src="" 
+                              alt="3D Hardware Component" 
+                              auto-rotate 
+                              camera-controls 
+                              disable-zoom 
+                              shadow-intensity="1"
+                              exposure="1.2">
+                </model-viewer>
+                <!-- Holographic scanning effect -->
+                <div class="chamber-scanner"></div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 3. INTERACTIVE MOTHERBOARD                 -->
+        <!-- ========================================== -->
+        <div class="motherboard-section">
+            <h3 class="section-title">Motherboard Interface</h3>
+            
+            <div id="motherboard-grid" class="motherboard-grid">
+                <!-- SVG Traces for high-tech background -->
+                <div class="pcb-traces"></div>
+                
+                <!-- Component Plugs -->
+                <button class="cyber-btn plugged psu-btn" data-component="PSU" id="btn-PSU">
+                    <span class="icon">⚡</span>
+                    <span class="label">PSU</span>
+                </button>
+                
+                <button class="cyber-btn plugged fan-btn" data-component="Fan" id="btn-Fan">
+                    <span class="icon">❄️</span>
+                    <span class="label">FAN</span>
+                </button>
+                
+                <button class="cyber-btn plugged cpu-btn" data-component="CPU" id="btn-CPU">
+                    <span class="icon">🧠</span>
+                    <span class="label">CPU</span>
+                </button>
+                
+                <button class="cyber-btn plugged ram-btn" data-component="RAM" id="btn-RAM">
+                    <span class="icon">📟</span>
+                    <span class="label">RAM</span>
+                </button>
+                
+                <button class="cyber-btn plugged ssd-btn" data-component="SSD" id="btn-SSD">
+                    <span class="icon">💾</span>
+                    <span class="label">SSD</span>
+                </button>
+                
+                <button class="cyber-btn plugged gpu-btn" data-component="GPU" id="btn-GPU">
+                    <span class="icon">🎮</span>
+                    <span class="label">GPU</span>
+                </button>
+                
+                <!-- Dynamic Sparks Container -->
+                <div id="spark-container"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- External JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
