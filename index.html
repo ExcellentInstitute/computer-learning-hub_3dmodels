@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Excellent Institute - Bright Precision Hardware Lab</title>
+    <title>Excellent Institute - Volumetric Hardware Lab</title>
     
     <!-- High-Tech Fonts for Crisp UI -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,12 +20,12 @@
     <div class="lab-container">
         
         <!-- ========================================== -->
-        <!-- 1. SPLIT WORKSPACE: STATIC VS DYNAMIC      -->
+        <!-- 1. SPLIT WORKSPACE: STATIC 2D VS TRUE 3D   -->
         <!-- ========================================== -->
         <div class="split-workspace">
             
             <!-- LEFT SIDE: 100% STATIC, 2D, BRIGHT, CRISP -->
-            <!-- This will NEVER move or distort when zooming -->
+            <!-- This side will NEVER move or distort when zooming -->
             <div class="static-peripherals-zone">
                 
                 <div class="bright-monitor-wrapper">
@@ -80,13 +80,13 @@
 
             </div>
 
-            <!-- RIGHT SIDE: 3D ISOLATED PC TOWER -->
-            <!-- Only this specific container will scale/rotate during zoom -->
+            <!-- RIGHT SIDE: VOLUMETRIC 3D ISOLATED PC TOWER -->
+            <!-- Contains true 6-sided 3D blocks for components -->
             <div class="dynamic-tower-zone">
                 <div class="tower-3d-wrapper" id="pc-tower-container">
                     <div class="tower-3d" id="pc-tower">
                         
-                        <!-- The Strict Containment Box Faces -->
+                        <!-- The Strict Containment Box Faces (The Cabinet) -->
                         <div class="face chassis-back"></div>
                         <div class="face chassis-top"></div>
                         <div class="face chassis-bottom"></div>
@@ -98,27 +98,37 @@
                             </div>
                         </div>
                         
-                        <!-- The Internals (Strictly trapped inside the chassis faces) -->
+                        <!-- The Internals (Constructed as Volumetric Blocks inside the Cabinet) -->
                         <div class="chassis-internals">
                             
-                            <!-- Spinning Cooling System -->
+                            <!-- Volumetric Spinning Cooling System -->
                             <div class="internal-fans-front">
-                                <div class="spinning-fan"><div class="fan-hub"></div><div class="fan-blades"></div></div>
-                                <div class="spinning-fan"><div class="fan-hub"></div><div class="fan-blades"></div></div>
-                                <div class="spinning-fan"><div class="fan-hub"></div><div class="fan-blades"></div></div>
+                                <div class="vol-fan"><div class="fan-ring"></div><div class="fan-hub"></div><div class="fan-blades"></div></div>
+                                <div class="vol-fan"><div class="fan-ring"></div><div class="fan-hub"></div><div class="fan-blades"></div></div>
+                                <div class="vol-fan"><div class="fan-ring"></div><div class="fan-hub"></div><div class="fan-blades"></div></div>
                             </div>
                             <div class="internal-fan-rear" id="zone-Fan">
-                                <div class="spinning-fan"><div class="fan-hub"></div><div class="fan-blades"></div></div>
+                                <div class="vol-fan"><div class="fan-ring"></div><div class="fan-hub"></div><div class="fan-blades"></div></div>
                             </div>
 
                             <!-- Motherboard Zone -->
                             <div class="internal-mb" id="zone-MotherboardBase">
                                 <div class="mb-cpu" id="zone-CPU"></div>
-                                <div class="mb-pump" id="zone-WaterPump"><div class="pump-glow"></div></div>
                                 
+                                <!-- Volumetric Liquid Cooler Pump & Tubes -->
+                                <div class="vol-pump" id="zone-WaterPump">
+                                    <div class="pump-cylinder"></div>
+                                    <div class="pump-lcd">40°</div>
+                                    <div class="pump-tube tube-1"></div>
+                                    <div class="pump-tube tube-2"></div>
+                                </div>
+                                
+                                <!-- Volumetric RAM Sticks (6-sided blocks) -->
                                 <div class="mb-ram-bank" id="zone-RAM">
-                                    <div class="ram-stick"></div><div class="ram-stick"></div>
-                                    <div class="ram-stick"></div><div class="ram-stick"></div>
+                                    <div class="vol-ram"><div class="ram-face r-front"></div><div class="ram-face r-top"></div><div class="ram-face r-side"></div></div>
+                                    <div class="vol-ram"><div class="ram-face r-front"></div><div class="ram-face r-top"></div><div class="ram-face r-side"></div></div>
+                                    <div class="vol-ram"><div class="ram-face r-front"></div><div class="ram-face r-top"></div><div class="ram-face r-side"></div></div>
+                                    <div class="vol-ram"><div class="ram-face r-front"></div><div class="ram-face r-top"></div><div class="ram-face r-side"></div></div>
                                 </div>
                                 
                                 <div class="mb-vrm" id="zone-VRM"></div>
@@ -128,19 +138,35 @@
                                 <div class="mb-cmos" id="zone-CMOS"></div>
                             </div>
 
-                            <!-- GPU Zone -->
-                            <div class="internal-gpu" id="zone-GPU">
-                                <div class="gpu-backplate">RTX 4090</div>
-                                <div class="gpu-edge">GEFORCE</div>
+                            <!-- VOLUMETRIC Massive 3D GPU (6-sided block) -->
+                            <div class="vol-gpu" id="zone-GPU">
+                                <div class="gpu-face gpu-front">GEFORCE RTX 4090</div>
+                                <div class="gpu-face gpu-back"></div>
+                                <div class="gpu-face gpu-left"></div>
+                                <div class="gpu-face gpu-right"></div>
+                                <div class="gpu-face gpu-top"></div>
+                                <div class="gpu-face gpu-bottom">
+                                    <div class="gpu-mini-fan"></div>
+                                    <div class="gpu-mini-fan"></div>
+                                    <div class="gpu-mini-fan"></div>
+                                </div>
                             </div>
 
-                            <!-- PSU Shroud -->
-                            <div class="internal-psu" id="zone-PSU">
-                                <div class="psu-label">850W POWER</div>
+                            <!-- VOLUMETRIC PSU Block -->
+                            <div class="vol-psu" id="zone-PSU">
+                                <div class="psu-face psu-front"><span class="psu-label">850W POWER</span></div>
+                                <div class="psu-face psu-top"></div>
+                                <div class="psu-face psu-left"></div>
+                                <div class="psu-face psu-right"></div>
                                 <div id="internal-spark-emitter"></div>
                             </div>
                             
-                            <div class="internal-hdd" id="zone-HDD"></div>
+                            <!-- Volumetric HDD -->
+                            <div class="vol-hdd" id="zone-HDD">
+                                <div class="hdd-face hdd-front">2TB</div>
+                                <div class="hdd-face hdd-top"></div>
+                                <div class="hdd-face hdd-side"></div>
+                            </div>
                             
                             <!-- Invisible Target Nodes -->
                             <div class="zoom-target" id="zone-ATX24"></div>
@@ -157,7 +183,7 @@
                             <div class="zoom-target" id="zone-ODD"></div>
                         </div>
 
-                        <!-- Left Glass Panel (Rendered LAST to trap everything inside) -->
+                        <!-- Left Glass Panel (Rendered LAST to physically trap everything inside) -->
                         <div class="face chassis-glass-left" id="tower-glass">
                             <div class="glass-reflection"></div>
                         </div>
@@ -209,7 +235,6 @@
                 <p id="comp-desc" class="typewriter-text">The central processor is executing logical instructions and managing the operating system lifecycle.</p>
             </div>
 
-            <!-- Crisp white/bright container for 3D viewing -->
             <div class="model-chamber bright-chamber">
                 <model-viewer id="component-3d-viewer" 
                               src="" 
