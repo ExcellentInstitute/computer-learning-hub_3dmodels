@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Excellent Institute - Advanced 3D Hardware Lab</title>
+    <title>Excellent Institute - True 3D Hardware Lab</title>
     
     <!-- High-Tech Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,183 +22,186 @@
         <!-- ========================================== -->
         <!-- 1. FULL 3D DESK SCENE                      -->
         <!-- ========================================== -->
-        <div class="desk-scene" id="desk-scene">
-            
-            <!-- Top-Down Ambient Light Bar -->
-            <div class="desk-light-bar"></div>
-            
-            <div class="speaker-3d speaker-left">
-                <div class="speaker-face"><div class="tweeter"></div><div class="woofer"></div></div>
-            </div>
-
-            <!-- The Advanced Ultrawide Monitor -->
-            <div class="monitor-wrapper" id="hl-monitor-zone">
-                <div class="monitor-bezel">
-                    <div class="monitor-screen" id="monitor-screen">
-                        
-                        <div id="screen-bios" class="screen-layer hidden"><div class="bios-text" id="bios-text"></div></div>
-
-                        <div id="screen-boot" class="screen-layer boot-env hidden">
-                            <div class="boot-logo-wrapper">
-                                <img src="assets/logo.png" alt="Excellent Institute" id="boot-logo" class="rotating-logo" 
-                                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDBlNWZmIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4='">
-                            </div>
-                            <div class="boot-text-pulse">LOADING EXCELLENT OS...</div>
-                        </div>
-
-                        <div id="screen-desktop" class="screen-layer desktop-env hidden">
-                            <div class="wave-grid-wallpaper"></div>
-                            <div class="widget-panel">
-                                <div class="widget"><span class="wid-label">CPU LOAD</span><div class="wid-bar"><div class="wid-fill" id="wid-cpu-bar" style="width: 4%;"></div></div><span class="wid-val" id="wid-cpu-val">4%</span></div>
-                                <div class="widget"><span class="wid-label">RAM ALLOC</span><div class="wid-bar"><div class="wid-fill" id="wid-ram-bar" style="width: 18%;"></div></div><span class="wid-val" id="wid-ram-val">18%</span></div>
-                                <div class="widget"><span class="wid-label">CORE TEMP</span><span class="wid-val temp-val" id="wid-temp-val">40°C</span></div>
-                                <div class="widget"><span class="wid-label">NETWORK</span><span class="wid-val net-val" id="wid-net-val">1GBPS LINK</span></div>
-                            </div>
-                            <div class="os-watermark">EXCELLENT OS v2.0</div>
-                        </div>
-
-                        <div id="screen-error" class="screen-layer error-env hidden"><div class="error-text" id="error-text"></div></div>
-                        <div id="gpu-glitch" class="screen-layer gpu-artifact hidden"></div>
-
-                        <div class="crt-scanline"></div>
-                        <div class="glass-reflection"></div>
-                        <div id="power-led" class="power-led led-off"></div>
-                    </div>
-                    <div class="monitor-logo">EXCELLENT</div>
+        <!-- The camera-rig wraps the desk to allow cinematic panning without breaking the layout -->
+        <div id="camera-rig" class="camera-rig">
+            <div class="desk-scene" id="desk-scene">
+                
+                <div class="desk-light-bar"></div>
+                
+                <!-- Left Speaker -->
+                <div class="speaker-3d speaker-left">
+                    <div class="speaker-face"><div class="tweeter"></div><div class="woofer"></div></div>
                 </div>
-                <div class="monitor-stand-neck"><div class="neck-detail"></div></div>
-                <div class="monitor-stand-base"></div>
-            </div>
 
-            <!-- THE 3D PC TOWER (Rotatable & Interactive) -->
-            <div class="tower-3d-container" id="pc-tower-container">
-                <div class="tower-3d" id="pc-tower">
-                    
-                    <!-- Outer Chassis Faces -->
-                    <div class="face front-face">
-                        <div class="front-io">
-                            <div class="io-power-btn" id="tower-power-btn"></div>
-                            <div class="io-led" id="tower-power-led"></div>
-                            <div class="io-usb"></div>
-                            <div class="io-usb"></div>
-                            <div class="io-usb-c"></div>
-                            <div class="io-audio"></div>
-                            <div class="io-audio"></div>
-                        </div>
-                        <div class="front-grill"></div>
-                    </div>
-                    <div class="face back-face"><div class="rear-io"></div><div class="rear-psu"></div></div>
-                    <div class="face top-face">
-                        <!-- Top AIO Radiator Mount -->
-                        <div class="top-radiator-grill" id="zone-Radiator"></div>
-                    </div>
-                    <div class="face bottom-face"><div class="case-feet"></div></div>
-                    <div class="face right-face"></div>
-                    
-                    <!-- The Permanent Glass Panel (Left Face) -->
-                    <div class="face left-face glass-panel" id="tower-glass">
-                        <div class="glass-glare"></div>
-                    </div>
+                <!-- The Advanced Ultrawide Monitor -->
+                <div class="monitor-wrapper" id="hl-monitor-zone">
+                    <div class="monitor-bezel">
+                        <div class="monitor-screen" id="monitor-screen">
+                            
+                            <div id="screen-bios" class="screen-layer hidden"><div class="bios-text" id="bios-text"></div></div>
 
-                    <!-- HIGH-DETAIL Internal 3D Components -->
-                    <div class="internals-3d">
-                        
-                        <!-- SMPS / PSU (Spark Emitter exactly here) -->
-                        <div class="hw-detail hw-psu" id="zone-PSU">
-                            <div class="psu-grill"></div>
-                            <div class="psu-fan-blade"></div>
-                            <div class="psu-label">850W SMPS</div>
-                            <div id="internal-spark-emitter"></div>
+                            <div id="screen-boot" class="screen-layer boot-env hidden">
+                                <div class="boot-logo-wrapper">
+                                    <img src="assets/logo.png" alt="Excellent Institute" id="boot-logo" class="rotating-logo" 
+                                         onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDBlNWZmIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4='">
+                                </div>
+                                <div class="boot-text-pulse">LOADING EXCELLENT OS...</div>
+                            </div>
+
+                            <div id="screen-desktop" class="screen-layer desktop-env hidden">
+                                <div class="wave-grid-wallpaper"></div>
+                                <div class="widget-panel">
+                                    <div class="widget"><span class="wid-label">CPU LOAD</span><div class="wid-bar"><div class="wid-fill" id="wid-cpu-bar" style="width: 4%;"></div></div><span class="wid-val" id="wid-cpu-val">4%</span></div>
+                                    <div class="widget"><span class="wid-label">RAM ALLOC</span><div class="wid-bar"><div class="wid-fill" id="wid-ram-bar" style="width: 18%;"></div></div><span class="wid-val" id="wid-ram-val">18%</span></div>
+                                    <div class="widget"><span class="wid-label">CORE TEMP</span><span class="wid-val temp-val" id="wid-temp-val">40°C</span></div>
+                                    <div class="widget"><span class="wid-label">NETWORK</span><span class="wid-val net-val" id="wid-net-val">1GBPS LINK</span></div>
+                                </div>
+                                <div class="os-watermark">EXCELLENT OS v2.0</div>
+                            </div>
+
+                            <div id="screen-error" class="screen-layer error-env hidden"><div class="error-text" id="error-text"></div></div>
+                            <div id="gpu-glitch" class="screen-layer gpu-artifact hidden"></div>
+
+                            <div class="crt-scanline"></div>
+                            <div class="glass-reflection"></div>
+                            <div id="power-led" class="power-led led-off"></div>
                         </div>
+                        <div class="monitor-logo">EXCELLENT</div>
+                    </div>
+                    <div class="monitor-stand-neck"><div class="neck-detail"></div></div>
+                    <div class="monitor-stand-base"></div>
+                </div>
+
+                <!-- THE TRUE 3D PC TOWER (No parts sticking out!) -->
+                <div class="tower-3d-container" id="pc-tower-container">
+                    <div class="tower-3d" id="pc-tower">
                         
-                        <div class="hw-detail hw-mb" id="zone-MotherboardBase">
+                        <!-- Outer Chassis Solid Faces -->
+                        <div class="face back-face"><div class="rear-io-shield"></div></div>
+                        <div class="face right-face"></div>
+                        <div class="face top-face"><div class="top-vent"></div></div>
+                        <div class="face bottom-face"><div class="case-feet"></div></div>
+                        
+                        <!-- Front Face with I/O -->
+                        <div class="face front-face" id="zone-FrontPanel">
+                            <div class="front-glass-panel"></div>
+                            <div class="front-io-panel">
+                                <div class="io-power-btn" id="tower-power-btn"></div>
+                                <div class="io-led" id="tower-power-led"></div>
+                                <div class="io-usb"></div>
+                                <div class="io-usb"></div>
+                                <div class="io-audio"></div>
+                            </div>
+                        </div>
+
+                        <!-- STRICTLY BOUNDED INTERNAL 3D COMPONENTS -->
+                        <div class="internals-3d">
                             
-                            <!-- CPU -->
-                            <div class="hw-detail hw-cpu" id="zone-CPU"><div class="cpu-ihs">Ryzen</div></div>
-                            
-                            <!-- AIO Liquid Cooler Pump (Sits on CPU) -->
-                            <div class="hw-detail hw-pump" id="zone-WaterPump">
-                                <div class="pump-screen"></div>
-                                <div class="pump-tubes"></div>
+                            <!-- 3 Front Intake RGB Fans -->
+                            <div class="hw-fans-front">
+                                <div class="rgb-case-fan"></div>
+                                <div class="rgb-case-fan"></div>
+                                <div class="rgb-case-fan"></div>
                             </div>
                             
-                            <!-- RAM Sticks -->
-                            <div class="hw-detail hw-ram-slots" id="zone-RAM">
-                                <div class="ram-stick"><div class="ram-rgb"></div><div class="ram-contacts"></div></div>
-                                <div class="ram-stick"><div class="ram-rgb"></div><div class="ram-contacts"></div></div>
+                            <!-- Rear Exhaust Fan -->
+                            <div class="hw-fan-rear" id="zone-Fan"><div class="rgb-case-fan"></div></div>
+                            
+                            <!-- AIO Top Radiator -->
+                            <div class="hw-radiator"></div>
+
+                            <!-- Motherboard Tray & Components -->
+                            <div class="hw-mb" id="zone-MotherboardBase">
+                                <!-- CPU & Water Block -->
+                                <div class="hw-cpu" id="zone-CPU"></div>
+                                <div class="hw-pump" id="zone-WaterPump"><div class="pump-ring"></div></div>
+                                
+                                <!-- RAM (Sticks built in CSS) -->
+                                <div class="hw-ram-slots" id="zone-RAM">
+                                    <div class="ram-stick"></div>
+                                    <div class="ram-stick"></div>
+                                    <div class="ram-stick"></div>
+                                    <div class="ram-stick"></div>
+                                </div>
+                                
+                                <div class="hw-vrm" id="zone-VRM"></div>
+                                <div class="hw-ssd" id="zone-SSD"></div>
+                                <div class="hw-m2-heatsink" id="zone-M2Heatsink"></div>
+                                <div class="hw-chipset" id="zone-Chipset"><div class="chipset-glow"></div></div>
+                                <div class="hw-cmos" id="zone-CMOS"></div>
                             </div>
                             
-                            <!-- VRM -->
-                            <div class="hw-detail hw-vrm" id="zone-VRM"><div class="vrm-fins"></div></div>
-                            
-                            <!-- Triple-Fan GPU -->
-                            <div class="hw-detail hw-gpu" id="zone-GPU">
-                                <div class="gpu-backplate">RTX 4090</div>
-                                <div class="gpu-side-rgb">GEFORCE</div>
-                                <div class="gpu-fans">
-                                    <div class="g-fan"></div><div class="g-fan"></div><div class="g-fan"></div>
+                            <!-- Massive 3D GPU -->
+                            <div class="hw-gpu" id="zone-GPU">
+                                <div class="gpu-backplate">GEFORCE RTX 4090</div>
+                                <div class="gpu-side-panel">
+                                    <div class="gpu-rgb-text">EXCELLENT</div>
                                 </div>
                             </div>
+
+                            <!-- PSU Basement Shroud (Sparks emit from here) -->
+                            <div class="hw-psu-shroud" id="zone-PSU">
+                                <div class="psu-cutout"><span class="psu-wattage">850W SMPS</span></div>
+                                <div id="internal-spark-emitter"></div>
+                            </div>
+
+                            <div class="hw-hdd-cage" id="zone-HDD">
+                                <div class="hdd-drive"></div>
+                                <div class="hdd-drive"></div>
+                            </div>
                             
-                            <!-- M.2 SSD -->
-                            <div class="hw-detail hw-ssd" id="zone-SSD"><div class="ssd-chips"></div></div>
-                            <div class="hw-detail hw-m2-heatsink" id="zone-M2Heatsink"></div>
-                            
-                            <!-- Chipset & Batteries -->
-                            <div class="hw-detail hw-chipset" id="zone-Chipset"><div class="chipset-logo"></div></div>
-                            <div class="hw-detail hw-cmos" id="zone-CMOS"><div class="battery-shine"></div></div>
-                            <div class="hw-detail hw-tpm" id="zone-TPM"></div>
+                            <!-- Invisible Target Nodes for specific zoom areas -->
+                            <div class="zoom-target" id="zone-ATX24"></div>
+                            <div class="zoom-target" id="zone-EPS8"></div>
+                            <div class="zoom-target" id="zone-SATA"></div>
+                            <div class="zoom-target" id="zone-TPM"></div>
+                            <div class="zoom-target" id="zone-NIC"></div>
+                            <div class="zoom-target" id="zone-WiFi"></div>
+                            <div class="zoom-target" id="zone-SoundCard"></div>
+                            <div class="zoom-target" id="zone-CaptureCard"></div>
+                            <div class="zoom-target" id="zone-Riser"></div>
+                            <div class="zoom-target" id="zone-RGB"></div>
+                            <div class="zoom-target" id="zone-USB3"></div>
+                            <div class="zoom-target" id="zone-ODD"></div>
                         </div>
-                        
-                        <!-- Secondary Storage & Cooling -->
-                        <div class="hw-detail hw-hdd" id="zone-HDD"><div class="hdd-platter"></div><div class="hdd-arm"></div></div>
-                        <div class="hw-detail hw-rgb-fan" id="zone-Fan">
-                            <div class="rgb-ring"></div><div class="fan-blades"></div>
+
+                        <!-- Edge-to-Edge Clear Glass Panel (Left Face) -->
+                        <div class="face left-face glass-panel" id="tower-glass">
+                            <div class="glass-glare"></div>
+                            <div class="glass-screws top-left"></div>
+                            <div class="glass-screws top-right"></div>
+                            <div class="glass-screws bottom-left"></div>
+                            <div class="glass-screws bottom-right"></div>
                         </div>
-                        
-                        <!-- Connectors & Cables (Abstract Zones for glowing) -->
-                        <div class="zoom-target" id="zone-ODD" style="transform: translate3d(80px, -150px, 40px);"></div>
-                        <div class="zoom-target" id="zone-FrontPanel" style="transform: translate3d(100px, -180px, 40px);"></div>
-                        <div class="zoom-target" id="zone-USB3" style="transform: translate3d(100px, -170px, 40px);"></div>
-                        <div class="zoom-target" id="zone-ATX24" style="transform: translate3d(20px, -30px, 10px);"></div>
-                        <div class="zoom-target" id="zone-EPS8" style="transform: translate3d(-40px, -150px, 10px);"></div>
-                        <div class="zoom-target" id="zone-SATA" style="transform: translate3d(60px, 50px, 10px);"></div>
-                        <div class="zoom-target" id="zone-NIC" style="transform: translate3d(-30px, 70px, 30px);"></div>
-                        <div class="zoom-target" id="zone-WiFi" style="transform: translate3d(-30px, 90px, 30px);"></div>
-                        <div class="zoom-target" id="zone-SoundCard" style="transform: translate3d(-30px, 110px, 30px);"></div>
-                        <div class="zoom-target" id="zone-CaptureCard" style="transform: translate3d(-30px, 130px, 30px);"></div>
-                        <div class="zoom-target" id="zone-Riser" style="transform: translate3d(0px, 40px, 50px);"></div>
-                        <div class="zoom-target" id="zone-RGB" style="transform: translate3d(0px, -190px, 30px);"></div>
                     </div>
                 </div>
-                
-                <!-- Rotation UI Hint -->
-                <div class="drag-hint">DRAG TO ROTATE</div>
-            </div>
 
-            <div class="speaker-3d speaker-right">
-                <div class="speaker-face"><div class="tweeter"></div><div class="woofer"></div></div>
-            </div>
-
-            <!-- Illuminated 3D Desk Peripherals -->
-            <div class="desk-surface-3d">
-                <div class="keyboard-3d">
-                    <div class="kb-base"></div>
-                    <div class="kb-keys">
-                        <div class="kb-row"><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div></div>
-                        <div class="kb-row"><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div></div>
-                        <div class="kb-row"><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key spacebar"></div><div class="key"></div><div class="key"></div></div>
-                    </div>
-                    <div class="kb-rgb-glow"></div>
+                <!-- Right Speaker -->
+                <div class="speaker-3d speaker-right">
+                    <div class="speaker-face"><div class="tweeter"></div><div class="woofer"></div></div>
                 </div>
-                
-                <div class="mouse-3d">
-                    <div class="mouse-body">
-                        <div class="mouse-click-l"></div>
-                        <div class="mouse-scroll-wheel"></div>
-                        <div class="mouse-click-r"></div>
+
+                <!-- Fully Visible 3D Desk Peripherals -->
+                <div class="desk-surface-3d">
+                    <div class="desk-mat">
+                        <div class="keyboard-3d">
+                            <div class="kb-keys">
+                                <div class="kb-row"><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div></div>
+                                <div class="kb-row"><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div></div>
+                                <div class="kb-row"><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key spacebar"></div><div class="key"></div><div class="key"></div></div>
+                            </div>
+                            <div class="kb-rgb-glow"></div>
+                        </div>
+                        
+                        <div class="mouse-3d">
+                            <div class="mouse-body">
+                                <div class="mouse-click-l"></div>
+                                <div class="mouse-scroll-wheel"></div>
+                                <div class="mouse-click-r"></div>
+                            </div>
+                            <div class="mouse-rgb-glow"></div>
+                        </div>
                     </div>
-                    <div class="mouse-rgb-glow"></div>
                 </div>
             </div>
         </div>
