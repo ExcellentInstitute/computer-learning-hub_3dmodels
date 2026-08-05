@@ -19,7 +19,7 @@ const plugStates = {
 
 const powerComponents = ['PSU', 'ATX24', 'EPS8', 'CMOS'];
 
-// Perfected 3D Viewing Angles for the Isolated Tower
+// Perfected 3D Viewing Angles for the Volumetric Tower
 const componentViewingAngles = {
     'FrontPanel': 0, 'USB3': 0, 'ODD': 0,
     'PSU': -75, 'CPU': -75, 'RAM': -75, 'GPU': -75, 'WaterPump': -75,
@@ -52,7 +52,7 @@ const UI = {
     desc: document.getElementById('comp-desc'),
     viewer3D: document.getElementById('component-3d-viewer'),
     
-    // Isolated 3D Tower Elements
+    // Isolated Volumetric 3D Tower Elements
     towerContainer: document.getElementById('pc-tower-container'),
     tower3D: document.getElementById('pc-tower'),
     sparkContainer: document.getElementById('global-spark-container'),
@@ -205,11 +205,11 @@ function setupEventListeners() {
 function triggerCinematicZoom(key) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // Scale only the specific isolated wrapper containing the tower
+    // Scale ONLY the isolated right-side 3D tower wrapper
     UI.towerContainer.style.transition = 'transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1)';
-    UI.towerContainer.style.transform = 'scale(1.3) translateX(-30px)';
+    UI.towerContainer.style.transform = 'scale(1.4) translateX(-20px)';
     
-    // Rotate the tower dynamically
+    // Rotate the tower dynamically to face the part
     const targetAngle = componentViewingAngles[key] !== undefined ? componentViewingAngles[key] : -35;
     currentRotation = targetAngle;
     UI.tower3D.style.transform = `rotateY(${currentRotation}deg)`;
@@ -222,7 +222,7 @@ function triggerCinematicZoom(key) {
         // Graceful rotation reset
         currentRotation = -35;
         UI.tower3D.style.transform = `rotateY(${currentRotation}deg)`;
-    }, 5000); 
+    }, 6000); 
 }
 
 function highlightPhysicalZone(key) {
@@ -323,7 +323,7 @@ function startThermalClimb(rate) {
 }
 
 // =========================================================
-// UI & MONITOR RENDER ENGINE
+// UI & GLB RENDER ENGINE
 // =========================================================
 function updateInspector(shouldZoom) {
     if (isFetching) return;
@@ -357,6 +357,7 @@ function updateInspector(shouldZoom) {
         UI.badge.innerText = statusText;
     }
 
+    // Handles the GLB models dynamically based on selection from GitHub Repo
     if (data.model_url) {
         UI.viewer3D.setAttribute('src', data.model_url);
     } else {
@@ -370,12 +371,17 @@ function updateInspector(shouldZoom) {
     }
 }
 
+// =========================================================
+// FIXED BOOT SEQUENCE & SCREEN TRANSITIONS
+// =========================================================
 function initiateBootSequence() {
+    // If core power is missing, fail immediately
     if (!plugStates['PSU'] || !plugStates['ATX24'] || isThermalShutdown) {
         evaluateSystemState();
         return;
     }
     
+    // If CPU/Chipset is missing, fail immediately
     if (!plugStates['CPU'] || !plugStates['EPS8'] || !plugStates['Chipset']) {
         evaluateSystemState();
         return;
@@ -384,42 +390,47 @@ function initiateBootSequence() {
     isBooting = true;
     updateInspector(false);
     
+    // Hide all screens
     UI.screenBios.classList.add('hidden');
     UI.screenDesktop.classList.add('hidden');
     UI.screenError.classList.add('hidden');
-    UI.gpuGlitch.classList.add('hidden');
+    if (UI.gpuGlitch) UI.gpuGlitch.classList.add('hidden');
     
+    // Show Boot Screen
     UI.screenBoot.classList.remove('hidden');
-    
     UI.powerLed.className = 'power-led led-on';
-    if(plugStates['FrontPanel']) UI.towerPowerLed.style.borderColor = 'var(--cyan-glow)';
+    if (UI.towerPowerLed && plugStates['FrontPanel']) UI.towerPowerLed.style.borderColor = 'var(--cyan-glow)';
 
+    // Wait 3 seconds, then evaluate the system state to transition to Desktop or BIOS
     clearTimeout(bootTimeout);
     bootTimeout = setTimeout(() => {
         isBooting = false;
+        evaluateSystemState(); // This will swap out the Boot screen for the real result
         updateInspector(false);
-        evaluateSystemState();
     }, 3000); 
 }
 
 function evaluateSystemState() {
     if (isBooting) return; 
 
+    // Hide everything to start fresh
     UI.screenBios.classList.add('hidden');
     UI.screenBoot.classList.add('hidden');
     UI.screenDesktop.classList.add('hidden');
     UI.screenError.classList.add('hidden');
-    UI.gpuGlitch.classList.add('hidden');
+    if (UI.gpuGlitch) UI.gpuGlitch.classList.add('hidden');
     
     if (UI.towerPowerLed) UI.towerPowerLed.style.borderColor = '#334155';
 
+    // 1. NO POWER
     if (!plugStates['PSU'] || !plugStates['ATX24']) {
         UI.powerLed.className = 'power-led led-off';
         return; 
     }
     
-    if(plugStates['FrontPanel'] && UI.towerPowerLed) UI.towerPowerLed.style.borderColor = 'var(--cyan-glow)';
+    if (plugStates['FrontPanel'] && UI.towerPowerLed) UI.towerPowerLed.style.borderColor = 'var(--cyan-glow)';
 
+    // 2. NO GPU (No Display Signal)
     if (!plugStates['GPU'] || !plugStates['Riser']) {
         UI.powerLed.className = 'power-led led-error';
         UI.screenError.classList.remove('hidden');
@@ -429,6 +440,7 @@ function evaluateSystemState() {
         return;
     }
 
+    // 3. OVERHEATING
     if (isThermalShutdown) {
         UI.powerLed.className = 'power-led led-error';
         if (UI.towerPowerLed) UI.towerPowerLed.style.borderColor = 'var(--red-glow)';
@@ -439,6 +451,7 @@ function evaluateSystemState() {
         return;
     }
 
+    // 4. MISSING RAM
     if (!plugStates['RAM']) {
         UI.powerLed.className = 'power-led led-on';
         UI.screenError.classList.remove('hidden');
@@ -448,6 +461,7 @@ function evaluateSystemState() {
         return;
     }
 
+    // 5. MISSING CPU/BOARD POWER
     if (!plugStates['CPU'] || !plugStates['EPS8'] || !plugStates['Chipset']) {
         UI.powerLed.className = 'power-led led-on';
         UI.screenError.classList.remove('hidden');
@@ -457,6 +471,7 @@ function evaluateSystemState() {
         return;
     }
 
+    // 6. MISSING STORAGE (BIOS)
     if (!plugStates['SSD']) {
         UI.powerLed.className = 'power-led led-on';
         UI.screenBios.classList.remove('hidden');
@@ -464,6 +479,7 @@ function evaluateSystemState() {
         return;
     }
 
+    // 7. MISSING TPM (BIOS)
     if (!plugStates['TPM']) {
         UI.powerLed.className = 'power-led led-on';
         UI.screenBios.classList.remove('hidden');
@@ -471,6 +487,7 @@ function evaluateSystemState() {
         return;
     }
 
+    // 8. MISSING CMOS (BIOS)
     if (!plugStates['CMOS']) {
         UI.powerLed.className = 'power-led led-on';
         UI.screenBios.classList.remove('hidden');
@@ -478,11 +495,17 @@ function evaluateSystemState() {
         return;
     }
 
+    // 9. PERFECT BOOT -> SHOW DESKTOP
     UI.powerLed.className = 'power-led led-on';
     UI.screenDesktop.classList.remove('hidden');
-    if (!plugStates['VRM']) UI.gpuGlitch.classList.remove('hidden'); 
+    
+    // Aesthetic Glitch if VRM missing but still boots
+    if (!plugStates['VRM'] && UI.gpuGlitch) {
+        UI.gpuGlitch.classList.remove('hidden'); 
+    }
 }
 
+// Background loop to animate desktop widgets
 function startDesktopLoop() {
     desktopLoop = setInterval(() => {
         if (!plugStates['PSU'] || isThermalShutdown || !plugStates['CPU'] || !plugStates['RAM'] || !plugStates['SSD']) return;
