@@ -2,6 +2,7 @@
 // STATE & CONFIGURATION
 // =========================================================
 const FIREBASE_URL = 'https://firebasestorage.googleapis.com/v0/b/excellent-institute-vault.firebasestorage.app/o/vault%2Flab_data_3d.json?alt=media&token=b44afe29-a3a3-4911-a835-5e98eeaa8aec';
+const REPO_URL = 'https://excellentinstitute.github.io/computer-learning-hub_3dmodels/';
 
 let dbData = {};
 let selectedComponent = 'CPU';
@@ -16,36 +17,16 @@ const plugStates = {
     'RGB': true, 'WaterPump': true, 'M2Heatsink': true, 'FrontPanel': true, 'USB3': true
 };
 
-// Power components that trigger explosive sparks when disconnected
 const powerComponents = ['PSU', 'ATX24', 'EPS8', 'CMOS'];
 
 // Optimal Viewing Angles for the 3D Tower based on component location
 const componentViewingAngles = {
-    'FrontPanel': 0,     // Front Face
-    'USB3': 0,           // Front Face
-    'ODD': 0,            // Front Face
-    'PSU': -75,          // Look through the glass
-    'CPU': -75,
-    'RAM': -75,
-    'GPU': -75,
-    'WaterPump': -75,
-    'Fan': -75,
-    'SSD': -75,
-    'HDD': -75,
-    'Chipset': -75,
-    'VRM': -75,
-    'CMOS': -75,
-    'TPM': -75,
-    'ATX24': -75,
-    'EPS8': -75,
-    'SATA': -75,
-    'NIC': -75,
-    'WiFi': -75,
-    'SoundCard': -75,
-    'CaptureCard': -75,
-    'Riser': -75,
-    'RGB': -75,
-    'M2Heatsink': -75
+    'FrontPanel': 0, 'USB3': 0, 'ODD': 0,
+    'PSU': -75, 'CPU': -75, 'RAM': -75, 'GPU': -75, 'WaterPump': -75,
+    'Fan': -75, 'SSD': -75, 'HDD': -75, 'Chipset': -75, 'VRM': -75,
+    'CMOS': -75, 'TPM': -75, 'ATX24': -75, 'EPS8': -75, 'SATA': -75,
+    'NIC': -75, 'WiFi': -75, 'SoundCard': -75, 'CaptureCard': -75,
+    'Riser': -75, 'RGB': -75, 'M2Heatsink': -75
 };
 
 // System & Animation Variables
@@ -57,7 +38,6 @@ let desktopLoop = null;
 let bootTimeout = null;
 let zoomTimeout = null;
 
-// Tower Rotation State
 let isDraggingTower = false;
 let startX = 0;
 let currentRotation = -35; 
@@ -113,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // =========================================================
-// DATA FETCHING & FALLBACK ENGINE
+// DATA FETCHING & PRE-CONFIGURED GLB URLS
 // =========================================================
 async function fetchHardwareData() {
     try {
@@ -135,31 +115,31 @@ async function fetchHardwareData() {
 
 function generateAdvancedFallback() {
     return {
-        'PSU': { title: '850W Power Supply', statusOn: 'DELIVERING', statusOff: 'NO POWER', descOn: 'Converting AC to DC voltage for the system.', descOff: 'Critical: System lost all power. Blackout.', model_url: '' },
-        'CPU': { title: 'Central Processing Unit', statusOn: 'EXECUTING', statusOff: 'SOCKET EMPTY', descOn: 'Handling OS instructions and IPC routing.', descOff: 'Fatal Error: System freezes before POST.', model_url: '' },
-        'RAM': { title: 'DDR5 Memory', statusOn: 'ALLOCATED', statusOff: 'NO MEMORY', descOn: 'Providing volatile storage for the OS.', descOff: 'Fatal Error: Memory Management BSOD.', model_url: '' },
-        'GPU': { title: 'PCIe Graphics Card', statusOn: 'RENDERING', statusOff: 'NO SIGNAL', descOn: 'Pushing high-framerate pixel data.', descOff: 'Display Error: Monitor receives no video signal.', model_url: '' },
-        'Fan': { title: 'RGB Cooling Fan', statusOn: '1800 RPM', statusOff: 'STOPPED', descOn: 'Exhausting ambient heat from the chassis.', descOff: 'Warning: Airflow reduced. Ambient temp rising.', model_url: '' },
-        'SSD': { title: 'NVMe M.2 Drive', statusOn: 'MOUNTED (C:\\)', statusOff: 'UNMOUNTED', descOn: 'Hosting the primary bootloader and OS.', descOff: 'Boot Error: Boot Device Not Found.', model_url: '' },
-        'HDD': { title: 'Mechanical Hard Drive', statusOn: 'MOUNTED (D:\\)', statusOff: 'DISCONNECTED', descOn: 'Secondary mass storage archive.', descOff: 'Degraded: Secondary storage paths broken.', model_url: '' },
-        'ODD': { title: 'Optical Disk Drive', statusOn: 'READY', statusOff: 'OFFLINE', descOn: 'Reading legacy CD/DVD media.', descOff: 'Non-critical: Disc media unavailable.', model_url: '' },
-        'Chipset': { title: 'Motherboard Chipset', statusOn: 'ROUTING', statusOff: 'FAILED', descOn: 'Managing data flow between CPU and peripherals.', descOff: 'Fatal: I/O communication severed.', model_url: '' },
-        'VRM': { title: 'VRM Heatsink', statusOn: 'STABLE', statusOff: 'OVERHEATING', descOn: 'Cooling the voltage regulator modules.', descOff: 'Warning: Power delivery unstable. CPU throttling.', model_url: '' },
-        'CMOS': { title: 'CMOS Battery', statusOn: '3.3V', statusOff: 'DEAD', descOn: 'Powering volatile BIOS memory.', descOff: 'BIOS Error: CMOS Checksum invalid. Time reset.', model_url: '' },
-        'TPM': { title: 'Security Module (TPM 2.0)', statusOn: 'SECURE', statusOff: 'MISSING', descOn: 'Providing hardware-level cryptographic keys.', descOff: 'OS Error: ExcellentOS requires TPM 2.0 to boot.', model_url: '' },
-        'ATX24': { title: '24-pin Main Cable', statusOn: 'POWERED', statusOff: 'UNPLUGGED', descOn: 'Delivering primary 12V/5V/3.3V to the board.', descOff: 'Critical: Motherboard has no power.', model_url: '' },
-        'EPS8': { title: '8-pin CPU Power', statusOn: 'DELIVERING', statusOff: 'UNPLUGGED', descOn: 'Delivering dedicated 12V power to the CPU.', descOff: 'Fatal: CPU receives no power. System halt.', model_url: '' },
-        'SATA': { title: 'SATA Data Cable', statusOn: 'LINKED', statusOff: 'UNPLUGGED', descOn: 'Connecting the HDD to the motherboard.', descOff: 'Degraded: HDD communication lost.', model_url: '' },
-        'NIC': { title: 'Network Card', statusOn: '1Gbps LINK', statusOff: 'OFFLINE', descOn: 'Handling wired TCP/IP packet routing.', descOff: 'Network: Wired LAN disconnected.', model_url: '' },
-        'WiFi': { title: 'Wi-Fi/BT Module', statusOn: 'BROADCASTING', statusOff: 'DISABLED', descOn: 'Managing wireless networks and Bluetooth.', descOff: 'Network: Wireless connectivity lost.', model_url: '' },
-        'SoundCard': { title: 'Dedicated Sound Card', statusOn: 'PROCESSING AUDIO', statusOff: 'SILENT', descOn: 'Rendering high-fidelity DAC audio.', descOff: 'Audio: System sound disabled.', model_url: '' },
-        'CaptureCard': { title: 'Video Capture Card', statusOn: 'STANDBY', statusOff: 'UNPLUGGED', descOn: 'Handling HDMI passthrough recording.', descOff: 'Non-critical: Recording unavailable.', model_url: '' },
-        'Riser': { title: 'PCIe Riser Cable', statusOn: 'LINKED (x16)', statusOff: 'SEVERED', descOn: 'Extending the GPU PCIe connection.', descOff: 'Display Error: GPU disconnected from bus. No signal.', model_url: '' },
-        'RGB': { title: 'RGB Controller', statusOn: 'SYNCED', statusOff: 'DARK', descOn: 'Managing ARGB lighting profiles.', descOff: 'Aesthetic: System lights disabled.', model_url: '' },
-        'WaterPump': { title: 'AIO Liquid Cooler', statusOn: 'PUMPING', statusOff: 'STOPPED', descOn: 'Circulating liquid coolant over the CPU.', descOff: 'Warning: Liquid flow stopped. Extreme thermal risk.', model_url: '' },
-        'M2Heatsink': { title: 'SSD Heatsink', statusOn: 'DISSIPATING', statusOff: 'REMOVED', descOn: 'Preventing NVMe thermal throttling.', descOff: 'Warning: SSD running hot, speeds reduced.', model_url: '' },
-        'FrontPanel': { title: 'Front Panel I/O', statusOn: 'ACTIVE', statusOff: 'DISCONNECTED', descOn: 'Connecting power button and front USBs.', descOff: 'Non-critical: Case buttons disabled.', model_url: '' },
-        'USB3': { title: 'USB 3.0 Header', statusOn: 'LINKED', statusOff: 'UNPLUGGED', descOn: 'Enabling high-speed external I/O.', descOff: 'Non-critical: Front USB ports dead.', model_url: '' }
+        'PSU': { title: '850W Power Supply', statusOn: 'DELIVERING', statusOff: 'NO POWER', descOn: 'Converting AC to DC voltage for the system.', descOff: 'Critical: System lost all power. Blackout.', model_url: `${REPO_URL}psu.glb` },
+        'CPU': { title: 'Central Processing Unit', statusOn: 'EXECUTING', statusOff: 'SOCKET EMPTY', descOn: 'Handling OS instructions and IPC routing.', descOff: 'Fatal Error: System freezes before POST.', model_url: `${REPO_URL}cpu.glb` },
+        'RAM': { title: 'DDR5 Memory', statusOn: 'ALLOCATED', statusOff: 'NO MEMORY', descOn: 'Providing volatile storage for the OS.', descOff: 'Fatal Error: Memory Management BSOD.', model_url: `${REPO_URL}ram.glb` },
+        'GPU': { title: 'PCIe Graphics Card', statusOn: 'RENDERING', statusOff: 'NO SIGNAL', descOn: 'Pushing high-framerate pixel data.', descOff: 'Display Error: Monitor receives no video signal.', model_url: `${REPO_URL}gpu.glb` },
+        'Fan': { title: 'RGB Cooling Fan', statusOn: '1800 RPM', statusOff: 'STOPPED', descOn: 'Exhausting ambient heat from the chassis.', descOff: 'Warning: Airflow reduced. Ambient temp rising.', model_url: `${REPO_URL}fan.glb` },
+        'SSD': { title: 'NVMe M.2 Drive', statusOn: 'MOUNTED (C:\\)', statusOff: 'UNMOUNTED', descOn: 'Hosting the primary bootloader and OS.', descOff: 'Boot Error: Boot Device Not Found.', model_url: `${REPO_URL}ssd.glb` },
+        'HDD': { title: 'Mechanical Hard Drive', statusOn: 'MOUNTED (D:\\)', statusOff: 'DISCONNECTED', descOn: 'Secondary mass storage archive.', descOff: 'Degraded: Secondary storage paths broken.', model_url: `${REPO_URL}hdd.glb` },
+        'ODD': { title: 'Optical Disk Drive', statusOn: 'READY', statusOff: 'OFFLINE', descOn: 'Reading legacy CD/DVD media.', descOff: 'Non-critical: Disc media unavailable.', model_url: `${REPO_URL}odd.glb` },
+        'Chipset': { title: 'Motherboard Chipset', statusOn: 'ROUTING', statusOff: 'FAILED', descOn: 'Managing data flow between CPU and peripherals.', descOff: 'Fatal: I/O communication severed.', model_url: `${REPO_URL}chipset.glb` },
+        'VRM': { title: 'VRM Heatsink', statusOn: 'STABLE', statusOff: 'OVERHEATING', descOn: 'Cooling the voltage regulator modules.', descOff: 'Warning: Power delivery unstable. CPU throttling.', model_url: `${REPO_URL}vrm.glb` },
+        'CMOS': { title: 'CMOS Battery', statusOn: '3.3V', statusOff: 'DEAD', descOn: 'Powering volatile BIOS memory.', descOff: 'BIOS Error: CMOS Checksum invalid. Time reset.', model_url: `${REPO_URL}cmos.glb` },
+        'TPM': { title: 'Security Module (TPM 2.0)', statusOn: 'SECURE', statusOff: 'MISSING', descOn: 'Providing hardware-level cryptographic keys.', descOff: 'OS Error: ExcellentOS requires TPM 2.0 to boot.', model_url: `${REPO_URL}tpm.glb` },
+        'ATX24': { title: '24-pin Main Cable', statusOn: 'POWERED', statusOff: 'UNPLUGGED', descOn: 'Delivering primary 12V/5V/3.3V to the board.', descOff: 'Critical: Motherboard has no power.', model_url: `${REPO_URL}atx24.glb` },
+        'EPS8': { title: '8-pin CPU Power', statusOn: 'DELIVERING', statusOff: 'UNPLUGGED', descOn: 'Delivering dedicated 12V power to the CPU.', descOff: 'Fatal: CPU receives no power. System halt.', model_url: `${REPO_URL}eps8.glb` },
+        'SATA': { title: 'SATA Data Cable', statusOn: 'LINKED', statusOff: 'UNPLUGGED', descOn: 'Connecting the HDD to the motherboard.', descOff: 'Degraded: HDD communication lost.', model_url: `${REPO_URL}sata.glb` },
+        'NIC': { title: 'Network Card', statusOn: '1Gbps LINK', statusOff: 'OFFLINE', descOn: 'Handling wired TCP/IP packet routing.', descOff: 'Network: Wired LAN disconnected.', model_url: `${REPO_URL}nic.glb` },
+        'WiFi': { title: 'Wi-Fi/BT Module', statusOn: 'BROADCASTING', statusOff: 'DISABLED', descOn: 'Managing wireless networks and Bluetooth.', descOff: 'Network: Wireless connectivity lost.', model_url: `${REPO_URL}wifi.glb` },
+        'SoundCard': { title: 'Dedicated Sound Card', statusOn: 'PROCESSING AUDIO', statusOff: 'SILENT', descOn: 'Rendering high-fidelity DAC audio.', descOff: 'Audio: System sound disabled.', model_url: `${REPO_URL}soundcard.glb` },
+        'CaptureCard': { title: 'Video Capture Card', statusOn: 'STANDBY', statusOff: 'UNPLUGGED', descOn: 'Handling HDMI passthrough recording.', descOff: 'Non-critical: Recording unavailable.', model_url: `${REPO_URL}capturecard.glb` },
+        'Riser': { title: 'PCIe Riser Cable', statusOn: 'LINKED (x16)', statusOff: 'SEVERED', descOn: 'Extending the GPU PCIe connection.', descOff: 'Display Error: GPU disconnected from bus. No signal.', model_url: `${REPO_URL}riser.glb` },
+        'RGB': { title: 'RGB Controller', statusOn: 'SYNCED', statusOff: 'DARK', descOn: 'Managing ARGB lighting profiles.', descOff: 'Aesthetic: System lights disabled.', model_url: `${REPO_URL}rgb.glb` },
+        'WaterPump': { title: 'AIO Liquid Cooler', statusOn: 'PUMPING', statusOff: 'STOPPED', descOn: 'Circulating liquid coolant over the CPU.', descOff: 'Warning: Liquid flow stopped. Extreme thermal risk.', model_url: `${REPO_URL}waterpump.glb` },
+        'M2Heatsink': { title: 'SSD Heatsink', statusOn: 'DISSIPATING', statusOff: 'REMOVED', descOn: 'Preventing NVMe thermal throttling.', descOff: 'Warning: SSD running hot, speeds reduced.', model_url: `${REPO_URL}m2heatsink.glb` },
+        'FrontPanel': { title: 'Front Panel I/O', statusOn: 'ACTIVE', statusOff: 'DISCONNECTED', descOn: 'Connecting power button and front USBs.', descOff: 'Non-critical: Case buttons disabled.', model_url: `${REPO_URL}frontpanel.glb` },
+        'USB3': { title: 'USB 3.0 Header', statusOn: 'LINKED', statusOff: 'UNPLUGGED', descOn: 'Enabling high-speed external I/O.', descOff: 'Non-critical: Front USB ports dead.', model_url: `${REPO_URL}usb3.glb` }
     };
 }
 
@@ -211,7 +191,6 @@ function setupEventListeners() {
     buttons.forEach(btn => {
         btn.addEventListener('click', () => {
             const compKey = btn.getAttribute('data-component');
-            
             selectedComponent = compKey;
             UI.selector.value = compKey;
             
@@ -227,10 +206,10 @@ function setupEventListeners() {
 function triggerCinematicZoom(key) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // Move the physical camera in Z-Space via the wrapper
+    // Move the physical camera rig in Z-Space (No Pixelation!)
     UI.cameraRig.classList.add('cinematic-zoom-tower');
     
-    // Dynamically rotate the tower so the component faces the user
+    // Dynamically rotate the tower to the perfect viewing angle
     const targetAngle = componentViewingAngles[key] !== undefined ? componentViewingAngles[key] : -35;
     currentRotation = targetAngle;
     UI.tower3D.style.transform = `rotateY(${currentRotation}deg)`;
@@ -240,10 +219,10 @@ function triggerCinematicZoom(key) {
         UI.cameraRig.classList.remove('cinematic-zoom-tower');
         document.querySelectorAll('.hw-mb, .hw-gpu, .hw-psu-shroud, .hw-fans-front, .hw-fan-rear, .hw-hdd-cage, .hw-cpu, .hw-pump, .hw-ram-slots, .hw-vrm, .hw-ssd, .hw-m2-heatsink, .hw-chipset, .hw-cmos, .zoom-target').forEach(z => z.classList.remove('xray-highlight'));
         
-        // Reset rotation gracefully to a nice isometric view
+        // Reset rotation gracefully
         currentRotation = -35;
         UI.tower3D.style.transform = `rotateY(${currentRotation}deg)`;
-    }, 6000); // Hold camera for 6 seconds
+    }, 6000); 
 }
 
 function highlightPhysicalZone(key) {
@@ -378,6 +357,7 @@ function updateInspector(shouldZoom) {
         UI.badge.innerText = statusText;
     }
 
+    // Handles the GLB models dynamically based on selection
     if (data.model_url) {
         UI.viewer3D.setAttribute('src', data.model_url);
     } else {
@@ -431,14 +411,14 @@ function evaluateSystemState() {
     UI.screenDesktop.classList.add('hidden');
     UI.screenError.classList.add('hidden');
     UI.gpuGlitch.classList.add('hidden');
-    UI.towerPowerLed.style.backgroundColor = 'transparent';
+    if (UI.towerPowerLed) UI.towerPowerLed.style.backgroundColor = 'transparent';
 
     if (!plugStates['PSU'] || !plugStates['ATX24']) {
         UI.powerLed.className = 'power-led led-off';
         return; 
     }
     
-    if(plugStates['FrontPanel']) UI.towerPowerLed.style.backgroundColor = 'var(--cyan-glow)';
+    if(plugStates['FrontPanel'] && UI.towerPowerLed) UI.towerPowerLed.style.backgroundColor = 'var(--cyan-glow)';
 
     if (!plugStates['GPU'] || !plugStates['Riser']) {
         UI.powerLed.className = 'power-led led-error';
@@ -452,7 +432,7 @@ function evaluateSystemState() {
 
     if (isThermalShutdown) {
         UI.powerLed.className = 'power-led led-error';
-        UI.towerPowerLed.style.backgroundColor = 'var(--red-glow)';
+        if (UI.towerPowerLed) UI.towerPowerLed.style.backgroundColor = 'var(--red-glow)';
         UI.screenError.classList.remove('hidden');
         UI.screenError.style.background = 'radial-gradient(circle at center, rgba(255, 42, 95, 0.4), #000)';
         UI.errorText.style.color = 'var(--red-glow)';
