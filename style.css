@@ -8,7 +8,7 @@
     --red-glow: #ff2a5f;
     --green-glow: #00e676;
     --yellow-glow: #ffd600;
-    --purple-glow: #b000ff;
+    --orange-glow: #ff9100;
     --text-main: #ffffff;
     --text-dim: #8b92a5;
     --font-header: 'Orbitron', sans-serif;
@@ -41,39 +41,80 @@ body {
     padding: 15px;
     display: flex;
     flex-direction: column;
-    gap: 25px;
+    gap: 30px;
 }
 
 /* =========================================================
-   1. ADVANCED ULTRAWIDE MONITOR
+   1. HIGH-TECH DESK ENVIRONMENT
 ========================================================= */
-.monitor-wrapper {
+.desk-environment {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 20px;
+    padding: 20px 10px;
+    border-bottom: 8px solid #111; /* Desk Edge */
+    background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.5));
+    position: relative;
+    perspective: 1200px;
+}
+
+/* Studio Speakers */
+.speaker {
+    width: 80px;
+    height: 200px;
+    background: linear-gradient(145deg, #1f2233, #0a0c14);
+    border-radius: 8px;
+    border: 1px solid #333;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
-    margin-top: 10px;
+    justify-content: space-evenly;
+    box-shadow: 10px 10px 20px rgba(0,0,0,0.8), inset 2px 2px 5px rgba(255,255,255,0.05);
+    z-index: 5;
+}
+
+.speaker-tweeter {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: radial-gradient(circle at top left, #333, #000);
+    border: 2px solid #222;
+    box-shadow: inset 0 0 10px #000;
+}
+
+.speaker-woofer {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: radial-gradient(circle at top left, #444, #050505);
+    border: 3px solid #111;
+    box-shadow: inset 0 0 15px #000, 0 5px 10px rgba(0,0,0,0.5);
+}
+
+@media (max-width: 900px) {
+    .speaker { display: none; } /* Hide speakers on small screens to save space */
+}
+
+/* =========================================================
+   ULTRAWIDE MONITOR (Nested in Desk)
+========================================================= */
+.monitor-wrapper {
+    flex: 1 1 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 800px;
+    z-index: 10;
 }
 
 .monitor-bezel {
     width: 100%;
-    aspect-ratio: 21 / 9; /* True Ultrawide */
+    aspect-ratio: 21 / 9;
     background: linear-gradient(145deg, #1f2233, #0a0c14);
-    border-radius: 16px;
+    border-radius: 12px;
     padding: 12px 12px 30px 12px;
-    box-shadow: 
-        0 20px 50px rgba(0,0,0,0.8),
-        inset 0 1px 2px rgba(255,255,255,0.1),
-        0 0 30px rgba(0, 229, 255, 0.05);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 1px 2px rgba(255,255,255,0.1), 0 0 30px rgba(0, 229, 255, 0.05);
     position: relative;
-    z-index: 10;
-}
-
-@media (max-width: 768px) {
-    .monitor-bezel {
-        aspect-ratio: 16 / 10; 
-        padding: 8px 8px 25px 8px;
-    }
 }
 
 .monitor-screen {
@@ -91,166 +132,56 @@ body {
     bottom: 8px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 11px;
+    font-size: 10px;
     color: #666;
     letter-spacing: 3px;
     font-weight: 900;
 }
 
-/* Stand */
 .monitor-stand-neck {
-    width: 80px;
-    height: 50px;
+    width: 60px; height: 40px;
     background: linear-gradient(to bottom, #0a0c14, #1f2233);
-    border-left: 2px solid #222;
-    border-right: 2px solid #222;
+    border-left: 2px solid #222; border-right: 2px solid #222;
 }
-
-.neck-detail {
-    width: 40px;
-    height: 100%;
-    margin: 0 auto;
-    background: rgba(0,0,0,0.5);
-    border-radius: 20px;
-}
-
+.neck-detail { width: 30px; height: 100%; margin: 0 auto; background: rgba(0,0,0,0.5); border-radius: 20px; }
 .monitor-stand-base {
-    width: 300px;
-    height: 15px;
+    width: 250px; height: 12px;
     background: linear-gradient(to bottom, #333, #0a0c14);
-    border-radius: 15px 15px 0 0;
+    border-radius: 10px 10px 0 0;
     box-shadow: 0 10px 20px rgba(0,0,0,0.9);
 }
 
 /* =========================================================
-   MONITOR LAYERS
+   MONITOR LAYERS & OS
 ========================================================= */
-.screen-layer {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-}
+.screen-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: flex; flex-direction: column; }
 .hidden { display: none !important; }
 
-/* 1. Boot Logo Screen */
-.boot-env {
-    background-color: #02050a;
-    justify-content: center;
-    align-items: center;
-}
-
+.boot-env { background-color: #02050a; justify-content: center; align-items: center; }
 .boot-logo-wrapper {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%; /* Makes the square image perfectly circular */
-    overflow: hidden;
-    border: 2px solid var(--cyan-glow);
-    box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
-    margin-bottom: 20px;
+    width: 80px; height: 80px; border-radius: 50%; overflow: hidden;
+    border: 2px solid var(--cyan-glow); box-shadow: 0 0 20px rgba(0, 229, 255, 0.4); margin-bottom: 20px;
 }
+.rotating-logo { width: 100%; height: 100%; object-fit: cover; animation: spinEarth 4s linear infinite; }
+@keyframes spinEarth { 100% { transform: rotate(360deg); } }
+.boot-text-pulse { font-family: var(--font-mono); color: var(--cyan-glow); font-size: 14px; letter-spacing: 2px; animation: pulse-text 1.5s infinite; }
 
-.rotating-logo {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    animation: spinEarth 4s linear infinite;
-}
+#screen-bios { background-color: #02050a; padding: 20px; justify-content: flex-start; align-items: flex-start; }
+.bios-text { font-family: var(--font-mono); color: #e0e0e0; font-size: 14px; white-space: pre-wrap; }
 
-@keyframes spinEarth {
-    100% { transform: rotate(360deg); }
-}
-
-.boot-text-pulse {
-    font-family: var(--font-mono);
-    color: var(--cyan-glow);
-    font-size: 14px;
-    letter-spacing: 2px;
-    animation: pulse-text 1.5s infinite;
-}
-
-/* 2. BIOS Screen */
-#screen-bios {
-    background-color: #02050a;
-    padding: 20px;
-    justify-content: flex-start;
-    align-items: flex-start;
-}
-.bios-text {
-    font-family: var(--font-mono);
-    color: #e0e0e0;
-    font-size: 14px;
-    white-space: pre-wrap;
-}
-
-/* 3. Desktop Environment & Seamless Wave Grid */
-.desktop-env {
-    background: linear-gradient(45deg, #090b14, #1a0b1c, #0b1c1a);
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
-    position: relative;
-    overflow: hidden;
-}
-
-@keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
+.desktop-env { background: linear-gradient(45deg, #090b14, #1a0b1c, #0b1c1a); background-size: 400% 400%; animation: gradientBG 15s ease infinite; position: relative; overflow: hidden; }
+@keyframes gradientBG { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
 .wave-grid-wallpaper {
-    position: absolute;
-    width: 200%;
-    height: 200%;
-    top: -50%;
-    left: -50%;
-    background-image: 
-        linear-gradient(rgba(0, 229, 255, 0.15) 2px, transparent 2px),
-        linear-gradient(90deg, rgba(0, 229, 255, 0.15) 2px, transparent 2px);
-    background-size: 60px 60px;
-    transform: perspective(600px) rotateX(60deg) translateY(0);
-    animation: waveGridAnim 3s linear infinite; /* Perfect loop */
-    z-index: -1;
+    position: absolute; width: 200%; height: 200%; top: -50%; left: -50%;
+    background-image: linear-gradient(rgba(0, 229, 255, 0.15) 2px, transparent 2px), linear-gradient(90deg, rgba(0, 229, 255, 0.15) 2px, transparent 2px);
+    background-size: 60px 60px; transform: perspective(600px) rotateX(60deg) translateY(0);
+    animation: waveGridAnim 3s linear infinite; z-index: -1;
 }
+@keyframes waveGridAnim { 0% { transform: perspective(600px) rotateX(60deg) translateY(0); } 100% { transform: perspective(600px) rotateX(60deg) translateY(60px); } }
 
-/* The translateY moves exactly one grid square (60px) to loop perfectly */
-@keyframes waveGridAnim {
-    0% { transform: perspective(600px) rotateX(60deg) translateY(0); }
-    100% { transform: perspective(600px) rotateX(60deg) translateY(60px); }
-}
+.os-watermark { position: absolute; bottom: 15px; right: 20px; font-size: 16px; font-weight: 900; color: rgba(255,255,255,0.2); letter-spacing: 2px; }
 
-.os-watermark {
-    position: absolute;
-    bottom: 15px;
-    right: 20px;
-    font-size: 16px;
-    font-weight: 900;
-    color: rgba(255,255,255,0.2);
-    letter-spacing: 2px;
-}
-
-/* Live Widgets */
-.widget-panel {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: rgba(0, 0, 0, 0.6);
-    border: 1px solid var(--cyan-glow);
-    border-radius: 8px;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    backdrop-filter: blur(5px);
-    width: 220px;
-    box-shadow: 0 0 15px rgba(0, 229, 255, 0.1);
-}
-
-@media (max-width: 768px) {
-    .widget-panel { top: 10px; right: 10px; width: 150px; padding: 10px; gap: 8px; }
-}
-
+.widget-panel { position: absolute; top: 15px; right: 15px; background: rgba(0, 0, 0, 0.6); border: 1px solid var(--cyan-glow); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 10px; backdrop-filter: blur(5px); width: 200px; }
 .widget { display: flex; flex-direction: column; gap: 4px; }
 .wid-label { font-size: 10px; color: var(--text-dim); letter-spacing: 1px; }
 .wid-bar { width: 100%; height: 6px; background: #222; border-radius: 3px; overflow: hidden; }
@@ -260,68 +191,15 @@ body {
 .temp-hot { color: var(--red-glow); animation: shake 0.3s infinite; }
 .net-val { color: var(--cyan-glow); }
 
-/* 4. Error Overlays */
-.error-env {
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    text-align: center;
-}
-.error-text {
-    font-family: var(--font-mono);
-    color: #fff;
-    font-size: 18px;
-    line-height: 1.5;
-}
+.error-env { justify-content: center; align-items: center; padding: 20px; text-align: center; }
+.error-text { font-family: var(--font-mono); color: #fff; font-size: 16px; line-height: 1.5; }
+.gpu-artifact { background: repeating-linear-gradient(transparent 0, rgba(255, 0, 255, 0.2) 2px, transparent 4px), repeating-linear-gradient(90deg, rgba(0, 255, 255, 0.2) 0, transparent 3px); mix-blend-mode: screen; animation: artifactGlitch 0.1s infinite; pointer-events: none; z-index: 10; }
+@keyframes artifactGlitch { 0% { clip-path: inset(10% 0 80% 0); transform: translate(-2px, 1px); } 100% { clip-path: inset(30% 0 50% 0); transform: translate(2px, -1px); } }
 
-/* 5. GPU Glitch Effect */
-.gpu-artifact {
-    background: repeating-linear-gradient(transparent 0, rgba(255, 0, 255, 0.2) 2px, transparent 4px),
-                repeating-linear-gradient(90deg, rgba(0, 255, 255, 0.2) 0, transparent 3px);
-    mix-blend-mode: screen;
-    animation: artifactGlitch 0.1s infinite;
-    pointer-events: none;
-    z-index: 10;
-}
-@keyframes artifactGlitch {
-    0% { clip-path: inset(10% 0 80% 0); transform: translate(-2px, 1px); }
-    20% { clip-path: inset(80% 0 5% 0); transform: translate(2px, -1px); }
-    40% { clip-path: inset(40% 0 40% 0); transform: translate(-2px, 2px); }
-    60% { clip-path: inset(15% 0 60% 0); transform: translate(1px, -2px); }
-    80% { clip-path: inset(60% 0 20% 0); transform: translate(-1px, 1px); }
-    100% { clip-path: inset(30% 0 50% 0); transform: translate(2px, -1px); }
-}
-
-/* Screen Glass Overlay & Power LED */
-.crt-scanline {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 15px;
-    background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.05), transparent);
-    animation: scan 5s linear infinite;
-    pointer-events: none;
-    z-index: 20;
-}
-@keyframes scan {
-    0% { transform: translateY(-50px); }
-    100% { transform: translateY(1000px); }
-}
-.glass-reflection {
-    position: absolute;
-    top: -50%; left: -50%; width: 200%; height: 200%;
-    background: linear-gradient(to bottom right, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 40%);
-    transform: rotate(30deg);
-    pointer-events: none;
-    z-index: 21;
-}
-.power-led {
-    position: absolute;
-    bottom: 12px;
-    right: 20px;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    z-index: 30;
-}
+.crt-scanline { position: absolute; top: 0; left: 0; width: 100%; height: 15px; background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.05), transparent); animation: scan 5s linear infinite; pointer-events: none; z-index: 20; }
+@keyframes scan { 0% { transform: translateY(-50px); } 100% { transform: translateY(1000px); } }
+.glass-reflection { position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(to bottom right, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 40%); transform: rotate(30deg); pointer-events: none; z-index: 21; }
+.power-led { position: absolute; bottom: 12px; right: 20px; width: 6px; height: 6px; border-radius: 50%; z-index: 30; }
 .led-on { background-color: var(--cyan-glow); box-shadow: 0 0 10px var(--cyan-glow); }
 .led-error { background-color: var(--red-glow); box-shadow: 0 0 10px var(--red-glow); animation: flash 0.5s infinite; }
 .led-off { background-color: #222; }
@@ -330,41 +208,176 @@ body {
 @keyframes pulse-text { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 
 /* =========================================================
+   THE PC TOWER & X-RAY ZONES
+========================================================= */
+.pc-tower {
+    width: 220px;
+    height: 380px;
+    background: linear-gradient(135deg, #1f2233, #05070a);
+    border-radius: 12px;
+    border: 2px solid #222;
+    padding: 10px;
+    box-shadow: 15px 15px 30px rgba(0,0,0,0.9), inset 2px 2px 10px rgba(255,255,255,0.05);
+    z-index: 10;
+    position: relative;
+    transition: all 0.5s ease;
+}
+
+@media (max-width: 900px) {
+    .pc-tower { flex: 1 1 100%; max-width: 300px; height: 250px; }
+}
+
+.tower-chassis {
+    width: 100%; height: 100%;
+    background: #020202;
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Glass panel that becomes transparent to show internals */
+.tower-glass-panel {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(10, 15, 25, 0.95); /* Deep dark glass */
+    backdrop-filter: blur(2px);
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: background 0.5s ease;
+    z-index: 2;
+}
+
+/* When a component is clicked, the glass clears up */
+.tower-glass-panel.xray-active-glass {
+    background: rgba(10, 15, 25, 0.4);
+    backdrop-filter: blur(0px);
+}
+
+/* Generic X-Ray Zone Structure */
+.xray-zone {
+    position: absolute;
+    border: 1px dashed rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.02);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    opacity: 0; /* Hidden by default */
+}
+
+/* The active glow state triggered by JS */
+.xray-active {
+    opacity: 1 !important;
+    border: 2px solid var(--cyan-glow);
+    background: rgba(0, 229, 255, 0.2);
+    box-shadow: 0 0 20px var(--cyan-glow), inset 0 0 10px var(--cyan-glow);
+    z-index: 10;
+    animation: xrayPulse 1.5s infinite alternate;
+}
+
+@keyframes xrayPulse {
+    from { box-shadow: 0 0 10px var(--cyan-glow), inset 0 0 5px var(--cyan-glow); }
+    to { box-shadow: 0 0 30px var(--cyan-glow), inset 0 0 20px var(--cyan-glow); }
+}
+
+/* Physical Component Layout Maps inside the PC Tower */
+.zone-psu { bottom: 10px; left: 10px; right: 10px; height: 60px; } /* Bottom PSU Shroud */
+.zone-hdd { bottom: 10px; right: 10px; width: 60px; height: 50px; } /* Drive Cage */
+.zone-mb { top: 20px; left: 20px; right: 40px; bottom: 80px; } /* Motherboard base */
+
+/* Mapped relative to the Motherboard base */
+.zone-cpu { top: 15%; left: 35%; width: 30%; height: 20%; border-radius: 50%; }
+.zone-pump { top: 15%; left: 35%; width: 30%; height: 20%; border-radius: 50%; } /* Sits on CPU */
+.zone-fan { top: 5%; right: -20px; width: 25px; height: 80px; } /* Rear Exhaust */
+.zone-ram { top: 15%; right: 15%; width: 15%; height: 25%; }
+.zone-vrm { top: 5%; left: 35%; width: 30%; height: 10%; }
+.zone-gpu { top: 50%; left: 10%; width: 80%; height: 15%; }
+.zone-riser { top: 65%; left: 20%; width: 10%; height: 30%; }
+.zone-ssd { top: 40%; left: 35%; width: 25%; height: 8%; }
+.zone-m2 { top: 40%; left: 35%; width: 25%; height: 8%; } /* Covers SSD */
+.zone-chipset { top: 70%; right: 10%; width: 20%; height: 15%; }
+.zone-cmos { top: 60%; left: 20%; width: 12%; height: 10%; border-radius: 50%; }
+.zone-tpm { bottom: 5%; left: 30%; width: 10%; height: 10%; }
+.zone-nic { bottom: 15%; left: 10%; width: 40%; height: 10%; }
+.zone-wifi { bottom: 25%; left: 10%; width: 30%; height: 8%; }
+.zone-sound { bottom: 5%; left: 10%; width: 50%; height: 10%; }
+.zone-capture { bottom: 25%; left: 10%; width: 60%; height: 12%; }
+
+/* External to MB */
+.zone-odd { top: 10px; right: 10px; width: 80px; height: 40px; }
+.zone-front-io { top: 10px; left: 10px; width: 40px; height: 10px; }
+.zone-usb3 { top: 25px; left: 10px; width: 40px; height: 10px; }
+.zone-rgb { top: 10px; left: 50px; right: 50px; height: 10px; }
+.zone-cables { top: 30%; right: -10px; width: 15px; height: 40px; } /* 24 Pin */
+.zone-cables-cpu { top: 5%; left: 10%; width: 20px; height: 15px; } /* EPS 8 Pin */
+.zone-cables-sata { bottom: 10px; right: -10px; width: 15px; height: 30px; } /* SATA */
+
+/* =========================================================
+   PERIPHERALS (Keyboard & Mouse)
+========================================================= */
+.desk-surface {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin-top: -10px;
+    z-index: 15;
+}
+
+.peripheral-keyboard {
+    width: 350px; height: 100px;
+    background: #111;
+    border-radius: 8px;
+    transform: rotateX(45deg);
+    border-bottom: 8px solid #050505;
+    position: relative;
+    box-shadow: 0 15px 20px rgba(0,0,0,0.8);
+}
+.kb-glow {
+    position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px;
+    background: repeating-linear-gradient(90deg, var(--red-glow), var(--yellow-glow), var(--green-glow), var(--cyan-glow), var(--purple-glow));
+    background-size: 200% 200%;
+    border-radius: 4px;
+    opacity: 0.5;
+    animation: rgbCycle 5s linear infinite;
+}
+
+.peripheral-mouse {
+    width: 60px; height: 100px;
+    background: #111;
+    border-radius: 30px 30px 15px 15px;
+    transform: rotateX(45deg);
+    border-bottom: 8px solid #050505;
+    position: relative;
+    box-shadow: 0 15px 20px rgba(0,0,0,0.8);
+}
+.mouse-glow {
+    position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
+    width: 20px; height: 30px;
+    background: var(--cyan-glow);
+    border-radius: 50%;
+    filter: blur(10px);
+    opacity: 0.6;
+    animation: pulse-text 2s infinite;
+}
+
+@keyframes rgbCycle { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+
+/* =========================================================
    2. DATA INSPECTOR & 3D CHAMBER
 ========================================================= */
 .inspection-panel {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    background: var(--panel-bg);
-    border: 1px solid var(--border-accent);
-    border-radius: 16px;
-    padding: 20px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    background: var(--panel-bg); border: 1px solid var(--border-accent); border-radius: 16px; padding: 20px;
 }
 @media (max-width: 900px) { .inspection-panel { grid-template-columns: 1fr; } }
-
 .data-display { display: flex; flex-direction: column; gap: 15px; }
 
 .cyber-select {
-    width: 100%;
-    padding: 12px 15px;
-    background: rgba(0,0,0,0.5);
-    border: 1px solid var(--cyan-glow);
-    color: var(--cyan-glow);
-    font-family: var(--font-header);
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
+    width: 100%; padding: 12px 15px; background: rgba(0,0,0,0.5);
+    border: 1px solid var(--cyan-glow); color: var(--cyan-glow);
+    font-family: var(--font-header); border-radius: 8px; font-size: 16px; cursor: pointer;
 }
 .cyber-select option { background: var(--panel-bg); color: #fff; }
 
-.status-indicator {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    padding-bottom: 10px;
-}
+.status-indicator { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
 .status-indicator h2 { font-size: 18px; color: #fff; }
 
 .badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
@@ -373,21 +386,10 @@ body {
 .badge-warning { background: rgba(255, 214, 0, 0.2); color: var(--yellow-glow); border: 1px solid var(--yellow-glow); }
 .badge-booting { background: rgba(0, 229, 255, 0.2); color: var(--cyan-glow); border: 1px solid var(--cyan-glow); animation: pulse-text 1s infinite; }
 
-.typewriter-text {
-    font-family: var(--font-mono);
-    color: var(--text-dim);
-    font-size: 15px;
-    line-height: 1.6;
-    min-height: 80px;
-}
+.typewriter-text { font-family: var(--font-mono); color: var(--text-dim); font-size: 15px; line-height: 1.6; min-height: 80px; }
 
 .model-chamber {
-    background: #05070a;
-    border-radius: 12px;
-    border: 1px solid rgba(0, 229, 255, 0.3);
-    height: 250px;
-    box-shadow: inset 0 0 40px rgba(0,0,0,1);
-    position: relative;
+    background: #05070a; border-radius: 12px; border: 1px solid rgba(0, 229, 255, 0.3); height: 250px; box-shadow: inset 0 0 40px rgba(0,0,0,1); position: relative;
 }
 model-viewer { width: 100%; height: 100%; --poster-color: transparent; }
 
@@ -395,104 +397,61 @@ model-viewer { width: 100%; height: 100%; --poster-color: transparent; }
    3. MASSIVE 25-COMPONENT MOTHERBOARD GRID
 ========================================================= */
 .motherboard-section {
-    background: var(--panel-bg);
-    border-radius: 16px;
-    border: 1px solid var(--border-accent);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    background: var(--panel-bg); border-radius: 16px; border: 1px solid var(--border-accent); padding: 20px; display: flex; flex-direction: column; align-items: center;
 }
+.section-title { color: var(--text-dim); font-size: 14px; letter-spacing: 2px; margin-bottom: 20px; text-align: center; }
 
-.section-title {
-    color: var(--text-dim);
-    font-size: 14px;
-    letter-spacing: 2px;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-/* Adaptive CSS Grid for 25 items */
 .massive-grid {
-    position: relative;
-    width: 100%;
-    background: #0a0d17;
-    border-radius: 12px;
-    border: 1px solid #222;
-    padding: 20px;
-    
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 15px;
-    overflow: hidden;
+    position: relative; width: 100%; background: #0a0d17; border-radius: 12px; border: 1px solid #222; padding: 20px;
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; overflow: hidden;
 }
-
 @media (max-width: 900px) { .massive-grid { grid-template-columns: repeat(4, 1fr); } }
 @media (max-width: 768px) { .massive-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 480px) { .massive-grid { grid-template-columns: repeat(2, 1fr); } }
 
 .pcb-traces {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-image: 
-        linear-gradient(45deg, rgba(0,229,255,0.04) 1px, transparent 1px),
-        linear-gradient(-45deg, rgba(0,229,255,0.04) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background-image: linear-gradient(45deg, rgba(0,229,255,0.04) 1px, transparent 1px), linear-gradient(-45deg, rgba(0,229,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px; pointer-events: none; z-index: 0;
 }
 
 .cyber-btn {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: rgba(0,0,0,0.8);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-family: var(--font-header);
-    min-height: 90px;
-    padding: 10px;
-    color: var(--text-dim);
+    position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: center; align-items: center;
+    background: rgba(0,0,0,0.8); border-radius: 8px; cursor: pointer; transition: all 0.2s ease;
+    font-family: var(--font-header); min-height: 90px; padding: 10px; color: var(--text-dim);
 }
-
 .cyber-btn .icon { font-size: 30px; margin-bottom: 10px; }
 .cyber-btn .label { font-size: 11px; font-weight: bold; letter-spacing: 1px; text-align: center; line-height: 1.3;}
 
-/* Plugged (Active) */
-.plugged {
-    border: 2px solid var(--cyan-glow);
-    box-shadow: 0 0 15px rgba(0,229,255,0.15);
-    color: #fff;
-}
-.plugged:hover {
-    box-shadow: 0 0 25px rgba(0,229,255,0.4);
-    background: rgba(0,229,255,0.1);
-    transform: translateY(-3px);
+.plugged { border: 2px solid var(--cyan-glow); box-shadow: 0 0 15px rgba(0,229,255,0.15); color: #fff; }
+.plugged:hover { box-shadow: 0 0 25px rgba(0,229,255,0.4); background: rgba(0,229,255,0.1); transform: translateY(-3px); }
+
+.unplugged { border: 2px dashed var(--red-glow); background: rgba(255, 42, 95, 0.05); color: var(--red-glow); opacity: 0.6; filter: grayscale(0.8); }
+.unplugged:hover { opacity: 1; transform: translateY(-2px); background: rgba(255, 42, 95, 0.15); }
+
+/* =========================================================
+   HIGH-QUALITY PARTICLE SPARKS
+========================================================= */
+.spark {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background-color: var(--orange-glow);
+    border-radius: 50%;
+    pointer-events: none;
+    box-shadow: 0 0 10px var(--orange-glow), 0 0 20px var(--yellow-glow);
+    animation: spark-fly 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    z-index: 9999;
 }
 
-/* Unplugged (Dead) */
-.unplugged {
-    border: 2px dashed var(--red-glow);
-    background: rgba(255, 42, 95, 0.05);
-    color: var(--red-glow);
-    opacity: 0.6;
-    filter: grayscale(0.8);
-}
-.unplugged:hover {
-    opacity: 1;
-    transform: translateY(-2px);
-    background: rgba(255, 42, 95, 0.15);
-}
-
-/* Sparks Effects for Thermal Shutdowns */
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    20% { transform: translateX(-2px); }
-    40% { transform: translateX(2px); }
-    60% { transform: translateX(-2px); }
-    80% { transform: translateX(2px); }
+@keyframes spark-fly {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        /* JS sets custom CSS variables for random trajectory */
+        transform: translate(var(--tx), var(--ty)) scale(0);
+        opacity: 0;
+    }
 }
