@@ -19,7 +19,7 @@ const plugStates = {
 // Power components that trigger explosive sparks when disconnected
 const powerComponents = ['PSU', 'ATX24', 'EPS8', 'CMOS'];
 
-// System Variables
+// System & Animation Variables
 let sysTemp = 40;
 let isThermalShutdown = false;
 let isBooting = false;
@@ -27,6 +27,11 @@ let heatingInterval = null;
 let desktopLoop = null;
 let bootTimeout = null;
 let zoomTimeout = null;
+
+// Tower Rotation State
+let isDraggingTower = false;
+let startX = 0;
+let currentRotation = -35; // Matches the base CSS rotation
 
 // =========================================================
 // DOM ELEMENT MAPPING
@@ -38,11 +43,13 @@ const UI = {
     desc: document.getElementById('comp-desc'),
     viewer3D: document.getElementById('component-3d-viewer'),
     
-    // 3D Environment & Tower X-Ray
-    deskScene: document.querySelector('.desk-scene'),
+    // 3D Environment & Interactive Tower
+    deskScene: document.getElementById('desk-scene'),
+    towerContainer: document.getElementById('pc-tower-container'),
     tower3D: document.getElementById('pc-tower'),
     sparkContainer: document.getElementById('global-spark-container'),
     sparkEmitter: document.getElementById('internal-spark-emitter'),
+    dragHint: document.querySelector('.drag-hint'),
     
     // Monitor Layers
     screenBios: document.getElementById('screen-bios'),
@@ -72,6 +79,7 @@ const UI = {
 document.addEventListener('DOMContentLoaded', () => {
     fetchHardwareData();
     setupEventListeners();
+    setupTowerRotation();
     startDesktopLoop();
     initiateBootSequence();
 });
@@ -94,7 +102,7 @@ async function fetchHardwareData() {
         dbData = generateAdvancedFallback();
     }
     isFetching = false;
-    updateInspector(false); // First load doesn't trigger cinematic zoom
+    updateInspector(false); 
 }
 
 function generateAdvancedFallback() {
@@ -103,7 +111,7 @@ function generateAdvancedFallback() {
         'CPU': { title: 'Central Processing Unit', statusOn: 'EXECUTING', statusOff: 'SOCKET EMPTY', descOn: 'Handling OS instructions and IPC routing.', descOff: 'Fatal Error: System freezes before POST.', model_url: '' },
         'RAM': { title: 'DDR5 Memory', statusOn: 'ALLOCATED', statusOff: 'NO MEMORY', descOn: 'Providing volatile storage for the OS.', descOff: 'Fatal Error: Memory Management BSOD.', model_url: '' },
         'GPU': { title: 'PCIe Graphics Card', statusOn: 'RENDERING', statusOff: 'NO SIGNAL', descOn: 'Pushing high-framerate pixel data.', descOff: 'Display Error: Monitor receives no video signal.', model_url: '' },
-        'Fan': { title: 'CPU Cooling Fan', statusOn: '2400 RPM', statusOff: 'STOPPED', descOn: 'Dissipating thermal energy from the heatsink.', descOff: 'Warning: Cooling lost. Temperatures rising.', model_url: '' },
+        'Fan': { title: 'RGB Cooling Fan', statusOn: '1800 RPM', statusOff: 'STOPPED', descOn: 'Exhausting ambient heat from the chassis.', descOff: 'Warning: Airflow reduced. Ambient temp rising.', model_url: '' },
         'SSD': { title: 'NVMe M.2 Drive', statusOn: 'MOUNTED (C:\\)', statusOff: 'UNMOUNTED', descOn: 'Hosting the primary bootloader and OS.', descOff: 'Boot Error: Boot Device Not Found.', model_url: '' },
         'HDD': { title: 'Mechanical Hard Drive', statusOn: 'MOUNTED (D:\\)', statusOff: 'DISCONNECTED', descOn: 'Secondary mass storage archive.', descOff: 'Degraded: Secondary storage paths broken.', model_url: '' },
         'ODD': { title: 'Optical Disk Drive', statusOn: 'READY', statusOff: 'OFFLINE', descOn: 'Reading legacy CD/DVD media.', descOff: 'Non-critical: Disc media unavailable.', model_url: '' },
@@ -120,11 +128,48 @@ function generateAdvancedFallback() {
         'CaptureCard': { title: 'Video Capture Card', statusOn: 'STANDBY', statusOff: 'UNPLUGGED', descOn: 'Handling HDMI passthrough recording.', descOff: 'Non-critical: Recording unavailable.', model_url: '' },
         'Riser': { title: 'PCIe Riser Cable', statusOn: 'LINKED (x16)', statusOff: 'SEVERED', descOn: 'Extending the GPU PCIe connection.', descOff: 'Display Error: GPU disconnected from bus. No signal.', model_url: '' },
         'RGB': { title: 'RGB Controller', statusOn: 'SYNCED', statusOff: 'DARK', descOn: 'Managing ARGB lighting profiles.', descOff: 'Aesthetic: System lights disabled.', model_url: '' },
-        'WaterPump': { title: 'AIO Water Pump', statusOn: 'PUMPING', statusOff: 'STOPPED', descOn: 'Circulating liquid coolant over the CPU.', descOff: 'Warning: Liquid flow stopped. Extreme thermal risk.', model_url: '' },
+        'WaterPump': { title: 'AIO Liquid Cooler', statusOn: 'PUMPING', statusOff: 'STOPPED', descOn: 'Circulating liquid coolant over the CPU.', descOff: 'Warning: Liquid flow stopped. Extreme thermal risk.', model_url: '' },
         'M2Heatsink': { title: 'SSD Heatsink', statusOn: 'DISSIPATING', statusOff: 'REMOVED', descOn: 'Preventing NVMe thermal throttling.', descOff: 'Warning: SSD running hot, speeds reduced.', model_url: '' },
         'FrontPanel': { title: 'Front Panel I/O', statusOn: 'ACTIVE', statusOff: 'DISCONNECTED', descOn: 'Connecting power button and front USBs.', descOff: 'Non-critical: Case buttons disabled.', model_url: '' },
         'USB3': { title: 'USB 3.0 Header', statusOn: 'LINKED', statusOff: 'UNPLUGGED', descOn: 'Enabling high-speed external I/O.', descOff: 'Non-critical: Front USB ports dead.', model_url: '' }
     };
+}
+
+// =========================================================
+// INTERACTIVE TOWER ROTATION (MOUSE & TOUCH)
+// =========================================================
+function setupTowerRotation() {
+    const startDrag = (e) => {
+        isDraggingTower = true;
+        startX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+        UI.tower3D.style.transition = 'none'; // Disable transition for instant tracking
+        if (UI.dragHint) UI.dragHint.style.opacity = '0'; // Hide hint once interacted
+    };
+
+    const doDrag = (e) => {
+        if (!isDraggingTower) return;
+        e.preventDefault();
+        const currentX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+        const diff = currentX - startX;
+        // Rotate 0.5 degrees per pixel moved
+        UI.tower3D.style.transform = `rotateY(${currentRotation + (diff * 0.5)}deg)`;
+    };
+
+    const stopDrag = (e) => {
+        if (!isDraggingTower) return;
+        isDraggingTower = false;
+        const endX = e.type.includes('mouse') ? e.pageX : e.changedTouches[0].pageX;
+        currentRotation += (endX - startX) * 0.5;
+        UI.tower3D.style.transition = 'transform 0.1s'; // Restore smooth transition
+    };
+
+    UI.towerContainer.addEventListener('mousedown', startDrag);
+    window.addEventListener('mousemove', doDrag);
+    window.addEventListener('mouseup', stopDrag);
+
+    UI.towerContainer.addEventListener('touchstart', startDrag, {passive: false});
+    window.addEventListener('touchmove', doDrag, {passive: false});
+    window.addEventListener('touchend', stopDrag);
 }
 
 // =========================================================
@@ -141,42 +186,33 @@ function setupEventListeners() {
         btn.addEventListener('click', () => {
             const compKey = btn.getAttribute('data-component');
             
-            // Sync selection globally
             selectedComponent = compKey;
             UI.selector.value = compKey;
             
-            // Toggle Hardware Physics
             toggleHardware(compKey, btn);
-            
-            // Update UI & Zoom into the tower
             updateInspector(true);
         });
     });
 }
 
 // =========================================================
-// CINEMATIC AUTO-SCROLL & 3D ZOOM ENGINE
+// CINEMATIC CAMERA PAN (TRUE 3D TRANSLATION)
 // =========================================================
 function triggerCinematicZoom() {
-    // 1. Smooth scroll instantly to the Desk Area
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // 2. Add cinematic 3D transform classes
-    UI.deskScene.classList.add('cinematic-mode');
-    UI.tower3D.classList.add('xray-active');
+    // Move the physical camera in Z-Space, avoid pixelation
+    UI.deskScene.classList.add('cinematic-zoom-tower');
 
-    // 3. Reset zoom automatically after 5 seconds to view the whole desk again
     clearTimeout(zoomTimeout);
     zoomTimeout = setTimeout(() => {
-        UI.deskScene.classList.remove('cinematic-mode');
-        UI.tower3D.classList.remove('xray-active');
-        // Clear specific component highlight
-        document.querySelectorAll('.comp-3d, .zoom-target').forEach(z => z.classList.remove('xray-highlight'));
-    }, 5000);
+        UI.deskScene.classList.remove('cinematic-zoom-tower');
+        document.querySelectorAll('.hw-detail, .zoom-target').forEach(z => z.classList.remove('xray-highlight'));
+    }, 5000); // Hold camera for 5 seconds
 }
 
 function highlightPhysicalZone(key) {
-    document.querySelectorAll('.comp-3d, .zoom-target').forEach(z => z.classList.remove('xray-highlight'));
+    document.querySelectorAll('.hw-detail, .zoom-target').forEach(z => z.classList.remove('xray-highlight'));
     
     const targetZone = document.getElementById(`zone-${key}`);
     if (targetZone) {
@@ -185,17 +221,17 @@ function highlightPhysicalZone(key) {
 }
 
 // =========================================================
-// HIGH-TECH SPARK PARTICLE ENGINE (INTERNAL TOWER SPECIFIC)
+// HIGH-TECH SPARK PARTICLE ENGINE (PHYSICAL PSU)
 // =========================================================
 function spawnInternalSparks() {
     if (!UI.sparkEmitter) return;
     
-    // Calculate global coordinates of the physical PSU inside the tower
+    // Sparks now emit directly from the Power Supply physical location
     const rect = UI.sparkEmitter.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
     
-    const sparkCount = Math.floor(Math.random() * 15) + 20; // Massive spark shower
+    const sparkCount = Math.floor(Math.random() * 15) + 20; 
     
     for(let i = 0; i < sparkCount; i++) {
         let spark = document.createElement('div');
@@ -203,7 +239,6 @@ function spawnInternalSparks() {
         spark.style.left = centerX + 'px';
         spark.style.top = centerY + 'px';
         
-        // Explode outward in random directions
         let tx = (Math.random() - 0.5) * 800 + 'px'; 
         let ty = (Math.random() - 0.8) * 800 + 'px'; 
         
@@ -228,7 +263,7 @@ function toggleHardware(key, btnElement) {
     if (!isPlugged) {
         btnElement.classList.replace('plugged', 'unplugged');
         
-        // SPARKS ONLY FIRE FOR SPECIFIC POWER COMPONENTS
+        // Only power failures cause physical sparks now
         if (powerComponents.includes(key)) {
             spawnInternalSparks();
         }
@@ -236,7 +271,7 @@ function toggleHardware(key, btnElement) {
         btnElement.classList.replace('unplugged', 'plugged');
     }
 
-    // Advanced Thermal Engine
+    // Advanced Thermal Engine (Checks Fan AND WaterPump)
     if (key === 'PSU' || key === 'ATX24') {
         if (!plugStates['PSU'] || !plugStates['ATX24']) {
             clearInterval(heatingInterval);
@@ -260,7 +295,6 @@ function toggleHardware(key, btnElement) {
         }
     }
 
-    // Trigger Boot or Evaluate current state
     if ((key === 'PSU' || key === 'ATX24' || key === 'FrontPanel') && plugStates['PSU'] && plugStates['ATX24']) {
         initiateBootSequence();
     } else {
@@ -321,10 +355,8 @@ function updateInspector(shouldZoom) {
         UI.viewer3D.removeAttribute('src'); 
     }
     
-    // Highlight physical location inside the PC Tower
     highlightPhysicalZone(selectedComponent);
     
-    // Trigger Cinematic Camera Pan
     if(shouldZoom) {
         triggerCinematicZoom();
     }
@@ -351,7 +383,6 @@ function initiateBootSequence() {
     
     UI.screenBoot.classList.remove('hidden');
     
-    // Front Panel I/O Tower LED power check
     UI.powerLed.className = 'power-led led-on';
     if(plugStates['FrontPanel']) UI.towerPowerLed.style.backgroundColor = 'var(--cyan-glow)';
 
@@ -360,7 +391,7 @@ function initiateBootSequence() {
         isBooting = false;
         updateInspector(false);
         evaluateSystemState();
-    }, 3000); // 3 Second Boot Time applied
+    }, 3000); // 3-Second Loading Delay
 }
 
 function evaluateSystemState() {
@@ -372,19 +403,15 @@ function evaluateSystemState() {
     UI.screenError.classList.add('hidden');
     UI.gpuGlitch.classList.add('hidden');
 
-    // Reset Tower LED
     UI.towerPowerLed.style.backgroundColor = 'transparent';
 
-    // 1. HARDWARE POWER LOSS
     if (!plugStates['PSU'] || !plugStates['ATX24']) {
         UI.powerLed.className = 'power-led led-off';
         return; 
     }
     
-    // Main Power is active, so tower LED turns on (if front panel is plugged)
     if(plugStates['FrontPanel']) UI.towerPowerLed.style.backgroundColor = 'var(--cyan-glow)';
 
-    // 2. NO SIGNAL 
     if (!plugStates['GPU'] || !plugStates['Riser']) {
         UI.powerLed.className = 'power-led led-error';
         UI.screenError.classList.remove('hidden');
@@ -395,7 +422,6 @@ function evaluateSystemState() {
         return;
     }
 
-    // 3. THERMAL MELTDOWN
     if (isThermalShutdown) {
         UI.powerLed.className = 'power-led led-error';
         UI.towerPowerLed.style.backgroundColor = 'var(--red-glow)';
@@ -407,7 +433,6 @@ function evaluateSystemState() {
         return;
     }
 
-    // 4. MEMORY BSOD
     if (!plugStates['RAM']) {
         UI.powerLed.className = 'power-led led-on';
         UI.screenError.classList.remove('hidden');
@@ -418,7 +443,6 @@ function evaluateSystemState() {
         return;
     }
 
-    // 5. HARDWARE FREEZE 
     if (!plugStates['CPU'] || !plugStates['EPS8'] || !plugStates['Chipset']) {
         UI.powerLed.className = 'power-led led-on';
         UI.screenError.classList.remove('hidden');
@@ -429,7 +453,6 @@ function evaluateSystemState() {
         return;
     }
 
-    // 6. BIOS BOOT ERRORS
     if (!plugStates['SSD']) {
         UI.powerLed.className = 'power-led led-on';
         UI.screenBios.classList.remove('hidden');
@@ -451,7 +474,6 @@ function evaluateSystemState() {
         return;
     }
 
-    // 7. DESKTOP OS (FULLY FUNCTIONAL)
     UI.powerLed.className = 'power-led led-on';
     UI.screenDesktop.classList.remove('hidden');
 
