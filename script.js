@@ -19,6 +19,35 @@ const plugStates = {
 // Power components that trigger explosive sparks when disconnected
 const powerComponents = ['PSU', 'ATX24', 'EPS8', 'CMOS'];
 
+// Optimal Viewing Angles for the 3D Tower based on component location
+const componentViewingAngles = {
+    'FrontPanel': 0,     // Front Face
+    'USB3': 0,           // Front Face
+    'ODD': 0,            // Front Face
+    'PSU': -75,          // Look through the glass
+    'CPU': -75,
+    'RAM': -75,
+    'GPU': -75,
+    'WaterPump': -75,
+    'Fan': -75,
+    'SSD': -75,
+    'HDD': -75,
+    'Chipset': -75,
+    'VRM': -75,
+    'CMOS': -75,
+    'TPM': -75,
+    'ATX24': -75,
+    'EPS8': -75,
+    'SATA': -75,
+    'NIC': -75,
+    'WiFi': -75,
+    'SoundCard': -75,
+    'CaptureCard': -75,
+    'Riser': -75,
+    'RGB': -75,
+    'M2Heatsink': -75
+};
+
 // System & Animation Variables
 let sysTemp = 40;
 let isThermalShutdown = false;
@@ -31,7 +60,7 @@ let zoomTimeout = null;
 // Tower Rotation State
 let isDraggingTower = false;
 let startX = 0;
-let currentRotation = -35; // Matches the base CSS rotation
+let currentRotation = -35; 
 
 // =========================================================
 // DOM ELEMENT MAPPING
@@ -44,12 +73,11 @@ const UI = {
     viewer3D: document.getElementById('component-3d-viewer'),
     
     // 3D Environment & Interactive Tower
-    deskScene: document.getElementById('desk-scene'),
+    cameraRig: document.getElementById('camera-rig'),
     towerContainer: document.getElementById('pc-tower-container'),
     tower3D: document.getElementById('pc-tower'),
     sparkContainer: document.getElementById('global-spark-container'),
     sparkEmitter: document.getElementById('internal-spark-emitter'),
-    dragHint: document.querySelector('.drag-hint'),
     
     // Monitor Layers
     screenBios: document.getElementById('screen-bios'),
@@ -85,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // =========================================================
-// DATA FETCHING & 25-COMPONENT FALLBACK ENGINE
+// DATA FETCHING & FALLBACK ENGINE
 // =========================================================
 async function fetchHardwareData() {
     try {
@@ -142,8 +170,7 @@ function setupTowerRotation() {
     const startDrag = (e) => {
         isDraggingTower = true;
         startX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
-        UI.tower3D.style.transition = 'none'; // Disable transition for instant tracking
-        if (UI.dragHint) UI.dragHint.style.opacity = '0'; // Hide hint once interacted
+        UI.tower3D.style.transition = 'none'; 
     };
 
     const doDrag = (e) => {
@@ -151,7 +178,6 @@ function setupTowerRotation() {
         e.preventDefault();
         const currentX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
         const diff = currentX - startX;
-        // Rotate 0.5 degrees per pixel moved
         UI.tower3D.style.transform = `rotateY(${currentRotation + (diff * 0.5)}deg)`;
     };
 
@@ -160,7 +186,7 @@ function setupTowerRotation() {
         isDraggingTower = false;
         const endX = e.type.includes('mouse') ? e.pageX : e.changedTouches[0].pageX;
         currentRotation += (endX - startX) * 0.5;
-        UI.tower3D.style.transition = 'transform 0.1s'; // Restore smooth transition
+        UI.tower3D.style.transition = 'transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)'; 
     };
 
     UI.towerContainer.addEventListener('mousedown', startDrag);
@@ -178,7 +204,7 @@ function setupTowerRotation() {
 function setupEventListeners() {
     UI.selector.addEventListener('change', (e) => {
         selectedComponent = e.target.value;
-        updateInspector(true); // Trigger Cinematic Zoom
+        updateInspector(true); 
     });
 
     const buttons = document.querySelectorAll('.cyber-btn');
@@ -196,23 +222,32 @@ function setupEventListeners() {
 }
 
 // =========================================================
-// CINEMATIC CAMERA PAN (TRUE 3D TRANSLATION)
+// CINEMATIC CAMERA PAN & DYNAMIC ROTATION
 // =========================================================
-function triggerCinematicZoom() {
+function triggerCinematicZoom(key) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // Move the physical camera in Z-Space, avoid pixelation
-    UI.deskScene.classList.add('cinematic-zoom-tower');
+    // Move the physical camera in Z-Space via the wrapper
+    UI.cameraRig.classList.add('cinematic-zoom-tower');
+    
+    // Dynamically rotate the tower so the component faces the user
+    const targetAngle = componentViewingAngles[key] !== undefined ? componentViewingAngles[key] : -35;
+    currentRotation = targetAngle;
+    UI.tower3D.style.transform = `rotateY(${currentRotation}deg)`;
 
     clearTimeout(zoomTimeout);
     zoomTimeout = setTimeout(() => {
-        UI.deskScene.classList.remove('cinematic-zoom-tower');
-        document.querySelectorAll('.hw-detail, .zoom-target').forEach(z => z.classList.remove('xray-highlight'));
-    }, 5000); // Hold camera for 5 seconds
+        UI.cameraRig.classList.remove('cinematic-zoom-tower');
+        document.querySelectorAll('.hw-mb, .hw-gpu, .hw-psu-shroud, .hw-fans-front, .hw-fan-rear, .hw-hdd-cage, .hw-cpu, .hw-pump, .hw-ram-slots, .hw-vrm, .hw-ssd, .hw-m2-heatsink, .hw-chipset, .hw-cmos, .zoom-target').forEach(z => z.classList.remove('xray-highlight'));
+        
+        // Reset rotation gracefully to a nice isometric view
+        currentRotation = -35;
+        UI.tower3D.style.transform = `rotateY(${currentRotation}deg)`;
+    }, 6000); // Hold camera for 6 seconds
 }
 
 function highlightPhysicalZone(key) {
-    document.querySelectorAll('.hw-detail, .zoom-target').forEach(z => z.classList.remove('xray-highlight'));
+    document.querySelectorAll('.hw-mb, .hw-gpu, .hw-psu-shroud, .hw-fans-front, .hw-fan-rear, .hw-hdd-cage, .hw-cpu, .hw-pump, .hw-ram-slots, .hw-vrm, .hw-ssd, .hw-m2-heatsink, .hw-chipset, .hw-cmos, .zoom-target').forEach(z => z.classList.remove('xray-highlight'));
     
     const targetZone = document.getElementById(`zone-${key}`);
     if (targetZone) {
@@ -226,7 +261,6 @@ function highlightPhysicalZone(key) {
 function spawnInternalSparks() {
     if (!UI.sparkEmitter) return;
     
-    // Sparks now emit directly from the Power Supply physical location
     const rect = UI.sparkEmitter.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
@@ -262,16 +296,11 @@ function toggleHardware(key, btnElement) {
 
     if (!isPlugged) {
         btnElement.classList.replace('plugged', 'unplugged');
-        
-        // Only power failures cause physical sparks now
-        if (powerComponents.includes(key)) {
-            spawnInternalSparks();
-        }
+        if (powerComponents.includes(key)) spawnInternalSparks();
     } else {
         btnElement.classList.replace('unplugged', 'plugged');
     }
 
-    // Advanced Thermal Engine (Checks Fan AND WaterPump)
     if (key === 'PSU' || key === 'ATX24') {
         if (!plugStates['PSU'] || !plugStates['ATX24']) {
             clearInterval(heatingInterval);
@@ -358,7 +387,7 @@ function updateInspector(shouldZoom) {
     highlightPhysicalZone(selectedComponent);
     
     if(shouldZoom) {
-        triggerCinematicZoom();
+        triggerCinematicZoom(selectedComponent);
     }
 }
 
@@ -391,7 +420,7 @@ function initiateBootSequence() {
         isBooting = false;
         updateInspector(false);
         evaluateSystemState();
-    }, 3000); // 3-Second Loading Delay
+    }, 3000); 
 }
 
 function evaluateSystemState() {
@@ -402,7 +431,6 @@ function evaluateSystemState() {
     UI.screenDesktop.classList.add('hidden');
     UI.screenError.classList.add('hidden');
     UI.gpuGlitch.classList.add('hidden');
-
     UI.towerPowerLed.style.backgroundColor = 'transparent';
 
     if (!plugStates['PSU'] || !plugStates['ATX24']) {
@@ -476,13 +504,9 @@ function evaluateSystemState() {
 
     UI.powerLed.className = 'power-led led-on';
     UI.screenDesktop.classList.remove('hidden');
-
-    if (!plugStates['VRM']) {
-        UI.gpuGlitch.classList.remove('hidden'); 
-    }
+    if (!plugStates['VRM']) UI.gpuGlitch.classList.remove('hidden'); 
 }
 
-// Background loop to animate desktop widgets
 function startDesktopLoop() {
     desktopLoop = setInterval(() => {
         if (!plugStates['PSU'] || isThermalShutdown || !plugStates['CPU'] || !plugStates['RAM'] || !plugStates['SSD']) return;
