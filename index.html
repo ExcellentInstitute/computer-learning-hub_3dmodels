@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- Ensures proper scaling and prevents unwanted zooming on mobile devices -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Excellent Institute - Hardware Lab</title>
+    <title>Excellent Institute - Advanced Hardware Lab</title>
     
     <!-- High-Tech Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,19 +20,56 @@
     <div class="lab-container">
         
         <!-- ========================================== -->
-        <!-- 1. THE CSS ULTRAWIDE MONITOR               -->
+        <!-- 1. THE ADVANCED ULTRAWIDE MONITOR          -->
         <!-- ========================================== -->
         <div class="monitor-wrapper">
             <div class="monitor-bezel">
                 <div class="monitor-screen" id="monitor-screen">
-                    <!-- Dynamic Content Container -->
-                    <div id="screen-content" class="screen-content state-boot">
-                        <div class="system-log" id="system-log">EXCELLENTOS v1.0.9 INITIALIZING...</div>
+                    
+                    <!-- LAYER 1: BIOS / POST Boot Screen -->
+                    <div id="screen-bios" class="screen-layer hidden">
+                        <div class="bios-text" id="bios-text"></div>
                     </div>
-                    <!-- Visual Effects Layers -->
-                    <div class="scanline"></div>
-                    <div id="glitch-overlay" class="glitch-overlay hidden"></div>
-                    <div id="power-led" class="power-led led-on"></div>
+
+                    <!-- LAYER 2: Desktop OS Environment -->
+                    <div id="screen-desktop" class="screen-layer desktop-env hidden">
+                        <div class="desktop-wallpaper"></div>
+                        <!-- Live Hardware Widgets -->
+                        <div class="widget-panel">
+                            <div class="widget">
+                                <span class="wid-label">CPU LOAD</span>
+                                <div class="wid-bar"><div class="wid-fill" id="wid-cpu-bar" style="width: 4%;"></div></div>
+                                <span class="wid-val" id="wid-cpu-val">4%</span>
+                            </div>
+                            <div class="widget">
+                                <span class="wid-label">RAM ALLOC</span>
+                                <div class="wid-bar"><div class="wid-fill" id="wid-ram-bar" style="width: 18%;"></div></div>
+                                <span class="wid-val" id="wid-ram-val">18%</span>
+                            </div>
+                            <div class="widget">
+                                <span class="wid-label">CORE TEMP</span>
+                                <span class="wid-val temp-val" id="wid-temp-val">40°C</span>
+                            </div>
+                            <div class="widget">
+                                <span class="wid-label">NETWORK</span>
+                                <span class="wid-val net-val" id="wid-net-val">1GBPS LINK</span>
+                            </div>
+                        </div>
+                        <div class="os-watermark">EXCELLENT OS v2.0</div>
+                    </div>
+
+                    <!-- LAYER 3: Error & Failure Overlays -->
+                    <div id="screen-error" class="screen-layer error-env hidden">
+                        <div class="error-text" id="error-text"></div>
+                    </div>
+
+                    <!-- LAYER 4: GPU Glitch & Artifacting Overlay -->
+                    <div id="gpu-glitch" class="screen-layer gpu-artifact hidden"></div>
+
+                    <!-- Visual Glass Effects -->
+                    <div class="crt-scanline"></div>
+                    <div class="glass-reflection"></div>
+                    <div id="power-led" class="power-led led-off"></div>
                 </div>
                 <div class="monitor-logo">EXCELLENT</div>
             </div>
@@ -51,12 +87,15 @@
             <div class="data-display">
                 <div class="select-wrapper">
                     <select id="component-selector" class="cyber-select">
-                        <option value="CPU">Central Processing Unit</option>
-                        <option value="GPU">Graphics Processing Unit</option>
-                        <option value="RAM">Random Access Memory</option>
-                        <option value="PSU">Power Supply Unit</option>
-                        <option value="Fan">Thermal Cooling System</option>
+                        <option value="CPU">Central Processing Unit (CPU)</option>
+                        <option value="GPU">Graphics Processing Unit (GPU)</option>
+                        <option value="RAM">Random Access Memory (RAM)</option>
+                        <option value="PSU">Power Supply Unit (PSU)</option>
+                        <option value="Fan">Thermal Cooling System (AIO/Air)</option>
                         <option value="SSD">NVMe Solid State Drive</option>
+                        <option value="HDD">Mechanical Hard Drive (HDD)</option>
+                        <option value="NIC">Network Interface Card (NIC)</option>
+                        <option value="CMOS">CMOS Battery</option>
                     </select>
                 </div>
                 
@@ -64,17 +103,12 @@
                     <h2 id="comp-title">Central Processing Unit</h2>
                     <span id="comp-badge" class="badge badge-active">PROCESSING</span>
                 </div>
-                <p id="comp-desc" class="typewriter-text">The 'Brain' is actively executing billions of instructions per second...</p>
+                <!-- Detailed explanation strictly stays here, not in the monitor -->
+                <p id="comp-desc" class="typewriter-text">The central processor is executing logical instructions and managing the operating system lifecycle.</p>
                 
-                <!-- System Temperature Readout -->
-                <div class="temp-readout">
-                    <span>SYS TEMP:</span>
-                    <span id="temp-value" class="temp-normal">40°C</span>
-                </div>
             </div>
 
             <div class="model-chamber">
-                <!-- 3D Models will be injected here via JS -->
                 <model-viewer id="component-3d-viewer" 
                               src="" 
                               alt="3D Hardware Component" 
@@ -84,60 +118,67 @@
                               shadow-intensity="1"
                               exposure="1.2">
                 </model-viewer>
-                <!-- Holographic scanning effect -->
                 <div class="chamber-scanner"></div>
             </div>
         </div>
 
         <!-- ========================================== -->
-        <!-- 3. INTERACTIVE MOTHERBOARD                 -->
+        <!-- 3. EXPANDED MOTHERBOARD GRID               -->
         <!-- ========================================== -->
         <div class="motherboard-section">
-            <h3 class="section-title">Motherboard Interface</h3>
+            <h3 class="section-title">Motherboard Socket Interface</h3>
             
-            <div id="motherboard-grid" class="motherboard-grid">
-                <!-- SVG Traces for high-tech background -->
+            <div id="motherboard-grid" class="motherboard-grid expanded-grid">
                 <div class="pcb-traces"></div>
                 
-                <!-- Component Plugs -->
+                <!-- Core Power & Processing -->
                 <button class="cyber-btn plugged psu-btn" data-component="PSU" id="btn-PSU">
                     <span class="icon">⚡</span>
-                    <span class="label">PSU</span>
+                    <span class="label">ATX PWR</span>
                 </button>
-                
-                <button class="cyber-btn plugged fan-btn" data-component="Fan" id="btn-Fan">
-                    <span class="icon">❄️</span>
-                    <span class="label">FAN</span>
-                </button>
-                
                 <button class="cyber-btn plugged cpu-btn" data-component="CPU" id="btn-CPU">
                     <span class="icon">🧠</span>
-                    <span class="label">CPU</span>
+                    <span class="label">SOCKET AM5</span>
+                </button>
+                <button class="cyber-btn plugged fan-btn" data-component="Fan" id="btn-Fan">
+                    <span class="icon">❄️</span>
+                    <span class="label">CPU_FAN1</span>
                 </button>
                 
+                <!-- Memory & Storage -->
                 <button class="cyber-btn plugged ram-btn" data-component="RAM" id="btn-RAM">
                     <span class="icon">📟</span>
-                    <span class="label">RAM</span>
+                    <span class="label">DIMM_A1</span>
                 </button>
-                
                 <button class="cyber-btn plugged ssd-btn" data-component="SSD" id="btn-SSD">
-                    <span class="icon">💾</span>
-                    <span class="label">SSD</span>
+                    <span class="icon">🗡️</span>
+                    <span class="label">M.2_1</span>
                 </button>
-                
+                <button class="cyber-btn plugged hdd-btn" data-component="HDD" id="btn-HDD">
+                    <span class="icon">💽</span>
+                    <span class="label">SATA_1</span>
+                </button>
+
+                <!-- Expansion Cards & Board Power -->
                 <button class="cyber-btn plugged gpu-btn" data-component="GPU" id="btn-GPU">
                     <span class="icon">🎮</span>
-                    <span class="label">GPU</span>
+                    <span class="label">PCIe_x16</span>
+                </button>
+                <button class="cyber-btn plugged nic-btn" data-component="NIC" id="btn-NIC">
+                    <span class="icon">🌐</span>
+                    <span class="label">PCIe_x1</span>
+                </button>
+                <button class="cyber-btn plugged cmos-btn" data-component="CMOS" id="btn-CMOS">
+                    <span class="icon">🔋</span>
+                    <span class="label">CR2032</span>
                 </button>
                 
-                <!-- Dynamic Sparks Container -->
                 <div id="spark-container"></div>
             </div>
         </div>
 
     </div>
 
-    <!-- External JavaScript -->
     <script src="script.js"></script>
 </body>
 </html>
