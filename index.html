@@ -22,14 +22,17 @@
         <!-- ========================================== -->
         <!-- 1. FULL 3D DESK SCENE                      -->
         <!-- ========================================== -->
-        <div class="desk-scene" id="hl-monitor-zone">
+        <div class="desk-scene" id="desk-scene">
+            
+            <!-- Top-Down Ambient Light Bar -->
+            <div class="desk-light-bar"></div>
             
             <div class="speaker-3d speaker-left">
                 <div class="speaker-face"><div class="tweeter"></div><div class="woofer"></div></div>
             </div>
 
             <!-- The Advanced Ultrawide Monitor -->
-            <div class="monitor-wrapper">
+            <div class="monitor-wrapper" id="hl-monitor-zone">
                 <div class="monitor-bezel">
                     <div class="monitor-screen" id="monitor-screen">
                         
@@ -67,7 +70,7 @@
                 <div class="monitor-stand-base"></div>
             </div>
 
-            <!-- THE 3D PC TOWER (Fully modeled in CSS) -->
+            <!-- THE 3D PC TOWER (Rotatable & Interactive) -->
             <div class="tower-3d-container" id="pc-tower-container">
                 <div class="tower-3d" id="pc-tower">
                     
@@ -85,41 +88,75 @@
                         <div class="front-grill"></div>
                     </div>
                     <div class="face back-face"><div class="rear-io"></div><div class="rear-psu"></div></div>
-                    <div class="face top-face"><div class="top-grill"></div></div>
+                    <div class="face top-face">
+                        <!-- Top AIO Radiator Mount -->
+                        <div class="top-radiator-grill" id="zone-Radiator"></div>
+                    </div>
                     <div class="face bottom-face"><div class="case-feet"></div></div>
                     <div class="face right-face"></div>
                     
-                    <!-- The Glass Panel (Left Face) -->
+                    <!-- The Permanent Glass Panel (Left Face) -->
                     <div class="face left-face glass-panel" id="tower-glass">
                         <div class="glass-glare"></div>
                     </div>
 
-                    <!-- Internal 3D Components (X-Ray Targets) -->
+                    <!-- HIGH-DETAIL Internal 3D Components -->
                     <div class="internals-3d">
-                        <!-- Power Center (Spark Target) -->
-                        <div class="comp-3d comp-psu" id="zone-PSU">
-                            <div class="psu-fan"></div>
-                            <!-- Target for sparks to emit from inside the PC -->
+                        
+                        <!-- SMPS / PSU (Spark Emitter exactly here) -->
+                        <div class="hw-detail hw-psu" id="zone-PSU">
+                            <div class="psu-grill"></div>
+                            <div class="psu-fan-blade"></div>
+                            <div class="psu-label">850W SMPS</div>
                             <div id="internal-spark-emitter"></div>
                         </div>
                         
-                        <div class="comp-3d comp-mb" id="zone-MotherboardBase">
-                            <div class="comp-3d comp-cpu" id="zone-CPU"></div>
-                            <div class="comp-3d comp-pump" id="zone-WaterPump"></div>
-                            <div class="comp-3d comp-ram" id="zone-RAM"></div>
-                            <div class="comp-3d comp-vrm" id="zone-VRM"></div>
-                            <div class="comp-3d comp-gpu" id="zone-GPU"><div class="gpu-fans"></div></div>
-                            <div class="comp-3d comp-ssd" id="zone-SSD"></div>
-                            <div class="comp-3d comp-m2" id="zone-M2Heatsink"></div>
-                            <div class="comp-3d comp-chipset" id="zone-Chipset"></div>
-                            <div class="comp-3d comp-cmos" id="zone-CMOS"></div>
-                            <div class="comp-3d comp-tpm" id="zone-TPM"></div>
+                        <div class="hw-detail hw-mb" id="zone-MotherboardBase">
+                            
+                            <!-- CPU -->
+                            <div class="hw-detail hw-cpu" id="zone-CPU"><div class="cpu-ihs">Ryzen</div></div>
+                            
+                            <!-- AIO Liquid Cooler Pump (Sits on CPU) -->
+                            <div class="hw-detail hw-pump" id="zone-WaterPump">
+                                <div class="pump-screen"></div>
+                                <div class="pump-tubes"></div>
+                            </div>
+                            
+                            <!-- RAM Sticks -->
+                            <div class="hw-detail hw-ram-slots" id="zone-RAM">
+                                <div class="ram-stick"><div class="ram-rgb"></div><div class="ram-contacts"></div></div>
+                                <div class="ram-stick"><div class="ram-rgb"></div><div class="ram-contacts"></div></div>
+                            </div>
+                            
+                            <!-- VRM -->
+                            <div class="hw-detail hw-vrm" id="zone-VRM"><div class="vrm-fins"></div></div>
+                            
+                            <!-- Triple-Fan GPU -->
+                            <div class="hw-detail hw-gpu" id="zone-GPU">
+                                <div class="gpu-backplate">RTX 4090</div>
+                                <div class="gpu-side-rgb">GEFORCE</div>
+                                <div class="gpu-fans">
+                                    <div class="g-fan"></div><div class="g-fan"></div><div class="g-fan"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- M.2 SSD -->
+                            <div class="hw-detail hw-ssd" id="zone-SSD"><div class="ssd-chips"></div></div>
+                            <div class="hw-detail hw-m2-heatsink" id="zone-M2Heatsink"></div>
+                            
+                            <!-- Chipset & Batteries -->
+                            <div class="hw-detail hw-chipset" id="zone-Chipset"><div class="chipset-logo"></div></div>
+                            <div class="hw-detail hw-cmos" id="zone-CMOS"><div class="battery-shine"></div></div>
+                            <div class="hw-detail hw-tpm" id="zone-TPM"></div>
                         </div>
                         
-                        <div class="comp-3d comp-hdd" id="zone-HDD"></div>
-                        <div class="comp-3d comp-fan" id="zone-Fan"></div>
+                        <!-- Secondary Storage & Cooling -->
+                        <div class="hw-detail hw-hdd" id="zone-HDD"><div class="hdd-platter"></div><div class="hdd-arm"></div></div>
+                        <div class="hw-detail hw-rgb-fan" id="zone-Fan">
+                            <div class="rgb-ring"></div><div class="fan-blades"></div>
+                        </div>
                         
-                        <!-- Invisible target zones for zooming into abstract parts -->
+                        <!-- Connectors & Cables (Abstract Zones for glowing) -->
                         <div class="zoom-target" id="zone-ODD" style="transform: translate3d(80px, -150px, 40px);"></div>
                         <div class="zoom-target" id="zone-FrontPanel" style="transform: translate3d(100px, -180px, 40px);"></div>
                         <div class="zoom-target" id="zone-USB3" style="transform: translate3d(100px, -170px, 40px);"></div>
@@ -134,18 +171,20 @@
                         <div class="zoom-target" id="zone-RGB" style="transform: translate3d(0px, -190px, 30px);"></div>
                     </div>
                 </div>
+                
+                <!-- Rotation UI Hint -->
+                <div class="drag-hint">DRAG TO ROTATE</div>
             </div>
 
             <div class="speaker-3d speaker-right">
                 <div class="speaker-face"><div class="tweeter"></div><div class="woofer"></div></div>
             </div>
 
-            <!-- 3D Desk Peripherals -->
+            <!-- Illuminated 3D Desk Peripherals -->
             <div class="desk-surface-3d">
                 <div class="keyboard-3d">
                     <div class="kb-base"></div>
                     <div class="kb-keys">
-                        <!-- Repeated rows to simulate physical keys -->
                         <div class="kb-row"><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div></div>
                         <div class="kb-row"><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div></div>
                         <div class="kb-row"><div class="key"></div><div class="key"></div><div class="key"></div><div class="key"></div><div class="key spacebar"></div><div class="key"></div><div class="key"></div></div>
@@ -167,15 +206,16 @@
         <!-- ========================================== -->
         <!-- 2. DATA INSPECTOR & 3D CHAMBER             -->
         <!-- ========================================== -->
-        <div class="inspection-panel">
+        <div class="inspection-panel" id="inspector-panel">
             <div class="data-display">
                 <div class="select-wrapper">
                     <select id="component-selector" class="cyber-select">
-                        <option value="PSU">Power Supply Unit (PSU)</option>
+                        <option value="PSU">SMPS / Power Supply Unit</option>
                         <option value="CPU">Central Processing Unit (CPU)</option>
                         <option value="RAM">Random Access Memory (RAM)</option>
                         <option value="GPU">Graphics Processing Unit (GPU)</option>
-                        <option value="Fan">Cooling Fan</option>
+                        <option value="Fan">RGB Cooling Fan</option>
+                        <option value="WaterPump">AIO Liquid Cooler</option>
                         <option value="SSD">NVMe Solid State Drive</option>
                         <option value="HDD">Mechanical Hard Drive (HDD)</option>
                         <option value="ODD">Optical Disk Drive (CD/DVD)</option>
@@ -192,7 +232,6 @@
                         <option value="CaptureCard">Video Capture Card</option>
                         <option value="Riser">PCIe Riser Cable</option>
                         <option value="RGB">RGB Lighting Controller</option>
-                        <option value="WaterPump">AIO Water Pump</option>
                         <option value="M2Heatsink">M.2 SSD Heatsink</option>
                         <option value="FrontPanel">Front Panel I/O</option>
                         <option value="USB3">USB 3.0 Header</option>
@@ -221,11 +260,12 @@
             <div id="motherboard-grid" class="motherboard-grid massive-grid">
                 <div class="pcb-traces"></div>
                 
-                <button class="cyber-btn plugged" data-component="PSU" id="btn-PSU"><span class="icon">🔌</span><span class="label">Power Supply</span></button>
+                <button class="cyber-btn plugged" data-component="PSU" id="btn-PSU"><span class="icon">🔌</span><span class="label">SMPS (Power)</span></button>
                 <button class="cyber-btn plugged" data-component="CPU" id="btn-CPU"><span class="icon">🧠</span><span class="label">CPU</span></button>
                 <button class="cyber-btn plugged" data-component="RAM" id="btn-RAM"><span class="icon">📟</span><span class="label">RAM Memory</span></button>
                 <button class="cyber-btn plugged" data-component="GPU" id="btn-GPU"><span class="icon">🎮</span><span class="label">Graphics Card</span></button>
-                <button class="cyber-btn plugged" data-component="Fan" id="btn-Fan"><span class="icon">❄️</span><span class="label">Cooling Fan</span></button>
+                <button class="cyber-btn plugged" data-component="WaterPump" id="btn-WaterPump"><span class="icon">💧</span><span class="label">Liquid Cooler</span></button>
+                <button class="cyber-btn plugged" data-component="Fan" id="btn-Fan"><span class="icon">❄️</span><span class="label">RGB Fan</span></button>
                 
                 <button class="cyber-btn plugged" data-component="SSD" id="btn-SSD"><span class="icon">🗡️</span><span class="label">NVMe SSD</span></button>
                 <button class="cyber-btn plugged" data-component="HDD" id="btn-HDD"><span class="icon">💽</span><span class="label">Hard Drive</span></button>
@@ -247,7 +287,6 @@
                 <button class="cyber-btn plugged" data-component="Riser" id="btn-Riser"><span class="icon">🎢</span><span class="label">PCIe Riser</span></button>
                 
                 <button class="cyber-btn plugged" data-component="RGB" id="btn-RGB"><span class="icon">🌈</span><span class="label">RGB Lights</span></button>
-                <button class="cyber-btn plugged" data-component="WaterPump" id="btn-WaterPump"><span class="icon">💧</span><span class="label">Water Pump</span></button>
                 <button class="cyber-btn plugged" data-component="M2Heatsink" id="btn-M2Heatsink"><span class="icon">🧊</span><span class="label">SSD Heatsink</span></button>
                 <button class="cyber-btn plugged" data-component="FrontPanel" id="btn-FrontPanel"><span class="icon">🔘</span><span class="label">Front Buttons</span></button>
                 <button class="cyber-btn plugged" data-component="USB3" id="btn-USB3"><span class="icon">🔌</span><span class="label">USB Headers</span></button>
