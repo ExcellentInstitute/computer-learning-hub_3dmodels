@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Excellent Institute - Volumetric Hardware Lab</title>
+    <title>Excellent Institute - Ultra-Detailed Volumetric Hardware Lab</title>
     
     <!-- High-Tech Fonts for Crisp UI -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,29 +19,33 @@
 <body>
     <div class="lab-container">
         
-        <!-- ========================================== -->
-        <!-- 1. SPLIT WORKSPACE: STATIC 2D VS TRUE 3D   -->
-        <!-- ========================================== -->
+        <!-- ======================================================= -->
+        <!-- 1. SPLIT WORKSPACE: STATIC 2D LEFT VS TRUE 3D RIGHT     -->
+        <!-- ======================================================= -->
         <div class="split-workspace">
             
-            <!-- LEFT SIDE: 100% STATIC, 2D, BRIGHT, CRISP -->
-            <!-- This side will NEVER move or distort when zooming -->
+            <!-- =================================================== -->
+            <!-- LEFT SIDE: 100% STATIC, 2D, BRIGHT, CRISP           -->
+            <!-- =================================================== -->
             <div class="static-peripherals-zone">
                 
                 <div class="bright-monitor-wrapper">
                     <div class="monitor-bezel">
                         <div class="monitor-screen" id="monitor-screen">
                             
+                            <!-- Boot Layer -->
                             <div id="screen-boot" class="screen-layer boot-env hidden">
                                 <img src="assets/logo.png" alt="Logo" id="boot-logo" class="rotating-logo" 
                                      onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDBlNWZmIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4='">
                                 <div class="boot-text-pulse">LOADING EXCELLENT OS...</div>
                             </div>
 
+                            <!-- BIOS Layer -->
                             <div id="screen-bios" class="screen-layer bios-env hidden">
                                 <div class="bios-text" id="bios-text"></div>
                             </div>
 
+                            <!-- Desktop Layer -->
                             <div id="screen-desktop" class="screen-layer desktop-env hidden">
                                 <div class="clean-grid-wallpaper"></div>
                                 <div class="widget-panel">
@@ -53,10 +57,12 @@
                                 <div class="os-watermark">EXCELLENT OS v2.0</div>
                             </div>
 
+                            <!-- Error Layer -->
                             <div id="screen-error" class="screen-layer error-env hidden">
                                 <div class="error-text" id="error-text"></div>
                             </div>
                             
+                            <!-- Glitch Artifacts for damaged GPU/VRM -->
                             <div id="gpu-glitch" class="screen-layer gpu-artifact hidden"></div>
                         </div>
                         <div class="monitor-brand">EXCELLENT</div>
@@ -66,7 +72,7 @@
                     <div class="monitor-base"></div>
                 </div>
 
-                <!-- Bright, clearly visible flat desk peripherals -->
+                <!-- Flat Desk Peripherals -->
                 <div class="desk-mat-2d">
                     <div class="keyboard-2d">
                         <div class="kb-keys-grid"></div>
@@ -77,116 +83,235 @@
                         <div class="mouse-glow-edge"></div>
                     </div>
                 </div>
-
             </div>
 
-            <!-- RIGHT SIDE: VOLUMETRIC 3D ISOLATED PC TOWER -->
-            <!-- Contains true 6-sided 3D blocks for components -->
+            <!-- =================================================== -->
+            <!-- RIGHT SIDE: TRUE 3D VOLUMETRIC TOWER (Lian Li O11)  -->
+            <!-- =================================================== -->
             <div class="dynamic-tower-zone">
                 <div class="tower-3d-wrapper" id="pc-tower-container">
                     <div class="tower-3d" id="pc-tower">
                         
-                        <!-- The Strict Containment Box Faces (The Cabinet) -->
-                        <div class="face chassis-back"></div>
-                        <div class="face chassis-top"></div>
-                        <div class="face chassis-bottom"></div>
-                        <div class="face chassis-front" id="zone-FrontPanel">
-                            <div class="front-io">
-                                <div class="io-power-btn" id="tower-power-btn"></div>
-                                <div class="io-usb"></div>
-                                <div class="io-usb"></div>
-                            </div>
+                        <!-- THE CHASSIS WALLS -->
+                        <!-- Right Wall acts as the Motherboard Tray in a dual-chamber case -->
+                        <div class="chassis-wall wall-right"></div> 
+                        <div class="chassis-wall wall-back"></div>
+                        <div class="chassis-wall wall-bottom"></div>
+                        <div class="chassis-wall wall-top"></div>
+                        
+                        <!-- Front & Side Glass Panels -->
+                        <div class="chassis-wall wall-front-glass">
+                            <div class="glass-glare"></div>
+                        </div>
+                        <div class="chassis-wall wall-left-glass" id="tower-glass">
+                            <div class="glass-glare"></div>
                         </div>
                         
-                        <!-- The Internals (Constructed as Volumetric Blocks inside the Cabinet) -->
-                        <div class="chassis-internals">
+                        <!-- Solid Front I/O Panel (Right side of front face) -->
+                        <div class="chassis-wall wall-front-panel" id="zone-FrontPanel">
+                            <div class="front-io-panel">
+                                <div class="io-btn" id="tower-power-btn"></div>
+                                <div class="io-audio-jack"></div>
+                                <div class="io-usb-type-c"></div>
+                                <div class="io-usb"></div>
+                                <div class="io-usb"></div>
+                            </div>
+                            <!-- Volumetric ODD Tray sticking out -->
+                            <div class="vol-odd-bay" id="zone-ODD">
+                                <div class="odd-face odd-front">DVD/RW</div>
+                                <div class="odd-face odd-top"></div>
+                                <div class="odd-face odd-bottom"></div>
+                                <div class="odd-face odd-left"></div>
+                                <div class="odd-face odd-right"></div>
+                            </div>
+                        </div>
+
+                        <!-- =============================================== -->
+                        <!-- MOTHERBOARD TRAY & ALL VOLUMETRIC COMPONENTS    -->
+                        <!-- =============================================== -->
+                        <div class="motherboard-tray" id="zone-MotherboardBase">
+                            <div class="mb-pcb-texture"></div>
+
+                            <!-- 1. CPU & Massive AIO Water Pump Block -->
+                            <div class="vol-cpu" id="zone-CPU">
+                                <div class="cpu-ihs"></div>
+                            </div>
                             
-                            <!-- Volumetric Spinning Cooling System -->
-                            <div class="internal-fans-front">
-                                <div class="vol-fan"><div class="fan-ring"></div><div class="fan-hub"></div><div class="fan-blades"></div></div>
-                                <div class="vol-fan"><div class="fan-ring"></div><div class="fan-hub"></div><div class="fan-blades"></div></div>
-                                <div class="vol-fan"><div class="fan-ring"></div><div class="fan-hub"></div><div class="fan-blades"></div></div>
-                            </div>
-                            <div class="internal-fan-rear" id="zone-Fan">
-                                <div class="vol-fan"><div class="fan-ring"></div><div class="fan-hub"></div><div class="fan-blades"></div></div>
+                            <div class="vol-pump" id="zone-WaterPump">
+                                <div class="pump-face pump-front">
+                                    <div class="pump-lcd-screen"><span class="pump-lcd-text">40°C</span></div>
+                                </div>
+                                <div class="pump-face pump-back"></div>
+                                <div class="pump-face pump-left"></div>
+                                <div class="pump-face pump-right"></div>
+                                <div class="pump-face pump-top"></div>
+                                <div class="pump-face pump-bottom"></div>
+                                
+                                <!-- Thick 3D Liquid Tubes Routing to Top Radiator -->
+                                <div class="aio-tube tube-1">
+                                    <div class="tube-segment t-seg-1"></div>
+                                    <div class="tube-segment t-seg-2"></div>
+                                    <div class="tube-segment t-seg-3"></div>
+                                </div>
+                                <div class="aio-tube tube-2">
+                                    <div class="tube-segment t-seg-1"></div>
+                                    <div class="tube-segment t-seg-2"></div>
+                                    <div class="tube-segment t-seg-3"></div>
+                                </div>
                             </div>
 
-                            <!-- Motherboard Zone -->
-                            <div class="internal-mb" id="zone-MotherboardBase">
-                                <div class="mb-cpu" id="zone-CPU"></div>
-                                
-                                <!-- Volumetric Liquid Cooler Pump & Tubes -->
-                                <div class="vol-pump" id="zone-WaterPump">
-                                    <div class="pump-cylinder"></div>
-                                    <div class="pump-lcd">40°</div>
-                                    <div class="pump-tube tube-1"></div>
-                                    <div class="pump-tube tube-2"></div>
+                            <!-- 2. Volumetric RAM Sticks (4x Trident Z Style) -->
+                            <div class="ram-slots" id="zone-RAM">
+                                <div class="vol-ram stick-1">
+                                    <div class="ram-face r-front"></div><div class="ram-face r-back"></div>
+                                    <div class="ram-face r-left"></div><div class="ram-face r-right"></div>
+                                    <div class="ram-face r-top"><div class="ram-rgb-diffuser"></div></div>
                                 </div>
-                                
-                                <!-- Volumetric RAM Sticks (6-sided blocks) -->
-                                <div class="mb-ram-bank" id="zone-RAM">
-                                    <div class="vol-ram"><div class="ram-face r-front"></div><div class="ram-face r-top"></div><div class="ram-face r-side"></div></div>
-                                    <div class="vol-ram"><div class="ram-face r-front"></div><div class="ram-face r-top"></div><div class="ram-face r-side"></div></div>
-                                    <div class="vol-ram"><div class="ram-face r-front"></div><div class="ram-face r-top"></div><div class="ram-face r-side"></div></div>
-                                    <div class="vol-ram"><div class="ram-face r-front"></div><div class="ram-face r-top"></div><div class="ram-face r-side"></div></div>
+                                <div class="vol-ram stick-2">
+                                    <div class="ram-face r-front"></div><div class="ram-face r-back"></div>
+                                    <div class="ram-face r-left"></div><div class="ram-face r-right"></div>
+                                    <div class="ram-face r-top"><div class="ram-rgb-diffuser"></div></div>
                                 </div>
-                                
-                                <div class="mb-vrm" id="zone-VRM"></div>
-                                <div class="mb-ssd" id="zone-SSD"></div>
-                                <div class="mb-heatsink" id="zone-M2Heatsink"></div>
-                                <div class="mb-chipset" id="zone-Chipset"></div>
-                                <div class="mb-cmos" id="zone-CMOS"></div>
+                                <div class="vol-ram stick-3">
+                                    <div class="ram-face r-front"></div><div class="ram-face r-back"></div>
+                                    <div class="ram-face r-left"></div><div class="ram-face r-right"></div>
+                                    <div class="ram-face r-top"><div class="ram-rgb-diffuser"></div></div>
+                                </div>
+                                <div class="vol-ram stick-4">
+                                    <div class="ram-face r-front"></div><div class="ram-face r-back"></div>
+                                    <div class="ram-face r-left"></div><div class="ram-face r-right"></div>
+                                    <div class="ram-face r-top"><div class="ram-rgb-diffuser"></div></div>
+                                </div>
                             </div>
 
-                            <!-- VOLUMETRIC Massive 3D GPU (6-sided block) -->
+                            <!-- 3. VRM, M.2, SSD, Chipset (Volumetric Heatsinks) -->
+                            <div class="vol-vrm-heatsink" id="zone-VRM">
+                                <div class="vrm-face vrm-front"></div><div class="vrm-face vrm-top"></div><div class="vrm-face vrm-side"></div>
+                            </div>
+                            
+                            <div class="vol-m2-shield" id="zone-M2Heatsink">
+                                <div class="m2-face m2-front"></div><div class="m2-face m2-top"></div><div class="m2-face m2-side"></div>
+                            </div>
+                            
+                            <div class="vol-ssd-drive" id="zone-SSD">
+                                <div class="ssd-face ssd-front">NVMe</div><div class="ssd-face ssd-top"></div><div class="ssd-face ssd-side"></div>
+                            </div>
+                            
+                            <div class="vol-chipset-block" id="zone-Chipset">
+                                <div class="chipset-face c-front"><div class="chipset-logo"></div></div>
+                                <div class="chipset-face c-top"></div><div class="chipset-face c-side"></div>
+                            </div>
+                            
+                            <div class="vol-cmos-battery" id="zone-CMOS">
+                                <div class="cmos-top"></div><div class="cmos-edge"></div>
+                            </div>
+
+                            <!-- 4. MASSIVE VOLUMETRIC GPU (Strix/EVGA Style) -->
                             <div class="vol-gpu" id="zone-GPU">
-                                <div class="gpu-face gpu-front">GEFORCE RTX 4090</div>
+                                <div class="gpu-face gpu-front">
+                                    <div class="gpu-led-strip"></div>
+                                    <div class="gpu-brand-text">GEFORCE RTX 4090</div>
+                                </div>
                                 <div class="gpu-face gpu-back"></div>
                                 <div class="gpu-face gpu-left"></div>
-                                <div class="gpu-face gpu-right"></div>
-                                <div class="gpu-face gpu-top"></div>
-                                <div class="gpu-face gpu-bottom">
-                                    <div class="gpu-mini-fan"></div>
-                                    <div class="gpu-mini-fan"></div>
-                                    <div class="gpu-mini-fan"></div>
+                                <div class="gpu-face gpu-right"></div> <!-- PCIe Bracket -->
+                                <div class="gpu-face gpu-top"> <!-- Backplate -->
+                                    <div class="gpu-backplate-design"></div>
+                                </div>
+                                <div class="gpu-face gpu-bottom"> <!-- Fan Shroud -->
+                                    <div class="gpu-cooler-fan"><div class="g-fan-hub"></div></div>
+                                    <div class="gpu-cooler-fan"><div class="g-fan-hub"></div></div>
+                                    <div class="gpu-cooler-fan"><div class="g-fan-hub"></div></div>
                                 </div>
                             </div>
 
-                            <!-- VOLUMETRIC PSU Block -->
-                            <div class="vol-psu" id="zone-PSU">
-                                <div class="psu-face psu-front"><span class="psu-label">850W POWER</span></div>
-                                <div class="psu-face psu-top"></div>
-                                <div class="psu-face psu-left"></div>
-                                <div class="psu-face psu-right"></div>
-                                <div id="internal-spark-emitter"></div>
+                            <!-- Thick Braided Power Cables -->
+                            <div class="vol-power-cable gpu-cable-bundle">
+                                <div class="cable-strand"></div><div class="cable-strand"></div><div class="cable-strand"></div>
+                            </div>
+                            <div class="vol-power-cable atx-cable-bundle" id="zone-ATX24">
+                                <div class="cable-strand"></div><div class="cable-strand"></div><div class="cable-strand"></div><div class="cable-strand"></div>
+                            </div>
+                            <div class="vol-power-cable eps-cable-bundle" id="zone-EPS8">
+                                <div class="cable-strand"></div><div class="cable-strand"></div>
+                            </div>
+
+                            <!-- PCIe Expansion Cards (Bottom slots) -->
+                            <div class="vol-pcie-card nic-card" id="zone-NIC">
+                                <div class="pcie-face p-front">10GbE</div><div class="pcie-face p-top"></div><div class="pcie-face p-side"></div>
+                            </div>
+                            <div class="vol-pcie-card wifi-card" id="zone-WiFi">
+                                <div class="pcie-face p-front">WiFi 6E</div><div class="pcie-face p-top"></div><div class="pcie-face p-side"></div>
                             </div>
                             
-                            <!-- Volumetric HDD -->
-                            <div class="vol-hdd" id="zone-HDD">
-                                <div class="hdd-face hdd-front">2TB</div>
-                                <div class="hdd-face hdd-top"></div>
-                                <div class="hdd-face hdd-side"></div>
-                            </div>
-                            
-                            <!-- Invisible Target Nodes -->
-                            <div class="zoom-target" id="zone-ATX24"></div>
-                            <div class="zoom-target" id="zone-EPS8"></div>
-                            <div class="zoom-target" id="zone-SATA"></div>
-                            <div class="zoom-target" id="zone-TPM"></div>
-                            <div class="zoom-target" id="zone-NIC"></div>
-                            <div class="zoom-target" id="zone-WiFi"></div>
-                            <div class="zoom-target" id="zone-SoundCard"></div>
-                            <div class="zoom-target" id="zone-CaptureCard"></div>
-                            <div class="zoom-target" id="zone-Riser"></div>
-                            <div class="zoom-target" id="zone-RGB"></div>
-                            <div class="zoom-target" id="zone-USB3"></div>
-                            <div class="zoom-target" id="zone-ODD"></div>
+                            <!-- Motherboard Headers -->
+                            <div class="mb-header sata-ports" id="zone-SATA"></div>
+                            <div class="mb-header usb3-header" id="zone-USB3"></div>
+                            <div class="mb-header tpm-header" id="zone-TPM"></div>
+                            <div class="mb-header rgb-header" id="zone-RGB"></div>
                         </div>
 
-                        <!-- Left Glass Panel (Rendered LAST to physically trap everything inside) -->
-                        <div class="face chassis-glass-left" id="tower-glass">
-                            <div class="glass-reflection"></div>
+                        <!-- =============================================== -->
+                        <!-- COOLING MOUNTS (9x 3D ARGB Fans & Radiator)     -->
+                        <!-- =============================================== -->
+                        
+                        <!-- Top Radiator & Fans (Pushing through top mesh) -->
+                        <div class="radiator-mount-top">
+                            <div class="vol-radiator-block">
+                                <div class="rad-face rad-front"></div><div class="rad-face rad-bottom"></div><div class="rad-face rad-side"></div>
+                            </div>
+                            <div class="case-fan top-fan1"><div class="fan-frame"></div><div class="fan-ring"></div><div class="fan-hub"></div><div class="fan-blades"></div></div>
+                            <div class="case-fan top-fan2"><div class="fan-frame"></div><div class="fan-ring"></div><div class="fan-hub"></div><div class="fan-blades"></div></div>
+                            <div class="case-fan top-fan3"><div class="fan-frame"></div><div class="fan-ring"></div><div class="fan-hub"></div><div class="fan-blades"></div></div>
                         </div>
+
+                        <!-- Bottom Intake Fans -->
+                        <div class="fan-mount-bottom">
+                            <div class="case-fan bot-fan1"><div class="fan-frame"></div><div class="fan-ring"></div><div class="fan-hub"></div><div class="fan-blades"></div></div>
+                            <div class="case-fan bot-fan2"><div class="fan-frame"></div><div class="fan-ring"></div><div class="fan-hub"></div><div class="fan-blades"></div></div>
+                            <div class="case-fan bot-fan3"><div class="fan-frame"></div><div class="fan-ring"></div><div class="fan-hub"></div><div class="fan-blades"></div></div>
+                        </div>
+
+                        <!-- Side Intake Fans (Next to Motherboard) -->
+                        <div class="fan-mount-side" id="zone-Fan">
+                            <div class="case-fan side-fan1"><div class="fan-frame"></div><div class="fan-ring"></div><div class="fan-hub"></div><div class="fan-blades"></div></div>
+                            <div class="case-fan side-fan2"><div class="fan-frame"></div><div class="fan-ring"></div><div class="fan-hub"></div><div class="fan-blades"></div></div>
+                            <div class="case-fan side-fan3"><div class="fan-frame"></div><div class="fan-ring"></div><div class="fan-hub"></div><div class="fan-blades"></div></div>
+                        </div>
+
+                        <!-- =============================================== -->
+                        <!-- DUAL-CHAMBER REAR COMPONENTS                    -->
+                        <!-- =============================================== -->
+                        
+                        <!-- Volumetric PSU (Hidden in back chamber, protruding slightly) -->
+                        <div class="vol-psu-block" id="zone-PSU">
+                            <div class="psu-face psu-front"><div class="psu-fan-grill"></div></div>
+                            <div class="psu-face psu-back"></div>
+                            <div class="psu-face psu-left"></div>
+                            <div class="psu-face psu-right"></div>
+                            <div class="psu-face psu-top"></div>
+                            <div class="psu-face psu-bottom"></div>
+                            <div class="psu-sticker">850W GOLD</div>
+                            <div id="internal-spark-emitter"></div>
+                        </div>
+
+                        <!-- Volumetric HDD Cage -->
+                        <div class="vol-hdd-cage" id="zone-HDD">
+                            <div class="hdd-face hdd-front">
+                                <div class="hdd-drive-tray"><span class="hdd-label">2TB</span></div>
+                                <div class="hdd-drive-tray"><span class="hdd-label">2TB</span></div>
+                            </div>
+                            <div class="hdd-face hdd-back"></div>
+                            <div class="hdd-face hdd-left"></div>
+                            <div class="hdd-face hdd-right"></div>
+                            <div class="hdd-face hdd-top"></div>
+                            <div class="hdd-face hdd-bottom"></div>
+                        </div>
+
+                        <!-- Target Nodes for components that lack massive physical footprint -->
+                        <div class="zoom-target" id="zone-SoundCard"></div>
+                        <div class="zoom-target" id="zone-CaptureCard"></div>
+                        <div class="zoom-target" id="zone-Riser"></div>
 
                     </div>
                 </div>
@@ -236,63 +361,59 @@
             </div>
 
             <div class="model-chamber bright-chamber">
-                <model-viewer id="component-3d-viewer" 
-                              src="" 
-                              alt="3D Hardware Component" 
-                              auto-rotate 
-                              camera-controls 
-                              disable-zoom 
-                              shadow-intensity="1" 
-                              exposure="1.2">
-                </model-viewer>
-                <div class="chamber-scanner"></div>
+                <model-viewer id="component-3d-viewer" src="" auto-rotate camera-controls disable-zoom exposure="1.2"></model-viewer>
             </div>
         </div>
 
         <!-- ========================================== -->
-        <!-- 3. MASSIVE 25-COMPONENT MOTHERBOARD GRID   -->
+        <!-- 3. MOTHERBOARD GRID                        -->
         <!-- ========================================== -->
         <div class="motherboard-section bright-grid-section">
-            <h3 class="section-title">Motherboard Interactive Interface</h3>
-            
+            <h3 class="section-title">Hardware Connectivity</h3>
             <div id="motherboard-grid" class="motherboard-grid massive-grid">
                 
+                <!-- Core Components -->
                 <button class="cyber-btn plugged" data-component="PSU" id="btn-PSU"><span class="icon">🔌</span><span class="label">SMPS (Power)</span></button>
                 <button class="cyber-btn plugged" data-component="CPU" id="btn-CPU"><span class="icon">🧠</span><span class="label">CPU</span></button>
                 <button class="cyber-btn plugged" data-component="RAM" id="btn-RAM"><span class="icon">📟</span><span class="label">RAM Memory</span></button>
                 <button class="cyber-btn plugged" data-component="GPU" id="btn-GPU"><span class="icon">🎮</span><span class="label">Graphics Card</span></button>
-                <button class="cyber-btn plugged" data-component="WaterPump" id="btn-WaterPump"><span class="icon">💧</span><span class="label">Liquid Cooler</span></button>
-                <button class="cyber-btn plugged" data-component="Fan" id="btn-Fan"><span class="icon">❄️</span><span class="label">RGB Fan</span></button>
+                <button class="cyber-btn plugged" data-component="WaterPump" id="btn-WaterPump"><span class="icon">💧</span><span class="label">AIO Cooler</span></button>
+                <button class="cyber-btn plugged" data-component="Fan" id="btn-Fan"><span class="icon">❄️</span><span class="label">RGB Fans</span></button>
                 
+                <!-- Storage & IO -->
                 <button class="cyber-btn plugged" data-component="SSD" id="btn-SSD"><span class="icon">🗡️</span><span class="label">NVMe SSD</span></button>
                 <button class="cyber-btn plugged" data-component="HDD" id="btn-HDD"><span class="icon">💽</span><span class="label">Hard Drive</span></button>
                 <button class="cyber-btn plugged" data-component="ODD" id="btn-ODD"><span class="icon">💿</span><span class="label">Optical Drive</span></button>
+                <button class="cyber-btn plugged" data-component="FrontPanel" id="btn-FrontPanel"><span class="icon">🔘</span><span class="label">Front Panel</span></button>
                 
+                <!-- Motherboard Logic -->
                 <button class="cyber-btn plugged" data-component="Chipset" id="btn-Chipset"><span class="icon">🔳</span><span class="label">Chipset</span></button>
                 <button class="cyber-btn plugged" data-component="VRM" id="btn-VRM"><span class="icon">🛡️</span><span class="label">VRM Heatsink</span></button>
                 <button class="cyber-btn plugged" data-component="CMOS" id="btn-CMOS"><span class="icon">🔋</span><span class="label">CMOS Battery</span></button>
-                <button class="cyber-btn plugged" data-component="TPM" id="btn-TPM"><span class="icon">🔐</span><span class="label">Security (TPM)</span></button>
+                <button class="cyber-btn plugged" data-component="TPM" id="btn-TPM"><span class="icon">🔐</span><span class="label">Security TPM</span></button>
                 
+                <!-- Cabling -->
                 <button class="cyber-btn plugged" data-component="ATX24" id="btn-ATX24"><span class="icon">🐍</span><span class="label">24-pin Power</span></button>
                 <button class="cyber-btn plugged" data-component="EPS8" id="btn-EPS8"><span class="icon">⚡</span><span class="label">8-pin CPU Pwr</span></button>
                 <button class="cyber-btn plugged" data-component="SATA" id="btn-SATA"><span class="icon">🔗</span><span class="label">SATA Cable</span></button>
+                <button class="cyber-btn plugged" data-component="USB3" id="btn-USB3"><span class="icon">🔌</span><span class="label">USB Headers</span></button>
                 
+                <!-- Expansion -->
                 <button class="cyber-btn plugged" data-component="NIC" id="btn-NIC"><span class="icon">🌐</span><span class="label">Network Card</span></button>
                 <button class="cyber-btn plugged" data-component="WiFi" id="btn-WiFi"><span class="icon">📶</span><span class="label">Wi-Fi Module</span></button>
                 <button class="cyber-btn plugged" data-component="SoundCard" id="btn-SoundCard"><span class="icon">🔊</span><span class="label">Sound Card</span></button>
                 <button class="cyber-btn plugged" data-component="CaptureCard" id="btn-CaptureCard"><span class="icon">📹</span><span class="label">Capture Card</span></button>
-                <button class="cyber-btn plugged" data-component="Riser" id="btn-Riser"><span class="icon">🎢</span><span class="label">PCIe Riser</span></button>
                 
+                <!-- Mods -->
+                <button class="cyber-btn plugged" data-component="Riser" id="btn-Riser"><span class="icon">🎢</span><span class="label">PCIe Riser</span></button>
                 <button class="cyber-btn plugged" data-component="RGB" id="btn-RGB"><span class="icon">🌈</span><span class="label">RGB Lights</span></button>
                 <button class="cyber-btn plugged" data-component="M2Heatsink" id="btn-M2Heatsink"><span class="icon">🧊</span><span class="label">SSD Heatsink</span></button>
-                <button class="cyber-btn plugged" data-component="FrontPanel" id="btn-FrontPanel"><span class="icon">🔘</span><span class="label">Front Buttons</span></button>
-                <button class="cyber-btn plugged" data-component="USB3" id="btn-USB3"><span class="icon">🔌</span><span class="label">USB Headers</span></button>
+
             </div>
         </div>
 
     </div>
     
-    <!-- Global Container for Physics Sparks -->
     <div id="global-spark-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 99999;"></div>
 
     <script src="script.js"></script>
