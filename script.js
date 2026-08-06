@@ -113,31 +113,31 @@ const criticalBootComponents = [
  * Adjusted scaling and translations to sync perfectly with the CSS updates.
  */
 const cinematicCameraRig = {
-    'FrontPanel':  { rotateY: -15, translateX: '-80px', translateY: '0px',   scale: 1.5 },
-    'ODD':         { rotateY: -20, translateX: '-60px', translateY: '50px',  scale: 1.6 },
-    'PSU':         { rotateY: -110, translateX: '100px', translateY: '-100px',scale: 1.5 },
-    'CPU':         { rotateY: -80, translateX: '30px',  translateY: '20px',  scale: 1.8 },
-    'WaterPump':   { rotateY: -85, translateX: '40px',  translateY: '20px',  scale: 1.8 },
-    'RAM':         { rotateY: -75, translateX: '60px',  translateY: '30px',  scale: 1.7 },
-    'GPU':         { rotateY: -85, translateX: '0px',   translateY: '-40px', scale: 1.6 },
-    'Fan':         { rotateY: -100, translateX: '50px',  translateY: '0px',   scale: 1.4 },
-    'SSD':         { rotateY: -70, translateX: '20px',  translateY: '-20px', scale: 1.8 },
-    'HDD':         { rotateY: -110, translateX: '80px',  translateY: '0px',   scale: 1.5 },
-    'Chipset':     { rotateY: -80, translateX: '-20px', translateY: '-80px', scale: 1.9 },
-    'VRM':         { rotateY: -65, translateX: '30px',  translateY: '60px',  scale: 1.8 },
-    'CMOS':        { rotateY: -70, translateX: '40px',  translateY: '-60px', scale: 1.9 },
-    'TPM':         { rotateY: -75, translateX: '-40px', translateY: '-80px', scale: 1.8 },
-    'ATX24':       { rotateY: -90, translateX: '50px',  translateY: '0px',   scale: 1.6 },
-    'EPS8':        { rotateY: -40, translateX: '60px',  translateY: '80px',  scale: 1.7 },
-    'SATA':        { rotateY: -85, translateX: '20px',  translateY: '-80px', scale: 1.8 },
-    'NIC':         { rotateY: -85, translateX: '50px',  translateY: '-100px',scale: 1.6 },
-    'WiFi':        { rotateY: -85, translateX: '50px',  translateY: '-120px',scale: 1.6 },
-    'SoundCard':   { rotateY: -85, translateX: '50px',  translateY: '-140px',scale: 1.6 },
-    'CaptureCard': { rotateY: -85, translateX: '50px',  translateY: '-160px',scale: 1.6 },
-    'Riser':       { rotateY: -60, translateX: '0px',   translateY: '-50px', scale: 1.5 },
-    'RGB':         { rotateY: -80, translateX: '0px',   translateY: '100px', scale: 1.6 },
-    'M2Heatsink':  { rotateY: -75, translateX: '20px',  translateY: '-20px', scale: 1.8 },
-    'USB3':        { rotateY: -90, translateX: '-10px', translateY: '-100px',scale: 1.8 }
+    'FrontPanel':  { rotateY: 15, translateX: '20px', translateY: '0px',   scale: 1.5 },
+    'ODD':         { rotateY: 20, translateX: '20px', translateY: '50px',  scale: 1.6 },
+    'PSU':         { rotateY: 110, translateX: '40px', translateY: '-100px',scale: 1.5 },
+    'CPU':         { rotateY: 80, translateX: '30px',  translateY: '20px',  scale: 1.8 },
+    'WaterPump':   { rotateY: 85, translateX: '40px',  translateY: '20px',  scale: 1.8 },
+    'RAM':         { rotateY: 75, translateX: '60px',  translateY: '30px',  scale: 1.7 },
+    'GPU':         { rotateY: 85, translateX: '20px',  translateY: '-40px', scale: 1.6 },
+    'Fan':         { rotateY: 100, translateX: '50px', translateY: '0px',   scale: 1.4 },
+    'SSD':         { rotateY: 70, translateX: '20px',  translateY: '-20px', scale: 1.8 },
+    'HDD':         { rotateY: 110, translateX: '50px', translateY: '0px',   scale: 1.5 },
+    'Chipset':     { rotateY: 80, translateX: '20px',  translateY: '-80px', scale: 1.9 },
+    'VRM':         { rotateY: 65, translateX: '30px',  translateY: '60px',  scale: 1.8 },
+    'CMOS':        { rotateY: 70, translateX: '40px',  translateY: '-60px', scale: 1.9 },
+    'TPM':         { rotateY: 75, translateX: '20px',  translateY: '-80px', scale: 1.8 },
+    'ATX24':       { rotateY: 90, translateX: '50px',  translateY: '0px',   scale: 1.6 },
+    'EPS8':        { rotateY: 40, translateX: '40px',  translateY: '80px',  scale: 1.7 },
+    'SATA':        { rotateY: 85, translateX: '20px',  translateY: '-80px', scale: 1.8 },
+    'NIC':         { rotateY: 85, translateX: '30px',  translateY: '-100px',scale: 1.6 },
+    'WiFi':        { rotateY: 85, translateX: '30px',  translateY: '-120px',scale: 1.6 },
+    'SoundCard':   { rotateY: 85, translateX: '30px',  translateY: '-140px',scale: 1.6 },
+    'CaptureCard': { rotateY: 85, translateX: '30px',  translateY: '-160px',scale: 1.6 },
+    'Riser':       { rotateY: 60, translateX: '20px',  translateY: '-50px', scale: 1.5 },
+    'RGB':         { rotateY: 80, translateX: '20px',  translateY: '100px', scale: 1.6 },
+    'M2Heatsink':  { rotateY: 75, translateX: '20px',  translateY: '-20px', scale: 1.8 },
+    'USB3':        { rotateY: 90, translateX: '20px',  translateY: '-100px',scale: 1.8 }
 };
 
 // ============================================================================
@@ -662,7 +662,7 @@ function triggerCinematicZoom(componentKey) {
     logTelemetry('CAMERA', 'ZOOM', `Initiating cinematic camera rig to view ${componentKey} through left panel.`);
 
     // Extract exact camera parameters from the cinematic rig configuration dictionary
-    const rigData = cinematicCameraRig[componentKey] || { rotateY: -75, translateX: '0px', translateY: '0px', scale: 1.45 };
+    const rigData = cinematicCameraRig[componentKey] || { rotateY: 75, translateX: '20px', translateY: '0px', scale: 1.45 };
     
     // Force transition and transform using setProperty overriding any CSS sheet specificity
     UI.towerContainer.style.setProperty('transition', 'transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1)', 'important');
