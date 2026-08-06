@@ -848,14 +848,14 @@ body {
 
 .tube-segment { 
     position: absolute; 
-    width: 4px; 
+    width: 10px; 
     transform-style: preserve-3d;
 }
 
 .t-face { 
     position: absolute; 
     width: 100%; 
-    height: 100%; 
+    height: 30%; 
 }
 
 /* Pipe 1: Crimson Red Bending Arc */
