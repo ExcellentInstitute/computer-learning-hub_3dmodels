@@ -264,19 +264,24 @@ async function fetchHardwareData() {
     try {
         logTelemetry('NETWORK', 'FETCH', `Requesting hardware database from: ${FIREBASE_URL}`);
         
-        // Appending timestamp cache buster ensures we always pull fresh configuration logic
         const cacheBusterUrl = `${FIREBASE_URL}&t=${new Date().getTime()}`;
         const response = await fetch(cacheBusterUrl);
+        
+        // Load the local data containing the GitHub model_urls first
+        const fallbackData = generateAdvancedFallback();
         
         if (response.ok) {
             logTelemetry('NETWORK', 'SUCCESS', 'Remote hardware database successfully acquired.');
             const serverData = await response.json();
             
-            // Execute deep merge: Remote data overlays local robust fallback
-            dbData = { ...generateAdvancedFallback(), ...serverData };
+            // FIX: Deep merge. This injects the Firebase text data WITHOUT deleting the local model_urls
+            dbData = {};
+            for (let key in fallbackData) {
+                dbData[key] = { ...fallbackData[key], ...(serverData[key] || {}) };
+            }
         } else {
             logTelemetry('NETWORK', 'FAILED', 'HTTP Response rejected. Loading local logic engine directly.');
-            dbData = generateAdvancedFallback();
+            dbData = fallbackData;
         }
     } catch (error) {
         logTelemetry('NETWORK', 'ERROR', `Fatal connection error: ${error.message}. Loading local logic engine.`);
