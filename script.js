@@ -266,15 +266,13 @@ async function fetchHardwareData() {
         
         const cacheBusterUrl = `${FIREBASE_URL}&t=${new Date().getTime()}`;
         const response = await fetch(cacheBusterUrl);
-        
-        // Load the local data containing the GitHub model_urls first
         const fallbackData = generateAdvancedFallback();
         
         if (response.ok) {
             logTelemetry('NETWORK', 'SUCCESS', 'Remote hardware database successfully acquired.');
             const serverData = await response.json();
             
-            // FIX: Deep merge. This injects the Firebase text data WITHOUT deleting the local model_urls
+            // FIX: Deep merge ensures Firebase text updates WITHOUT deleting the local .glb URLs
             dbData = {};
             for (let key in fallbackData) {
                 dbData[key] = { ...fallbackData[key], ...(serverData[key] || {}) };
@@ -288,7 +286,6 @@ async function fetchHardwareData() {
         dbData = generateAdvancedFallback();
     }
     
-    // Drop loading flag and push data to inspection panel
     isFetching = false;
     updateInspector(false); 
 }
