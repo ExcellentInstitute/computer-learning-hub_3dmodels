@@ -638,7 +638,7 @@
                 
             </div>
 
-            <!-- External WebGL Render Chamber -->
+            <<!-- External WebGL Render Chamber -->
             <div class="model-chamber bright-chamber">
                 <model-viewer id="component-3d-viewer" 
                               src="" 
@@ -648,9 +648,11 @@
                               exposure="1.2"
                               bounds="tight"
                               loading="eager"
-                              reveal="auto"
                               environment-image="neutral"
-                              shadow-intensity="1.5">
+                              shadow-intensity="1.5"
+                              camera-target="auto auto auto"
+                              camera-orbit="0deg 75deg 105%"
+                              interpolation-decay="200">
                 </model-viewer>
             </div>
             
