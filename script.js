@@ -9,7 +9,12 @@
  *              Includes completely overhauled Cinematic Camera Rig targeting
  *              the left transparent tempered glass panel for clear X-Ray inspection.
  *              Strictly un-minified to guarantee absolute execution stability.
- *              Fixed !important CSS override bugs to restore flawless zooming.
+ *              V5.0 Updates: 
+ *              - Forced !important flag overrides for Cinematic Zoom synchronization.
+ *              - Added multi-node highlighting for segmented AIO Tubes.
+ *              - Enhanced Monitor Reaction sequence for hot-plugging recovery.
+ *              - Expanded Bootloader logic to automatically reboot when critical
+ *                hardware (RAM, GPU, etc.) is re-inserted while power is active.
  * ============================================================================
  */
 
@@ -27,7 +32,6 @@ const FIREBASE_URL = 'https://firebasestorage.googleapis.com/v0/b/excellent-inst
 /**
  * Base URL for the Excellent Institute GitHub repository hosting the .glb files.
  * Used as a robust fallback for the 3D model viewer chamber.
- * If hosting locally, change this to './models/'
  */
 const REPO_URL = 'https://excellentinstitute.github.io/computer-learning-hub_3dmodels/';
 
@@ -86,10 +90,27 @@ const powerComponents = [
 ];
 
 /**
+ * Critical Boot Pipeline Components
+ * Re-inserting any of these while the system has power will trigger an
+ * automatic warm reboot sequence to recover from BSOD/Error states.
+ */
+const criticalBootComponents = [
+    'CPU',
+    'RAM',
+    'GPU',
+    'SSD',
+    'Chipset',
+    'TPM',
+    'Riser',
+    'EPS8'
+];
+
+/**
  * Volumetric 3D Camera Rig Viewing Angles & Translations (V5.0 Overhaul)
  * Maps each component to its perfect Y-axis rotation and X/Y translation.
- * Values specifically tuned between -60deg and -110deg to force the
+ * V5.0 Fix: Values specifically tuned between -60deg and -110deg to force the
  * camera to look THROUGH the transparent left tempered glass panel.
+ * Adjusted scaling and translations to sync perfectly with the CSS updates.
  */
 const cinematicCameraRig = {
     'FrontPanel':  { rotateY: -15, translateX: '-80px', translateY: '0px',   scale: 1.5 },
@@ -500,7 +521,7 @@ function setupTowerRotation() {
         }
         
         // Strip CSS transition to allow immediate 1:1 rotation mapping without lag
-        UI.tower3D.style.transition = 'none'; 
+        UI.tower3D.style.setProperty('transition', 'none', 'important'); 
         
         logTelemetry('CHASSIS', 'INTERACT', 'User initiated manual 3D rotation drag sequence.');
     };
@@ -524,7 +545,7 @@ function setupTowerRotation() {
         const differential = currentX - startX;
         const targetRotation = currentRotation + (differential * 0.5);
         
-        // Update DOM transform dynamically (Using setProperty for CSS precedence override if needed)
+        // Update DOM transform dynamically using SetProperty to bypass rigid CSS rules
         UI.tower3D.style.setProperty('transform', `rotateY(${targetRotation}deg)`, 'important');
     };
 
@@ -547,7 +568,7 @@ function setupTowerRotation() {
         currentRotation += (endX - startX) * 0.5;
         
         // Re-apply the smooth CSS cubic-bezier transition for upcoming cinematic zooms
-        UI.tower3D.style.transition = 'transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)'; 
+        UI.tower3D.style.setProperty('transition', 'transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)', 'important'); 
         
         logTelemetry('CHASSIS', 'RELEASE', `Rotation sequence settled at exactly ${currentRotation} degrees.`);
     };
@@ -598,12 +619,31 @@ function setupEventListeners() {
             
             // Refresh visual UI and trigger massive 3D cinematic zoom logic
             updateInspector(true);
+            
+            // Flash the monitor to show dynamic reaction to the hardware event
+            flashMonitorReaction();
         });
     });
 }
 
+/**
+ * Creates a quick visual flash on the monitor screen to simulate system 
+ * reactivity when a component is physically altered.
+ */
+function flashMonitorReaction() {
+    if (!UI.screenDesktop.classList.contains('hidden') || !UI.screenBios.classList.contains('hidden')) {
+        // Apply extreme brightness briefly
+        UI.monitorScreen.style.setProperty('filter', 'brightness(2.5) contrast(1.5)', 'important');
+        
+        setTimeout(() => {
+            // Revert back to normal CSS state
+            UI.monitorScreen.style.removeProperty('filter');
+        }, 150);
+    }
+}
+
 // ============================================================================
-// 10. CINEMATIC 3D CAMERA RIG (V5.0 - EXACT 2 SECONDS, LEFT GLASS FOCUS, !IMPORTANT OVERRIDES)
+// 10. CINEMATIC 3D CAMERA RIG (V5.0 - EXACT 2 SECONDS, LEFT GLASS FOCUS)
 // ============================================================================
 
 /**
@@ -611,6 +651,7 @@ function setupEventListeners() {
  * Dynamically scales the specific tower container while mathematically translating
  * the X/Y coordinates and rotating the Y axis to perfectly frame the targeted component
  * explicitly through the left transparent glass panel. Highlights for exactly 2 seconds.
+ * V5.0 FIX: Added setProperty(..., 'important') to physically force the CSS override.
  * 
  * @param {string} componentKey - The specific hardware node to target
  */
@@ -623,7 +664,7 @@ function triggerCinematicZoom(componentKey) {
     // Extract exact camera parameters from the cinematic rig configuration dictionary
     const rigData = cinematicCameraRig[componentKey] || { rotateY: -75, translateX: '0px', translateY: '0px', scale: 1.45 };
     
-    // V5.0 FIX: Enforce 'important' on the inline styles to guarantee the CSS engine prioritizes JS transforms!
+    // Force transition and transform using setProperty overriding any CSS sheet specificity
     UI.towerContainer.style.setProperty('transition', 'transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1)', 'important');
     UI.towerContainer.style.setProperty('transform', `scale(${rigData.scale}) translate(${rigData.translateX}, ${rigData.translateY})`, 'important');
     
@@ -631,12 +672,12 @@ function triggerCinematicZoom(componentKey) {
     currentRotation = rigData.rotateY;
     UI.tower3D.style.setProperty('transform', `rotateY(${currentRotation}deg)`, 'important');
 
-    // Automatically zoom out after exactly 2000ms (2 seconds)
+    // Automatically zoom out after exactly 2000ms (2 seconds) as requested
     clearTimeout(zoomTimeout);
     zoomTimeout = setTimeout(() => {
         logTelemetry('CAMERA', 'RESET', '2 seconds elapsed. Restoring default chassis perspective viewing angle.');
         
-        // Reset scale and translation matrix using important overrides
+        // Reset scale and translation matrix with important flags
         UI.towerContainer.style.setProperty('transform', 'scale(1) translate(0px, 0px)', 'important');
         
         // Extinguish all active 3D x-ray glow nodes safely from the DOM
@@ -648,7 +689,7 @@ function triggerCinematicZoom(componentKey) {
         // Reset to aesthetic chassis isometric angle (-35deg)
         currentRotation = -35;
         UI.tower3D.style.setProperty('transform', `rotateY(${currentRotation}deg)`, 'important');
-    }, 2000); 
+    }, 2000); // Strict 2 second requirement met perfectly
 }
 
 /**
@@ -673,6 +714,15 @@ function highlightPhysicalZone(componentKey) {
         logTelemetry('AESTHETIC', 'HIGHLIGHT', `Illuminated physical node geometry: ${targetZoneId}`);
     } else {
         logTelemetry('AESTHETIC', 'WARN', `Target node ${targetZoneId} not found in DOM tree.`);
+    }
+    
+    // Special V5.0 Edge Case: When WaterPump is selected, also illuminate the curved tubes
+    if (componentKey === 'WaterPump') {
+        const tube1 = document.getElementById('zone-Tube1');
+        const tube2 = document.getElementById('zone-Tube2');
+        if (tube1) tube1.classList.add('xray-highlight');
+        if (tube2) tube2.classList.add('xray-highlight');
+        logTelemetry('AESTHETIC', 'HIGHLIGHT', `Illuminated extended curved AIO coolant tubes.`);
     }
 }
 
@@ -913,15 +963,21 @@ function toggleHardware(componentKey, buttonElement) {
         }
     }
 
-    // 5. Route to Bootloader or Hardware evaluation outputs.
-    // V5.0 FIX: Evaluates boot sequences perfectly when systems recover from faults.
-    if (isPlugged === true && 
-       (componentKey === 'PSU' || componentKey === 'ATX24' || componentKey === 'FrontPanel') && 
-        plugStates['PSU'] === true && 
-        plugStates['ATX24'] === true) 
-    {
-        initiateBootSequence();
+    // 5. Dynamic Bootloader Evaluation Logic (V5.0 Feature Expansion)
+    // If we just plugged a component back in, and the system is actively powered, 
+    // we must check if we should trigger a recovery reboot sequence.
+    if (isCurrentlyPlugged === true && plugStates['PSU'] === true && plugStates['ATX24'] === true) {
+        
+        // Did we just plug in a critical component that clears an error state?
+        if (criticalBootComponents.includes(componentKey) || powerComponents.includes(componentKey)) {
+            logTelemetry('BOOTLOADER', 'WARM_BOOT', `${componentKey} inserted. Triggering automated system recovery reboot.`);
+            initiateBootSequence();
+        } else {
+            // Non-critical component inserted (e.g. WiFi card). Delay slightly to simulate hot-plug evaluation.
+            setTimeout(evaluateSystemState, 250);
+        }
     } else {
+        // Standard evaluation route if component removed or power is off
         evaluateSystemState();
     }
 }
@@ -1022,7 +1078,7 @@ function updateInspector(shouldZoom) {
 }
 
 // ============================================================================
-// 15. BIOS POST SEQUENCE & SCREEN TRANSITIONS (V5.0 RESTORATION FIX)
+// 15. BIOS POST SEQUENCE & SCREEN TRANSITIONS
 // ============================================================================
 
 /**
@@ -1077,7 +1133,7 @@ function initiateBootSequence() {
         logTelemetry('BIOS', 'COMPLETE', 'OS bootloader cycle finished. Evaluating payload transition.');
         isBooting = false;
         
-        // This will swap out the Boot screen for the real result (Desktop if healthy!)
+        // This will swap out the Boot screen for the real result
         evaluateSystemState(); 
         
         // Update bottom inspector
@@ -1089,12 +1145,11 @@ function initiateBootSequence() {
  * The master visual evaluation logic pipeline. Evaluates current physical variables 
  * and forces the correct 2D monitor output based on specific hardware states.
  * Formatted with explicit if/else chains for readability, logging, and exhaustiveness.
- * V5.0 FIX: Confirmed guaranteed routing to OS Desktop when all states are true.
  */
 function evaluateSystemState() {
     logTelemetry('EVAL', 'CHECK', 'Evaluating global system hardware states against OS logic.');
 
-    // 1. Scrub everything to a completely blank slate to ensure no CSS ghosting
+    // 1. Scrub everything to a completely blank slate
     UI.screenBios.classList.add('hidden');
     UI.screenBoot.classList.add('hidden');
     UI.screenDesktop.classList.add('hidden');
@@ -1263,8 +1318,6 @@ function evaluateSystemState() {
     } else {
         logTelemetry('EVAL', 'SUCCESS', 'Rendering ExcellentOS GUI Desktop.');
         UI.powerLed.className = 'power-led led-on';
-        
-        // V5.0 FIX: Safely and explicitly unhides the desktop environment when healthy
         UI.screenDesktop.classList.remove('hidden');
     }
     
