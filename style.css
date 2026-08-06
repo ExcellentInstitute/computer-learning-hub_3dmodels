@@ -117,13 +117,9 @@ body {
 /* --- Pristine 2D Monitor Hardware (Significantly Expanded) --- */
 .bright-monitor-wrapper { 
     width: 100%; 
-    max-width: 1600px; /* Force larger maximum bounds */
     display: flex; 
     flex-direction: column; 
     align-items: center; 
-    transform: scale(1.15); /* Physically magnifies the entire monitor structure */
-    transform-origin: top center;
-    margin-bottom: 40px; /* Compensate for downward scale clipping */
 }
 
 .monitor-bezel { 
@@ -1686,14 +1682,17 @@ body {
     border: 2px solid #334155; 
     height: 350px; 
     box-shadow: inset 0 0 40px rgba(0,0,0,0.6); 
+    position: relative; 
+    overflow: hidden; 
 }
 
 model-viewer { 
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%; 
     height: 100%; 
     --poster-color: transparent; 
-    display: block;
-    contain: strict;
     background-color: transparent;
 }
 
