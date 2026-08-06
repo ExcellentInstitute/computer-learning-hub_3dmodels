@@ -859,7 +859,7 @@ body {
 }
 
 /* Pipe 1: Crimson Red Bending Arc */
-.tube-1 { top: -60px; left: 40px; transform: translateZ(30px); }
+.tube-1 { top: 10px; left: 40px; transform: translateZ(30px); }
 .tube-1 .t-face { background: var(--aio-red); border: 1px solid #7a001a; }
 .tube-1 .t-f { transform: translateZ(7px); }
 .tube-1 .t-b { transform: rotateY(180deg) translateZ(7px); }
