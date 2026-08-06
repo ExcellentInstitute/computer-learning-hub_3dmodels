@@ -868,13 +868,13 @@ body {
 
 /* Segment translation chaining to build a curve */
 .tube-1 .t-seg-1 { top: 0; left: 0; height: 10px; transform: rotateZ(35deg) rotateX(-20deg); }
-.tube-1 .t-seg-2 { top: -25px; left: 15px; height: 35px; transform: rotateZ(20deg) rotateX(-10deg); }
+.tube-1 .t-seg-2 { top: -20px; left: 20px; height: 35px; transform: rotateZ(20deg) rotateX(-10deg); }
 .tube-1 .t-seg-3 { top: -50px; left: 20px; height: 35px; transform: rotateZ(0deg) rotateX(0deg); }
 .tube-1 .t-seg-4 { top: -75px; left: 15px; height: 35px; transform: rotateZ(-20deg) rotateX(10deg); }
 .tube-1 .t-seg-5 { top: -100px; left: 0px; height: 35px; transform: rotateZ(-35deg) rotateX(20deg); }
 
 /* Pipe 2: Neon Blue Bending Arc */
-.tube-2 { top: 15px; left: 60px; transform: translateZ(40px); }
+.tube-2 { top: 15px; left: 50px; transform: translateZ(40px); }
 .tube-2 .t-face { background: var(--aio-blue); border: 1px solid #002266; }
 .tube-2 .t-f { transform: translateZ(7px); }
 .tube-2 .t-b { transform: rotateY(180deg) translateZ(7px); }
