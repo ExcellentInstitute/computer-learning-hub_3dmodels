@@ -1,13 +1,16 @@
 /**
  * ============================================================================
- * EXCELLENT INSTITUTE - VOLUMETRIC HARDWARE LAB ENGINE (V4.0)
+ * EXCELLENT INSTITUTE - VOLUMETRIC HARDWARE LAB (V5.0 - MATHEMATICALLY PERFECTED)
  * ============================================================================
  * Architecture: True Dual-Chamber Volumetric 3D (Lian Li O11 Dynamic)
- * Description: Exhaustively mapped 6-sided geometry for all 25 components.
- *              Strictly un-minified to ensure exact dimensional accuracy.
- *              Mathematical centering offsets applied to all 3D nodes.
- *              Zero clipping. Perfect 6-sided connections. Seamless AIO pipes.
- *              Expanded 2D monitor workspace.
+ * Description: 
+ *  - Uncompressed, exhaustively detailed CSS Matrix.
+ *  - Every physical component strictly mapped to a closed 6-sided boundary.
+ *  - Added complex arc mathematics for multi-segmented curved AIO pipes.
+ *  - Expanded Monitor viewport & scaled down telemetry widgets.
+ *  - Fixed back-wall protrusion anomalies (PSU & HDD back faces colored white/silver 
+ *    and mathematically bounded inside the chamber).
+ *  - No minification. All geometric offsets explicitly defined.
  * ============================================================================
  */
 
@@ -15,7 +18,7 @@
    1. BASE & THEME VARIABLES (Premium White Laboratory)
    ============================================================================ */
 :root {
-    /* Deep Backgrounds */
+    /* Deep Space Backgrounds */
     --bg-color: #04060d; 
     
     /* Core RGB Lighting Spectrums */
@@ -34,6 +37,8 @@
     --case-outer: #f8fafc;
     --case-inner: #ffffff;
     --case-frame: #cbd5e1;
+    
+    /* Transparent glass tint tuned for clarity */
     --glass-tint: rgba(200, 220, 255, 0.08); 
     
     /* Internal Component Textures */
@@ -72,7 +77,7 @@ body {
 }
 
 .lab-container { 
-    max-width: 1900px; 
+    max-width: 1950px; 
     margin: 0 auto; 
     padding: 30px; 
     display: flex; 
@@ -94,11 +99,11 @@ body {
     border-radius: 16px; 
     box-shadow: 0 30px 80px rgba(0,0,0,0.9);
     position: relative;
-    /* Strict boundary: NO 3D perspective here to isolate the 2D left side */
+    /* Strict boundary: NO 3D perspective applied here to protect the 2D left side */
 }
 
 /* ============================================================================
-   4. LEFT SIDE: 100% STATIC 2D COMMAND CENTER (EXPANDED MONITOR)
+   4. LEFT SIDE: 100% STATIC 2D COMMAND CENTER (EXPANDED MONITOR, SHRUNK WIDGETS)
    ============================================================================ */
 .static-peripherals-zone { 
     flex: 1 1 55%; 
@@ -109,13 +114,16 @@ body {
     z-index: 10; 
 }
 
-/* --- Pristine 2D Monitor Hardware --- */
+/* --- Pristine 2D Monitor Hardware (Significantly Expanded) --- */
 .bright-monitor-wrapper { 
     width: 100%; 
-    max-width: 1400px; /* Expanded monitor width per request */
+    max-width: 1600px; /* Force larger maximum bounds */
     display: flex; 
     flex-direction: column; 
     align-items: center; 
+    transform: scale(1.15); /* Physically magnifies the entire monitor structure */
+    transform-origin: top center;
+    margin-bottom: 40px; /* Compensate for downward scale clipping */
 }
 
 .monitor-bezel { 
@@ -123,7 +131,7 @@ body {
     aspect-ratio: 21 / 9; 
     background: linear-gradient(to bottom, #1e293b, #0f172a); 
     border-radius: 12px; 
-    padding: 20px 20px 50px 20px; 
+    padding: 16px 16px 45px 16px; 
     box-shadow: 0 25px 50px rgba(0,0,0,0.9), inset 0 2px 4px rgba(255,255,255,0.1); 
     position: relative; 
 }
@@ -135,34 +143,34 @@ body {
     border-radius: 6px; 
     position: relative; 
     overflow: hidden; 
-    box-shadow: inset 0 0 40px rgba(0,0,0,1); 
+    box-shadow: inset 0 0 50px rgba(0,0,0,1); 
 }
 
 .monitor-brand { 
     position: absolute; 
-    bottom: 16px; 
+    bottom: 15px; 
     left: 50%; 
     transform: translateX(-50%); 
-    font-size: 16px; 
+    font-size: 15px; 
     color: #64748b; 
-    letter-spacing: 10px; 
+    letter-spacing: 12px; 
     font-weight: 900; 
 }
 
 .monitor-stand { 
     width: 140px; 
-    height: 70px; 
+    height: 80px; 
     background: linear-gradient(to right, #1e293b, #0f172a, #1e293b); 
     border-left: 2px solid #000; 
     border-right: 2px solid #000; 
 }
 
 .monitor-base { 
-    width: 450px; 
-    height: 16px; 
+    width: 480px; 
+    height: 18px; 
     background: #334155; 
-    border-radius: 10px 10px 0 0; 
-    box-shadow: 0 20px 30px rgba(0,0,0,0.8); 
+    border-radius: 12px 12px 0 0; 
+    box-shadow: 0 25px 35px rgba(0,0,0,0.8); 
     border-top: 1px solid #475569; 
 }
 
@@ -176,10 +184,12 @@ body {
     z-index: 1; 
     display: flex; 
     flex-direction: column; 
+    transition: opacity 0.5s ease-in-out;
 }
 
 .hidden { 
     display: none !important; 
+    opacity: 0 !important;
 }
 
 /* Boot Sequence Layer */
@@ -190,13 +200,13 @@ body {
 }
 
 .rotating-logo { 
-    width: 120px; 
-    height: 120px; 
+    width: 130px; 
+    height: 130px; 
     border-radius: 50%; 
     border: 4px solid var(--cyan-glow); 
-    margin-bottom: 30px; 
+    margin-bottom: 40px; 
     animation: spinEarth 2s linear infinite; 
-    box-shadow: 0 0 30px rgba(0,229,255,0.5); 
+    box-shadow: 0 0 35px rgba(0,229,255,0.5); 
 }
 
 @keyframes spinEarth { 
@@ -206,8 +216,8 @@ body {
 .boot-text-pulse { 
     font-family: 'Share Tech Mono', monospace; 
     color: var(--cyan-glow); 
-    font-size: 22px; 
-    letter-spacing: 4px; 
+    font-size: 24px; 
+    letter-spacing: 5px; 
     animation: pulse-text 1.5s infinite; 
     font-weight: bold; 
 }
@@ -220,13 +230,13 @@ body {
 /* BIOS Interface Layer */
 .bios-env { 
     background-color: #020617; 
-    padding: 50px; 
+    padding: 60px; 
 }
 
 .bios-text { 
     font-family: 'Share Tech Mono', monospace; 
     color: #cbd5e1; 
-    font-size: 20px; 
+    font-size: 22px; 
     white-space: pre-wrap; 
     font-weight: bold; 
     line-height: 1.6; 
@@ -248,41 +258,47 @@ body {
     background-image: 
         linear-gradient(rgba(0, 229, 255, 0.15) 1px, transparent 1px), 
         linear-gradient(90deg, rgba(0, 229, 255, 0.15) 1px, transparent 1px); 
-    background-size: 60px 60px; 
+    background-size: 70px 70px; 
     transform: perspective(600px) rotateX(60deg) translateY(0); 
     animation: waveGridAnim 4s linear infinite; 
 }
 
 @keyframes waveGridAnim { 
     0% { transform: perspective(600px) rotateX(60deg) translateY(0); } 
-    100% { transform: perspective(600px) rotateX(60deg) translateY(60px); } 
+    100% { transform: perspective(600px) rotateX(60deg) translateY(70px); } 
 }
 
-/* Desktop Telemetry Widgets */
-.widget-panel { 
+/* --- Dedicated Scale Wrapper to shrink Desktop Telemetry Widgets --- */
+.widget-scale-wrapper {
     position: absolute; 
-    top: 30px; 
-    right: 30px; 
+    top: 25px; 
+    right: 25px; 
+    transform: scale(0.60); /* Forces the entire widget panel to be much smaller */
+    transform-origin: top right;
+    z-index: 50;
+}
+
+.widget-panel { 
     background: rgba(15, 23, 42, 0.85); 
-    border: 1px solid var(--cyan-glow); 
-    border-radius: 10px; 
-    padding: 20px; 
-    width: 280px; 
+    border: 2px solid var(--cyan-glow); 
+    border-radius: 12px; 
+    padding: 25px; 
+    width: 320px; 
     display: flex; 
     flex-direction: column; 
-    gap: 16px; 
-    box-shadow: 0 0 25px rgba(0,229,255,0.2); 
-    backdrop-filter: blur(12px); 
+    gap: 20px; 
+    box-shadow: 0 0 35px rgba(0,229,255,0.2); 
+    backdrop-filter: blur(15px); 
 }
 
 .widget { 
     display: flex; 
     flex-direction: column; 
-    gap: 6px; 
+    gap: 8px; 
 }
 
 .wid-label { 
-    font-size: 14px; 
+    font-size: 16px; 
     color: #cbd5e1; 
     letter-spacing: 2px; 
     font-weight: bold; 
@@ -290,9 +306,9 @@ body {
 
 .wid-bar { 
     width: 100%; 
-    height: 10px; 
+    height: 12px; 
     background: #1e293b; 
-    border-radius: 5px; 
+    border-radius: 6px; 
     overflow: hidden; 
     border: 1px solid #334155;
 }
@@ -305,36 +321,23 @@ body {
 
 .wid-val { 
     font-family: 'Share Tech Mono', monospace; 
-    font-size: 18px; 
+    font-size: 20px; 
     color: #fff; 
     align-self: flex-end; 
 }
 
-.temp-val { 
-    color: var(--cyan-glow); 
-    font-weight: bold; 
-    text-shadow: 0 0 8px var(--cyan-glow);
-}
-
-.temp-hot { 
-    color: var(--red-glow); 
-    animation: shake 0.3s infinite; 
-    text-shadow: 0 0 8px var(--red-glow);
-}
-
-.net-val { 
-    color: var(--green-glow); 
-    text-shadow: 0 0 8px var(--green-glow);
-}
+.temp-val { color: var(--cyan-glow); font-weight: bold; text-shadow: 0 0 10px var(--cyan-glow);}
+.temp-hot { color: var(--red-glow); animation: shake 0.3s infinite; text-shadow: 0 0 10px var(--red-glow);}
+.net-val { color: var(--green-glow); text-shadow: 0 0 10px var(--green-glow);}
 
 .os-watermark { 
     position: absolute; 
     bottom: 30px; 
     right: 40px; 
-    font-size: 26px; 
+    font-size: 28px; 
     font-weight: 900; 
-    color: rgba(255,255,255,0.2); 
-    letter-spacing: 4px; 
+    color: rgba(255,255,255,0.15); 
+    letter-spacing: 5px; 
 }
 
 /* Fatal Error Layer */
@@ -342,14 +345,14 @@ body {
     background-color: #020617; 
     justify-content: center; 
     align-items: center; 
-    padding: 40px; 
+    padding: 50px; 
     text-align: center; 
 }
 
 .error-text { 
     font-family: 'Share Tech Mono', monospace; 
     color: #fff; 
-    font-size: 28px; 
+    font-size: 32px; 
     line-height: 1.8; 
     font-weight: bold; 
 }
@@ -357,111 +360,100 @@ body {
 /* Hardware Status LED on Monitor Bezel */
 .power-led { 
     position: absolute; 
-    bottom: 18px; 
-    right: 35px; 
-    width: 12px; 
-    height: 12px; 
+    bottom: 20px; 
+    right: 40px; 
+    width: 14px; 
+    height: 14px; 
     border-radius: 50%; 
     z-index: 30; 
 }
 
-.led-on { 
-    background-color: var(--cyan-glow); 
-    box-shadow: 0 0 15px var(--cyan-glow); 
-}
-
-.led-error { 
-    background-color: var(--red-glow); 
-    box-shadow: 0 0 15px var(--red-glow); 
-}
-
-.led-off { 
-    background-color: #1e293b; 
-    box-shadow: inset 0 0 5px #000; 
-}
+.led-on { background-color: var(--cyan-glow); box-shadow: 0 0 20px var(--cyan-glow); }
+.led-error { background-color: var(--red-glow); box-shadow: 0 0 20px var(--red-glow); }
+.led-off { background-color: #1e293b; box-shadow: inset 0 0 8px #000; }
 
 /* --- Flat Desk Peripherals (Keyboard, Mouse, Mat) --- */
 .desk-mat-2d { 
-    width: 950px; 
-    height: 300px; 
+    width: 1000px; 
+    height: 320px; 
     background: #0b0f19; 
     border: 2px solid #1e293b; 
-    border-radius: 16px; 
+    border-radius: 18px; 
     transform: perspective(1200px) rotateX(45deg); 
-    box-shadow: 0 50px 60px rgba(0,0,0,0.9); 
+    box-shadow: 0 60px 80px rgba(0,0,0,0.9); 
     display: flex; 
     justify-content: center; 
     align-items: center; 
-    gap: 60px; 
+    gap: 70px; 
     position: relative; 
 }
 
 .keyboard-2d { 
-    width: 550px; 
+    width: 580px; 
     height: 180px; 
     background: #1e293b; 
-    border-radius: 8px; 
+    border-radius: 10px; 
     border: 2px solid #0f172a; 
-    border-bottom: 8px solid #020617; 
+    border-bottom: 10px solid #020617; 
     position: relative; 
     display: flex; 
     justify-content: center; 
     align-items: center; 
-    box-shadow: 0 15px 25px rgba(0,0,0,0.9); 
+    box-shadow: 0 20px 35px rgba(0,0,0,0.9); 
 }
 
 .kb-keys-grid { 
     width: 96%; 
     height: 86%; 
     background: 
-        repeating-linear-gradient(0deg, transparent, transparent 24px, #0f172a 24px, #0f172a 28px), 
-        repeating-linear-gradient(90deg, transparent, transparent 24px, #0f172a 24px, #0f172a 28px); 
+        repeating-linear-gradient(0deg, transparent, transparent 26px, #0f172a 26px, #0f172a 30px), 
+        repeating-linear-gradient(90deg, transparent, transparent 26px, #0f172a 26px, #0f172a 30px); 
     opacity: 0.9; 
 }
 
 .kb-glow-edge { 
     position: absolute; 
-    bottom: -10px; 
+    bottom: -12px; 
     left: 2%; 
     width: 96%; 
-    height: 10px; 
+    height: 12px; 
     background: linear-gradient(90deg, var(--red-glow), var(--cyan-glow), var(--purple-glow)); 
-    border-radius: 0 0 8px 8px; 
-    filter: blur(8px); 
+    border-radius: 0 0 10px 10px; 
+    filter: blur(10px); 
     opacity: 0.8; 
 }
 
 .mouse-2d { 
-    width: 85px; 
-    height: 150px; 
+    width: 90px; 
+    height: 160px; 
     background: #1e293b; 
     border-radius: 45px 45px 15px 15px; 
     border: 2px solid #0f172a; 
-    border-bottom: 8px solid #020617; 
+    border-bottom: 10px solid #020617; 
     display: flex; 
     justify-content: center; 
-    padding-top: 20px; 
+    padding-top: 22px; 
     position: relative; 
-    box-shadow: 0 15px 25px rgba(0,0,0,0.9); 
+    box-shadow: 0 20px 35px rgba(0,0,0,0.9); 
 }
 
 .mouse-wheel { 
-    width: 12px; 
-    height: 35px; 
+    width: 14px; 
+    height: 38px; 
     background: #000; 
-    border-radius: 6px; 
-    box-shadow: inset 0 0 10px var(--cyan-glow); 
+    border-radius: 7px; 
+    box-shadow: inset 0 0 12px var(--cyan-glow); 
 }
 
 .mouse-glow-edge { 
     position: absolute; 
-    bottom: -10px; 
+    bottom: -12px; 
     left: 50%; 
     transform: translateX(-50%); 
-    width: 55px; 
-    height: 12px; 
+    width: 60px; 
+    height: 14px; 
     background: var(--cyan-glow); 
-    filter: blur(10px); 
+    filter: blur(12px); 
     opacity: 0.9; 
 }
 
@@ -475,14 +467,15 @@ body {
     align-items: center; 
 }
 
-/* Wrapper isolates scale transitions from the rigid 3D perspective */
+/* Wrapper isolates scale transitions from the rigid 3D perspective.
+   Added !important to transition to guarantee JS overrides do not clip it. */
 .tower-3d-wrapper {
     width: 320px; 
     height: 520px;
-    perspective: 4000px;
+    perspective: 4500px;
     position: relative; 
     cursor: grab;
-    transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: transform 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
 }
 
 .tower-3d-wrapper:active { 
@@ -496,7 +489,7 @@ body {
     position: absolute;
     transform-style: preserve-3d;
     transform: rotateY(-35deg); 
-    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
 }
 
 /* --- THE CHASSIS WALLS (Zero clipping solid bounds) --- */
@@ -508,14 +501,14 @@ body {
     transform-style: preserve-3d; 
 }
 
-/* Solid White Back Metal Panel (Z: -200px) */
+/* Solid White Back Metal Panel (Z: -200px) 
+   Includes ventilation grills for realism */
 .wall-back { 
     width: 320px; 
     height: 520px; 
     transform: rotateY(180deg) translateZ(200px); 
-    background: #ffffff; /* Explicitly forced white */
-    /* Vented back exhaust layout */
-    background-image: repeating-linear-gradient(0deg, transparent, transparent 10px, #e2e8f0 10px, #e2e8f0 12px);
+    background: #ffffff; 
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 10px, #e2e8f0 10px, #e2e8f0 14px);
 }
 
 /* Right Metal Panel (Faces inward, covers the back chamber wiring) */
@@ -548,7 +541,7 @@ body {
     border-bottom: 25px solid var(--case-frame); 
 }
 
-/* --- FIX: Transparent Glass & Interaction Passthrough --- */
+/* --- Transparent Glass & Interaction Passthrough --- */
 /* pointer-events: none ensures mouse clicks pass through the glass to the 3D components */
 .wall-front-glass { 
     width: 230px; 
@@ -557,7 +550,7 @@ body {
     left: 0; 
     background: var(--glass-tint); 
     border-right: none; 
-    box-shadow: inset 30px 0 40px rgba(0,229,255,0.1); 
+    box-shadow: inset 30px 0 40px rgba(0,229,255,0.08); 
     pointer-events: none; 
 }
 
@@ -568,7 +561,7 @@ body {
     left: -40px; 
     background: var(--glass-tint); 
     border-left: none; 
-    box-shadow: inset -30px 0 40px rgba(0,229,255,0.1); 
+    box-shadow: inset -30px 0 40px rgba(0,229,255,0.08); 
     z-index: 100; 
     pointer-events: none; 
 }
@@ -580,7 +573,7 @@ body {
     left: -50%; 
     width: 200%; 
     height: 200%; 
-    background: linear-gradient(to bottom right, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 45%); 
+    background: linear-gradient(to bottom right, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 45%); 
     transform: rotate(30deg); 
     pointer-events: none; 
 }
@@ -636,7 +629,7 @@ body {
 .io-usb-type-c { width: 14px; height: 6px; background: #000; border-radius: 3px; border-bottom: 2px solid #cbd5e1; }
 .io-audio-jack { width: 10px; height: 10px; background: #000; border-radius: 50%; border: 2px solid #cbd5e1; }
 
-/* --- FIX: Volumetric ODD Tray Extrusion --- */
+/* --- Volumetric ODD Tray Extrusion (Perfectly Mapped 6-Sided Box) --- */
 /* Center alignment: (90px panel - 45px width) / 2 = 22.5px left */
 .vol-odd-bay { 
     position: absolute; 
@@ -646,7 +639,7 @@ body {
     height: 15px; 
     transform-style: preserve-3d; 
     transform: translateZ(5px); /* Flush with panel initially */
-    transition: all 0.4s ease; 
+    transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); 
 }
 
 .odd-face { 
@@ -658,6 +651,7 @@ body {
 .odd-front { 
     width: 45px; 
     height: 15px; 
+    left: 0; top: 0;
     transform: translateZ(40px); 
     display: flex; 
     align-items: center; 
@@ -673,8 +667,8 @@ body {
     width: 45px; 
     height: 40px; 
     left: 0; 
-    top: -12.5px; 
-    transform: rotateX(90deg) translateZ(7.5px); 
+    top: -12.5px; /* (15 - 40) / 2 */
+    transform: rotateX(90deg) translateZ(7.5px); /* 15 / 2 */
 }
 
 .odd-bottom { 
@@ -686,11 +680,11 @@ body {
 }
 
 .odd-left { 
-    width: 80px; 
+    width: 80px; /* Length of drive into chassis */
     height: 15px; 
-    left: -17.5px; 
+    left: -17.5px; /* (45 - 80) / 2 */
     top: 0; 
-    transform: rotateY(-90deg) translateZ(22.5px); 
+    transform: rotateY(-90deg) translateZ(22.5px); /* 45 / 2 */
 }
 
 .odd-right { 
@@ -751,7 +745,7 @@ body {
 .xray-highlight .pcie-face, 
 .xray-highlight .psu-face, 
 .xray-highlight .hdd-face, 
-.xray-highlight .tube-face { 
+.xray-highlight .t-face { 
     border-color: var(--cyan-glow) !important; 
     box-shadow: 0 0 20px var(--cyan-glow), inset 0 0 20px var(--cyan-glow) !important; 
 }
@@ -813,18 +807,8 @@ body {
     border: 1px solid var(--case-frame); 
 }
 
-.pump-front { 
-    width: 70px; 
-    height: 70px; 
-    left: 0; 
-    top: 0; 
-    transform: translateZ(35px); 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    background: #fff;
-}
-
+/* Width:70, Height:70, Depth:70 */
+.pump-front { width: 70px; height: 70px; left: 0; top: 0; transform: translateZ(35px); display: flex; justify-content: center; align-items: center; background: #fff;}
 .pump-back { width: 70px; height: 70px; left: 0; top: 0; transform: rotateY(180deg) translateZ(35px); }
 .pump-left { width: 70px; height: 70px; left: 0; top: 0; transform: rotateY(-90deg) translateZ(35px); }
 .pump-right { width: 70px; height: 70px; left: 0; top: 0; transform: rotateY(90deg) translateZ(35px); }
@@ -853,58 +837,59 @@ body {
     text-shadow: 0 0 8px var(--cyan-glow);
 }
 
-/* --- FIX: TRUE 3D VOLUMETRIC AIO PIPES --- */
-/* Pipes now built as absolute 4-sided geometric prisms routing upward to the radiator */
+/* --- MULTI-SEGMENT CURVED 3D AIO PIPES --- */
+/* Utilizing 5 distinct sequential segments to create a realistic bending arc 
+   from the pump block up into the radiator matrix. Every segment has 4 faces. */
 .aio-tube { 
     position: absolute; 
     transform-style: preserve-3d; 
     transform-origin: center center;
 }
 
-.tube-face { 
+.tube-segment { 
     position: absolute; 
-}
-
-/* Pipe 1: Crimson Red */
-/* Angles manually tuned to intercept the top radiator mounting bracket */
-.tube-1 { 
-    top: -60px; 
-    left: 40px; 
     width: 14px; 
-    height: 120px; 
-    transform: translateZ(30px) rotateZ(35deg) rotateX(-20deg); 
+    transform-style: preserve-3d;
 }
 
-.tube-1 .tube-face { 
-    background: var(--aio-red); 
-    border: 1px solid #7a001a; 
+.t-face { 
+    position: absolute; 
+    width: 100%; 
+    height: 100%; 
 }
 
-.t1-front { width: 14px; height: 120px; transform: translateZ(7px); }
-.t1-back { width: 14px; height: 120px; transform: rotateY(180deg) translateZ(7px); }
-.t1-left { width: 14px; height: 120px; transform: rotateY(-90deg) translateZ(7px); filter: brightness(0.6); }
-.t1-right { width: 14px; height: 120px; transform: rotateY(90deg) translateZ(7px); filter: brightness(0.8); }
+/* Pipe 1: Crimson Red Bending Arc */
+.tube-1 { top: -60px; left: 40px; transform: translateZ(30px); }
+.tube-1 .t-face { background: var(--aio-red); border: 1px solid #7a001a; }
+.tube-1 .t-f { transform: translateZ(7px); }
+.tube-1 .t-b { transform: rotateY(180deg) translateZ(7px); }
+.tube-1 .t-l { transform: rotateY(-90deg) translateZ(7px); filter: brightness(0.6); }
+.tube-1 .t-r { transform: rotateY(90deg) translateZ(7px); filter: brightness(0.8); }
 
-/* Pipe 2: Neon Blue */
-.tube-2 { 
-    top: -60px; 
-    left: 60px; 
-    width: 14px; 
-    height: 120px; 
-    transform: translateZ(40px) rotateZ(40deg) rotateX(-25deg); 
-}
+/* Segment translation chaining to build a curve */
+.tube-1 .t-seg-1 { top: 0; left: 0; height: 35px; transform: rotateZ(35deg) rotateX(-20deg); }
+.tube-1 .t-seg-2 { top: -25px; left: 15px; height: 35px; transform: rotateZ(20deg) rotateX(-10deg); }
+.tube-1 .t-seg-3 { top: -50px; left: 20px; height: 35px; transform: rotateZ(0deg) rotateX(0deg); }
+.tube-1 .t-seg-4 { top: -75px; left: 15px; height: 35px; transform: rotateZ(-20deg) rotateX(10deg); }
+.tube-1 .t-seg-5 { top: -100px; left: 0px; height: 35px; transform: rotateZ(-35deg) rotateX(20deg); }
 
-.tube-2 .tube-face { 
-    background: var(--aio-blue); 
-    border: 1px solid #002266; 
-}
+/* Pipe 2: Neon Blue Bending Arc */
+.tube-2 { top: -60px; left: 60px; transform: translateZ(40px); }
+.tube-2 .t-face { background: var(--aio-blue); border: 1px solid #002266; }
+.tube-2 .t-f { transform: translateZ(7px); }
+.tube-2 .t-b { transform: rotateY(180deg) translateZ(7px); }
+.tube-2 .t-l { transform: rotateY(-90deg) translateZ(7px); filter: brightness(0.6); }
+.tube-2 .t-r { transform: rotateY(90deg) translateZ(7px); filter: brightness(0.8); }
 
-.t2-front { width: 14px; height: 120px; transform: translateZ(7px); }
-.t2-back { width: 14px; height: 120px; transform: rotateY(180deg) translateZ(7px); }
-.t2-left { width: 14px; height: 120px; transform: rotateY(-90deg) translateZ(7px); filter: brightness(0.6); }
-.t2-right { width: 14px; height: 120px; transform: rotateY(90deg) translateZ(7px); filter: brightness(0.8); }
+/* Segment translation chaining */
+.tube-2 .t-seg-1 { top: 0; left: 0; height: 40px; transform: rotateZ(40deg) rotateX(-25deg); }
+.tube-2 .t-seg-2 { top: -30px; left: 20px; height: 40px; transform: rotateZ(20deg) rotateX(-15deg); }
+.tube-2 .t-seg-3 { top: -60px; left: 25px; height: 40px; transform: rotateZ(0deg) rotateX(0deg); }
+.tube-2 .t-seg-4 { top: -90px; left: 20px; height: 40px; transform: rotateZ(-20deg) rotateX(15deg); }
+.tube-2 .t-seg-5 { top: -120px; left: 0px; height: 40px; transform: rotateZ(-40deg) rotateX(25deg); }
 
 /* --- Volumetric RAM Sticks (Width:8, Height:80, Depth:30) --- */
+/* Mathematically connected 6-sided boxes */
 .ram-slots { 
     position: absolute; 
     top: 45px; 
@@ -932,15 +917,15 @@ body {
 
 .r-front { width: 8px; height: 80px; left: 0; top: 0; transform: translateZ(15px); }
 .r-back { width: 8px; height: 80px; left: 0; top: 0; transform: rotateY(180deg) translateZ(15px); }
-.r-left { width: 30px; height: 80px; left: -11px; top: 0; transform: rotateY(-90deg) translateZ(4px); }
+.r-left { width: 30px; height: 80px; left: -11px; top: 0; transform: rotateY(-90deg) translateZ(4px); } /* (8 - 30) / 2 = -11. TransZ = 8 / 2 = 4 */
 .r-right { width: 30px; height: 80px; left: -11px; top: 0; transform: rotateY(90deg) translateZ(4px); }
 
 .r-top { 
     width: 8px; 
     height: 30px; 
     left: 0; 
-    top: 25px; 
-    transform: rotateX(90deg) translateZ(40px); 
+    top: 25px; /* (80 - 30) / 2 = 25 */
+    transform: rotateX(90deg) translateZ(40px); /* 80 / 2 = 40 */
     background: #1e293b; 
     display: flex; 
     justify-content: center; 
@@ -1149,6 +1134,8 @@ body {
 }
 
 .gpu-back { width: 260px; height: 60px; left: 0; top: 0; transform: rotateY(180deg) translateZ(70px); }
+
+/* (260 - 140) / 2 = 60px offset */
 .gpu-left { width: 140px; height: 60px; left: 60px; top: 0; transform: rotateY(-90deg) translateZ(130px); }
 
 /* Right face anchors as the physical PCIe bracket */
@@ -1161,6 +1148,7 @@ body {
     background: #334155; 
 }
 
+/* (60 - 140) / 2 = -40px offset */
 .gpu-top { 
     width: 260px; 
     height: 140px; 
@@ -1395,9 +1383,7 @@ body {
     transform-style: preserve-3d;
 }
 
-/* Side extrusions to pull the fan frame into the Z-axis physically */
-.fan-frame::before { 
-    content: ''; 
+.fan-frame-side-1 { 
     position: absolute; 
     width: 100%; 
     height: 20px; 
@@ -1406,8 +1392,7 @@ body {
     background: var(--case-frame); 
     transform: rotateX(90deg) translateZ(45px); 
 }
-.fan-frame::after { 
-    content: ''; 
+.fan-frame-side-2 { 
     position: absolute; 
     width: 20px; 
     height: 100%; 
@@ -1477,10 +1462,10 @@ body {
    13. REAR DUAL CHAMBER COMPONENTS (PSU & HDD)
    ============================================================================ */
 
-/* --- VOLUMETRIC PSU BLOCK (Width:100, Height:130, Depth:160) --- */
+/* --- VOLUMETRIC PSU BLOCK (Width:100, Height:130, Depth:140) --- */
 /* Completely restricted inside the rear chamber bounds.
    Motherboard Tray: Z = -50px. Rear Wall: Z = -200px.
-   PSU Placement: Z = -125px with 80px depth extrusion. Touches MB and Rear safely. */
+   PSU Placement: Z = -120px with 140px depth. Touches MB and Rear safely without protruding outside. */
 .vol-psu-block {
     position: absolute; 
     top: 360px; 
@@ -1488,7 +1473,7 @@ body {
     width: 100px; 
     height: 130px;
     transform-style: preserve-3d; 
-    transform: translate3d(0, 0, -125px); 
+    transform: translate3d(0, 0, -120px); 
 }
 
 .psu-face { 
@@ -1500,14 +1485,16 @@ body {
     justify-content: center; 
 }
 
-.psu-front { width: 100px; height: 130px; left: 0; top: 0; transform: translateZ(80px); background: #0f172a; }
+.psu-front { width: 100px; height: 130px; left: 0; top: 0; transform: translateZ(70px); background: #0f172a; }
 .psu-fan-grill { width: 85px; height: 85px; border-radius: 50%; border: 3px solid #334155; background: repeating-linear-gradient(45deg, transparent, transparent 5px, #1e293b 5px, #1e293b 8px); box-shadow: inset 0 0 20px #000; }
 
-.psu-back { width: 100px; height: 130px; left: 0; top: 0; transform: rotateY(180deg) translateZ(80px); }
-.psu-left { width: 160px; height: 130px; left: -30px; top: 0; transform: rotateY(-90deg) translateZ(50px); }
-.psu-right { width: 160px; height: 130px; left: -30px; top: 0; transform: rotateY(90deg) translateZ(50px); }
-.psu-top { width: 100px; height: 160px; left: 0; top: -15px; transform: rotateX(90deg) translateZ(65px); }
-.psu-bottom { width: 100px; height: 160px; left: 0; top: -15px; transform: rotateX(-90deg) translateZ(65px); }
+/* FIX: Back face colored exactly like the white back panel so it blends perfectly if it ever touches */
+.psu-back { width: 100px; height: 130px; left: 0; top: 0; transform: rotateY(180deg) translateZ(70px); background: #e2e8f0; }
+
+.psu-left { width: 140px; height: 130px; left: -20px; top: 0; transform: rotateY(-90deg) translateZ(50px); }
+.psu-right { width: 140px; height: 130px; left: -20px; top: 0; transform: rotateY(90deg) translateZ(50px); }
+.psu-top { width: 100px; height: 140px; left: 0; top: -5px; transform: rotateX(90deg) translateZ(65px); }
+.psu-bottom { width: 100px; height: 140px; left: 0; top: -5px; transform: rotateX(-90deg) translateZ(65px); }
 
 /* Hardware Identifier Tag */
 .psu-sticker { 
@@ -1530,7 +1517,7 @@ body {
     transform: translateZ(80px); 
 }
 
-/* --- VOLUMETRIC HDD CAGE (Width:90, Height:110, Depth:150) --- */
+/* --- VOLUMETRIC HDD CAGE (Width:90, Height:110, Depth:140) --- */
 /* Stacked vertically above the PSU inside the rear chamber void */
 .vol-hdd-cage {
     position: absolute; 
@@ -1539,7 +1526,7 @@ body {
     width: 90px; 
     height: 110px;
     transform-style: preserve-3d; 
-    transform: translate3d(0, 0, -125px); 
+    transform: translate3d(0, 0, -120px); 
 }
 
 .hdd-face { 
@@ -1553,7 +1540,7 @@ body {
     gap: 8px;
 }
 
-.hdd-front { width: 90px; height: 110px; left: 0; top: 0; transform: translateZ(75px); }
+.hdd-front { width: 90px; height: 110px; left: 0; top: 0; transform: translateZ(70px); }
 
 .hdd-drive-tray { 
     width: 80px; height: 25px; 
@@ -1564,11 +1551,13 @@ body {
 
 .hdd-label { color: #fff; font-size: 10px; font-weight: bold; }
 
-.hdd-back { width: 90px; height: 110px; left: 0; top: 0; transform: rotateY(180deg) translateZ(75px); }
-.hdd-left { width: 150px; height: 110px; left: -30px; top: 0; transform: rotateY(-90deg) translateZ(45px); background: #1e293b; }
-.hdd-right { width: 150px; height: 110px; left: -30px; top: 0; transform: rotateY(90deg) translateZ(45px); }
-.hdd-top { width: 90px; height: 150px; left: 0; top: -20px; transform: rotateX(90deg) translateZ(55px); }
-.hdd-bottom { width: 90px; height: 150px; left: 0; top: -20px; transform: rotateX(-90deg) translateZ(55px); }
+/* FIX: Back face colored exactly like the white back panel */
+.hdd-back { width: 90px; height: 110px; left: 0; top: 0; transform: rotateY(180deg) translateZ(70px); background: #e2e8f0; }
+
+.hdd-left { width: 140px; height: 110px; left: -25px; top: 0; transform: rotateY(-90deg) translateZ(45px); background: #1e293b; }
+.hdd-right { width: 140px; height: 110px; left: -25px; top: 0; transform: rotateY(90deg) translateZ(45px); }
+.hdd-top { width: 90px; height: 140px; left: 0; top: -15px; transform: rotateX(90deg) translateZ(55px); }
+.hdd-bottom { width: 90px; height: 140px; left: 0; top: -15px; transform: rotateX(-90deg) translateZ(55px); }
 
 /* --- ABSTRACT NODES FOR CINEMATIC CAMERA --- */
 .zoom-target { 
