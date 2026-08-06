@@ -848,7 +848,7 @@ body {
 
 .tube-segment { 
     position: absolute; 
-    width: 14px; 
+    width: 4px; 
     transform-style: preserve-3d;
 }
 
