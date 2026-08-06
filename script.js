@@ -158,7 +158,7 @@ let currentRgbHue = 0;                // Starting HSL hue value for dynamic RGB 
 
 let isDraggingTower = false;          // User interaction flag for manual 3D matrix rotation
 let startX = 0;                       // Mouse/Touch origin coordinate vector
-let currentRotation = -35;            // Default aesthetic isometric angle of the chassis
+let currentRotation = 35;            // Default aesthetic isometric angle of the chassis
 
 // ============================================================================
 // 4. EXHAUSTIVE DOM ELEMENT MAPPING & REGISTRATION
@@ -687,7 +687,7 @@ function triggerCinematicZoom(componentKey) {
         });
         
         // Reset to aesthetic chassis isometric angle (-35deg)
-        currentRotation = -35;
+        currentRotation = 35;
         UI.tower3D.style.setProperty('transform', `rotateY(${currentRotation}deg)`, 'important');
     }, 2000); // Strict 2 second requirement met perfectly
 }
