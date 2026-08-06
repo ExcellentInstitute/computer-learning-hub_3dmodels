@@ -1070,6 +1070,13 @@ function updateInspector(shouldZoom) {
     // Feed GLB path to external WebGL renderer dynamically
     if (currentData.model_url) {
         UI.viewer3D.setAttribute('src', currentData.model_url);
+        
+        // Force the camera to recalculate bounds and snap to the new high-quality model
+        UI.viewer3D.cameraTarget = 'auto auto auto';
+        UI.viewer3D.cameraOrbit = '0deg 75deg 105%';
+        if (typeof UI.viewer3D.jumpCameraToGoal === 'function') {
+            UI.viewer3D.jumpCameraToGoal();
+        }
     } else {
         UI.viewer3D.removeAttribute('src'); 
     }
