@@ -1,11 +1,12 @@
 /**
  * ============================================================================
- * EXCELLENT INSTITUTE - VOLUMETRIC HARDWARE LAB ENGINE (V2.0)
+ * EXCELLENT INSTITUTE - VOLUMETRIC HARDWARE LAB ENGINE (V3.0)
  * ============================================================================
- * Architecture: True 3D Volumetric System Logic
+ * Architecture: True 3D Volumetric System Logic & Telemetry
  * Sub-system: Physical Simulation, Thermal Dynamics, Hardware POST Validation
- * Description: Exhaustive, un-minified logic engine handling 25 discrete 
- *              hardware components mapped to 6-sided CSS 3D geometry.
+ * Description: Uncompressed, exhaustively detailed logic engine handling 25 
+ *              discrete hardware components mapped to 6-sided CSS 3D geometry.
+ *              Strictly un-minified to guarantee absolute execution stability.
  * ============================================================================
  */
 
@@ -78,36 +79,36 @@ const powerComponents = [
 ];
 
 /**
- * Volumetric 3D Camera Rig Viewing Angles
- * Maps each component to its perfect Y-axis rotation angle so the user 
- * has an unobstructed view when cinematic zoom is triggered.
+ * Volumetric 3D Camera Rig Viewing Angles & Translations
+ * Maps each component to its perfect Y-axis rotation and X/Y translation 
+ * so the user has an unobstructed, perfectly framed view when cinematic zoom is triggered.
  */
-const componentViewingAngles = {
-    'FrontPanel': 0, 
-    'USB3': 0, 
-    'ODD': 0,
-    'PSU': -75, 
-    'CPU': -75, 
-    'RAM': -75, 
-    'GPU': -75, 
-    'WaterPump': -75,
-    'Fan': -75, 
-    'SSD': -75, 
-    'HDD': -75, 
-    'Chipset': -75, 
-    'VRM': -75,
-    'CMOS': -75, 
-    'TPM': -75, 
-    'ATX24': -75, 
-    'EPS8': -75, 
-    'SATA': -75,
-    'NIC': -75, 
-    'WiFi': -75, 
-    'SoundCard': -75, 
-    'CaptureCard': -75,
-    'Riser': -75, 
-    'RGB': -75, 
-    'M2Heatsink': -75
+const cinematicCameraRig = {
+    'FrontPanel': { rotateY: 15, translateX: '-80px', translateY: '0px', scale: 1.5 },
+    'ODD': { rotateY: 20, translateX: '-60px', translateY: '50px', scale: 1.6 },
+    'PSU': { rotateY: -85, translateX: '100px', translateY: '-100px', scale: 1.5 },
+    'CPU': { rotateY: -15, translateX: '30px', translateY: '20px', scale: 1.8 },
+    'WaterPump': { rotateY: -25, translateX: '40px', translateY: '20px', scale: 1.8 },
+    'RAM': { rotateY: -45, translateX: '60px', translateY: '30px', scale: 1.7 },
+    'GPU': { rotateY: -35, translateX: '0px', translateY: '-40px', scale: 1.6 },
+    'Fan': { rotateY: -65, translateX: '50px', translateY: '0px', scale: 1.4 },
+    'SSD': { rotateY: -20, translateX: '20px', translateY: '-20px', scale: 1.8 },
+    'HDD': { rotateY: -80, translateX: '80px', translateY: '0px', scale: 1.5 },
+    'Chipset': { rotateY: -30, translateX: '-20px', translateY: '-80px', scale: 1.9 },
+    'VRM': { rotateY: -15, translateX: '30px', translateY: '60px', scale: 1.8 },
+    'CMOS': { rotateY: -20, translateX: '40px', translateY: '-60px', scale: 1.9 },
+    'TPM': { rotateY: -25, translateX: '-40px', translateY: '-80px', scale: 1.8 },
+    'ATX24': { rotateY: -50, translateX: '50px', translateY: '0px', scale: 1.6 },
+    'EPS8': { rotateY: 10, translateX: '60px', translateY: '80px', scale: 1.7 },
+    'SATA': { rotateY: -45, translateX: '20px', translateY: '-80px', scale: 1.8 },
+    'NIC': { rotateY: -45, translateX: '50px', translateY: '-100px', scale: 1.6 },
+    'WiFi': { rotateY: -45, translateX: '50px', translateY: '-120px', scale: 1.6 },
+    'SoundCard': { rotateY: -45, translateX: '50px', translateY: '-140px', scale: 1.6 },
+    'CaptureCard': { rotateY: -45, translateX: '50px', translateY: '-160px', scale: 1.6 },
+    'Riser': { rotateY: -10, translateX: '0px', translateY: '-50px', scale: 1.5 },
+    'RGB': { rotateY: -30, translateX: '0px', translateY: '100px', scale: 1.6 },
+    'M2Heatsink': { rotateY: -25, translateX: '20px', translateY: '-20px', scale: 1.8 },
+    'USB3': { rotateY: -40, translateX: '-10px', translateY: '-100px', scale: 1.8 }
 };
 
 // ============================================================================
@@ -184,7 +185,7 @@ const UI = {
 // ============================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    logTelemetry('SYSTEM', 'INIT', 'DOM fully loaded. Executing hardware bootstrap.');
+    logTelemetry('SYSTEM', 'INIT', 'DOM fully loaded. Executing exhaustive hardware bootstrap.');
     
     // 1. Fetch remote 3D models or load local database
     fetchHardwareData();
@@ -482,7 +483,7 @@ function setupTowerRotation() {
     const handleDragStart = (event) => {
         isDraggingTower = true;
         
-        // Determine whether input is touch or mouse
+        // Normalize touch vs mouse
         if (event.type.includes('mouse')) {
             startX = event.pageX;
         } else {
@@ -497,7 +498,7 @@ function setupTowerRotation() {
 
     // Pointer move execution
     const handleDragMove = (event) => {
-        if (!isDraggingTower) {
+        if (isDraggingTower === false) {
             return;
         }
         
@@ -519,7 +520,7 @@ function setupTowerRotation() {
 
     // Pointer up execution
     const handleDragStop = (event) => {
-        if (!isDraggingTower) {
+        if (isDraggingTower === false) {
             return;
         }
         
@@ -597,37 +598,34 @@ function setupEventListeners() {
 
 /**
  * Automates the volumetric 3D camera pan.
- * Dynamically scales the specific tower container while rotating the inner
- * volumetric cube to face the targeted physical component.
+ * Dynamically scales the specific tower container while mathematically translating
+ * the X/Y coordinates and rotating the Y axis to perfectly frame the targeted component.
  * 
  * @param {string} componentKey - The specific hardware node to target
  */
 function triggerCinematicZoom(componentKey) {
-    // Reset viewport Y to prevent CSS perspective clipping
+    // Ensure viewport is scrolled to the top to prevent bounding box issues
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
     logTelemetry('CAMERA', 'ZOOM', `Initiating cinematic camera rig to view ${componentKey}.`);
 
-    // Target the specific wrapper to prevent 2D monitor distortion
+    // Extract exact camera parameters from the cinematic rig dictionary
+    const rigData = cinematicCameraRig[componentKey] || { rotateY: -35, translateX: '0px', translateY: '0px', scale: 1.45 };
+    
+    // Apply scale and translation to the wrapper (isolates the left-side monitor)
     UI.towerContainer.style.transition = 'transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1)';
-    UI.towerContainer.style.transform = 'scale(1.45) translateX(-25px)';
+    UI.towerContainer.style.transform = `scale(${rigData.scale}) translate(${rigData.translateX}, ${rigData.translateY})`;
     
-    // Pull the specific optimal viewing angle from our configured dictionary
-    let targetAngle = -35; // Default fallback
-    if (componentViewingAngles[componentKey] !== undefined) {
-        targetAngle = componentViewingAngles[componentKey];
-    }
-    
-    // Apply exact mathematical rotation
-    currentRotation = targetAngle;
+    // Apply exact mathematical rotation to the inner 3D object
+    currentRotation = rigData.rotateY;
     UI.tower3D.style.transform = `rotateY(${currentRotation}deg)`;
 
-    // Auto-reset cinematic rig after 6 seconds of observation
+    // Automatically zoom out after 6 seconds
     clearTimeout(zoomTimeout);
     zoomTimeout = setTimeout(() => {
         logTelemetry('CAMERA', 'RESET', 'Restoring default chassis perspective viewing angle.');
         
-        UI.towerContainer.style.transform = 'scale(1) translateX(0)';
+        UI.towerContainer.style.transform = 'scale(1) translate(0px, 0px)';
         
         // Extinguish all active 3D x-ray glow nodes safely
         const highlightedElements = document.querySelectorAll('.xray-highlight');
@@ -735,7 +733,7 @@ function startRgbCycle() {
     clearInterval(rgbCycleInterval);
     
     // Validate prerequisites for lighting
-    if (!plugStates['RGB'] || !plugStates['PSU'] || !plugStates['ATX24']) {
+    if (plugStates['RGB'] === false || plugStates['PSU'] === false || plugStates['ATX24'] === false) {
         logTelemetry('RGB', 'HALT', 'Power or Controller disconnected. Halting light cycle.');
         return;
     }
@@ -825,13 +823,13 @@ function toggleHardware(componentKey, buttonElement) {
         buttonElement.classList.replace('unplugged', 'plugged');
         
         // Consequence A: Restore fan animations if system has power
-        if (componentKey === 'Fan' && plugStates['PSU'] && plugStates['ATX24']) {
+        if (componentKey === 'Fan' && plugStates['PSU'] === true && plugStates['ATX24'] === true) {
             logTelemetry('PHYSICS', 'FANS', 'Cooling fans physical rotation restored.');
             UI.tower3D.classList.remove('power-off');
         }
         
         // Consequence B: Restore RGB loop if system has power
-        if (componentKey === 'RGB' && plugStates['PSU'] && plugStates['ATX24']) {
+        if (componentKey === 'RGB' && plugStates['PSU'] === true && plugStates['ATX24'] === true) {
             startRgbCycle();
         }
     }
@@ -949,7 +947,9 @@ function startThermalClimb(ratePerSecond) {
  * @param {boolean} shouldZoom - Whether to trigger the cinematic camera pan.
  */
 function updateInspector(shouldZoom) {
-    if (isFetching) return;
+    if (isFetching === true) {
+        return;
+    }
 
     // Pull correct dictionary data
     const currentData = dbData[selectedComponent] || {};
@@ -1000,7 +1000,7 @@ function updateInspector(shouldZoom) {
         UI.viewer3D.removeAttribute('src'); 
     }
     
-    // Highlight physical node mapped to component
+    // Manage physical DOM highlighting
     highlightPhysicalZone(selectedComponent);
     
     if(shouldZoom === true) {
@@ -1306,7 +1306,7 @@ function startDesktopLoop() {
                 
                 UI.pumpLcdText.innerText = formattedTempStr;
                 
-                // Adjust typography colors based on active thermal warnings
+                // Adjust colors based on thermal warnings
                 if(currentComputedTemp > 75) {
                     UI.pumpLcdText.style.color = 'var(--red-glow)';
                     UI.pumpLcdText.style.textShadow = '0 0 15px var(--red-glow)';
