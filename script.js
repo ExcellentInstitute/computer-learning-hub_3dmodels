@@ -1,32 +1,36 @@
 /**
  * ============================================================================
- * EXCELLENT INSTITUTE - VOLUMETRIC HARDWARE LAB ENGINE (V3.0)
+ * EXCELLENT INSTITUTE - VOLUMETRIC HARDWARE LAB ENGINE (V4.0 - TRUE GEOMETRY)
  * ============================================================================
  * Architecture: True 3D Volumetric System Logic & Telemetry
  * Sub-system: Physical Simulation, Thermal Dynamics, Hardware POST Validation
  * Description: Uncompressed, exhaustively detailed logic engine handling 25 
  *              discrete hardware components mapped to 6-sided CSS 3D geometry.
+ *              Includes completely overhauled Cinematic Camera Rig targeting
+ *              the left transparent tempered glass panel for clear X-Ray inspection.
  *              Strictly un-minified to guarantee absolute execution stability.
  * ============================================================================
  */
 
 // ============================================================================
-// 1. GLOBAL CONFIGURATION & ENDPOINTS
+// 1. GLOBAL CONFIGURATION & EXTERNAL ENDPOINTS
 // ============================================================================
 
 /**
  * Primary Firebase Storage Endpoint for dynamic GLB model configurations.
- * Contains backup metadata in case of local cache invalidation.
+ * Contains explicit backup metadata in case of local cache invalidation or
+ * cross-origin resource sharing (CORS) policy blocks.
  */
 const FIREBASE_URL = 'https://firebasestorage.googleapis.com/v0/b/excellent-institute-vault.firebasestorage.app/o/vault%2Flab_data_3d.json?alt=media&token=b44afe29-a3a3-4911-a835-5e98eeaa8aec';
 
 /**
  * Base URL for the Excellent Institute GitHub repository hosting the .glb files.
+ * Used as a robust fallback for the 3D model viewer chamber.
  */
 const REPO_URL = 'https://excellentinstitute.github.io/computer-learning-hub_3dmodels/';
 
 // ============================================================================
-// 2. SYSTEM STATE MANAGEMENT
+// 2. CORE SYSTEM STATE MANAGEMENT & VOLUMETRIC TRACKING
 // ============================================================================
 
 let dbData = {};
@@ -34,10 +38,10 @@ let selectedComponent = 'CPU';
 let isFetching = true;
 
 /**
- * Hardware Plug States Tracker
+ * Hardware Plug States Tracker (25 Component Matrix)
  * Explicitly tracks the physical connection state of all 25 volumetric components.
- * True = Component is physically seated in the motherboard/chassis.
- * False = Component has been ripped out.
+ * Boolean True  = Component is physically seated in the motherboard/chassis.
+ * Boolean False = Component has been forcibly ripped out by the user.
  */
 const plugStates = {
     'PSU': true, 
@@ -68,8 +72,9 @@ const plugStates = {
 };
 
 /**
- * Critical Power Delivery Chain
- * If any of these components are removed, the system experiences an immediate blackout.
+ * Critical Power Delivery Chain Array
+ * If any of these specific components are evaluated as 'false', the system 
+ * experiences an immediate and total volumetric blackout event.
  */
 const powerComponents = [
     'PSU', 
@@ -79,60 +84,61 @@ const powerComponents = [
 ];
 
 /**
- * Volumetric 3D Camera Rig Viewing Angles & Translations
- * Maps each component to its perfect Y-axis rotation and X/Y translation 
- * so the user has an unobstructed, perfectly framed view when cinematic zoom is triggered.
+ * Volumetric 3D Camera Rig Viewing Angles & Translations (V4.0 Overhaul)
+ * Maps each component to its perfect Y-axis rotation and X/Y translation.
+ * V4.0 Fix: Values specifically tuned between -60deg and -110deg to force the
+ * camera to look THROUGH the transparent left tempered glass panel.
  */
 const cinematicCameraRig = {
-    'FrontPanel': { rotateY: 15, translateX: '-80px', translateY: '0px', scale: 1.5 },
-    'ODD': { rotateY: 20, translateX: '-60px', translateY: '50px', scale: 1.6 },
-    'PSU': { rotateY: -85, translateX: '100px', translateY: '-100px', scale: 1.5 },
-    'CPU': { rotateY: -15, translateX: '30px', translateY: '20px', scale: 1.8 },
-    'WaterPump': { rotateY: -25, translateX: '40px', translateY: '20px', scale: 1.8 },
-    'RAM': { rotateY: -45, translateX: '60px', translateY: '30px', scale: 1.7 },
-    'GPU': { rotateY: -35, translateX: '0px', translateY: '-40px', scale: 1.6 },
-    'Fan': { rotateY: -65, translateX: '50px', translateY: '0px', scale: 1.4 },
-    'SSD': { rotateY: -20, translateX: '20px', translateY: '-20px', scale: 1.8 },
-    'HDD': { rotateY: -80, translateX: '80px', translateY: '0px', scale: 1.5 },
-    'Chipset': { rotateY: -30, translateX: '-20px', translateY: '-80px', scale: 1.9 },
-    'VRM': { rotateY: -15, translateX: '30px', translateY: '60px', scale: 1.8 },
-    'CMOS': { rotateY: -20, translateX: '40px', translateY: '-60px', scale: 1.9 },
-    'TPM': { rotateY: -25, translateX: '-40px', translateY: '-80px', scale: 1.8 },
-    'ATX24': { rotateY: -50, translateX: '50px', translateY: '0px', scale: 1.6 },
-    'EPS8': { rotateY: 10, translateX: '60px', translateY: '80px', scale: 1.7 },
-    'SATA': { rotateY: -45, translateX: '20px', translateY: '-80px', scale: 1.8 },
-    'NIC': { rotateY: -45, translateX: '50px', translateY: '-100px', scale: 1.6 },
-    'WiFi': { rotateY: -45, translateX: '50px', translateY: '-120px', scale: 1.6 },
-    'SoundCard': { rotateY: -45, translateX: '50px', translateY: '-140px', scale: 1.6 },
-    'CaptureCard': { rotateY: -45, translateX: '50px', translateY: '-160px', scale: 1.6 },
-    'Riser': { rotateY: -10, translateX: '0px', translateY: '-50px', scale: 1.5 },
-    'RGB': { rotateY: -30, translateX: '0px', translateY: '100px', scale: 1.6 },
-    'M2Heatsink': { rotateY: -25, translateX: '20px', translateY: '-20px', scale: 1.8 },
-    'USB3': { rotateY: -40, translateX: '-10px', translateY: '-100px', scale: 1.8 }
+    'FrontPanel':  { rotateY: -15, translateX: '-80px', translateY: '0px',   scale: 1.5 },
+    'ODD':         { rotateY: -20, translateX: '-60px', translateY: '50px',  scale: 1.6 },
+    'PSU':         { rotateY: -110, translateX: '100px', translateY: '-100px',scale: 1.5 },
+    'CPU':         { rotateY: -80, translateX: '30px',  translateY: '20px',  scale: 1.8 },
+    'WaterPump':   { rotateY: -85, translateX: '40px',  translateY: '20px',  scale: 1.8 },
+    'RAM':         { rotateY: -75, translateX: '60px',  translateY: '30px',  scale: 1.7 },
+    'GPU':         { rotateY: -85, translateX: '0px',   translateY: '-40px', scale: 1.6 },
+    'Fan':         { rotateY: -100, translateX: '50px',  translateY: '0px',   scale: 1.4 },
+    'SSD':         { rotateY: -70, translateX: '20px',  translateY: '-20px', scale: 1.8 },
+    'HDD':         { rotateY: -110, translateX: '80px',  translateY: '0px',   scale: 1.5 },
+    'Chipset':     { rotateY: -80, translateX: '-20px', translateY: '-80px', scale: 1.9 },
+    'VRM':         { rotateY: -65, translateX: '30px',  translateY: '60px',  scale: 1.8 },
+    'CMOS':        { rotateY: -70, translateX: '40px',  translateY: '-60px', scale: 1.9 },
+    'TPM':         { rotateY: -75, translateX: '-40px', translateY: '-80px', scale: 1.8 },
+    'ATX24':       { rotateY: -90, translateX: '50px',  translateY: '0px',   scale: 1.6 },
+    'EPS8':        { rotateY: -40, translateX: '60px',  translateY: '80px',  scale: 1.7 },
+    'SATA':        { rotateY: -85, translateX: '20px',  translateY: '-80px', scale: 1.8 },
+    'NIC':         { rotateY: -85, translateX: '50px',  translateY: '-100px',scale: 1.6 },
+    'WiFi':        { rotateY: -85, translateX: '50px',  translateY: '-120px',scale: 1.6 },
+    'SoundCard':   { rotateY: -85, translateX: '50px',  translateY: '-140px',scale: 1.6 },
+    'CaptureCard': { rotateY: -85, translateX: '50px',  translateY: '-160px',scale: 1.6 },
+    'Riser':       { rotateY: -60, translateX: '0px',   translateY: '-50px', scale: 1.5 },
+    'RGB':         { rotateY: -80, translateX: '0px',   translateY: '100px', scale: 1.6 },
+    'M2Heatsink':  { rotateY: -75, translateX: '20px',  translateY: '-20px', scale: 1.8 },
+    'USB3':        { rotateY: -90, translateX: '-10px', translateY: '-100px',scale: 1.8 }
 };
 
 // ============================================================================
-// 3. THERMAL & PHYSICS ENGINE VARIABLES
+// 3. THERMAL DYNAMICS & PHYSICS ENGINE VARIABLES
 // ============================================================================
 
-let sysTemp = 40;                     // Base ambient temperature in Celsius
-let isThermalShutdown = false;        // Hardware protection flag
-let isBooting = false;                // BIOS sequence flag
+let sysTemp = 40;                     // Base ambient physical temperature in Celsius
+let isThermalShutdown = false;        // Critical hardware silicon protection flag
+let isBooting = false;                // BIOS sequence operating flag
 
-let heatingInterval = null;           // Timer for thermal escalation
-let desktopLoop = null;               // Timer for UI telemetry generation
-let bootTimeout = null;               // Timer for BIOS POST sequence
-let zoomTimeout = null;               // Timer for cinematic camera pan
-let rgbCycleInterval = null;          // Timer for Addressable RGB math
+let heatingInterval = null;           // Memory pointer for thermal escalation daemon
+let desktopLoop = null;               // Memory pointer for UI telemetry generation daemon
+let bootTimeout = null;               // Memory pointer for BIOS POST sequence logic
+let zoomTimeout = null;               // Memory pointer for cinematic camera pan
+let rgbCycleInterval = null;          // Memory pointer for Addressable RGB mathematics
 
-let currentRgbHue = 0;                // Starting HSL hue value for RGB strips
+let currentRgbHue = 0;                // Starting HSL hue value for dynamic RGB strips
 
-let isDraggingTower = false;          // User interaction flag for manual rotation
-let startX = 0;                       // Mouse/Touch origin coordinate
-let currentRotation = -35;            // Default aesthetic angle of the Lian Li chassis
+let isDraggingTower = false;          // User interaction flag for manual 3D matrix rotation
+let startX = 0;                       // Mouse/Touch origin coordinate vector
+let currentRotation = -35;            // Default aesthetic isometric angle of the chassis
 
 // ============================================================================
-// 4. EXHAUSTIVE DOM ELEMENT MAPPING
+// 4. EXHAUSTIVE DOM ELEMENT MAPPING & REGISTRATION
 // ============================================================================
 
 const UI = {
@@ -143,12 +149,12 @@ const UI = {
     screenError: document.getElementById('screen-error'),
     gpuGlitch: document.getElementById('gpu-glitch'),
     
-    // --- 2D Left-Side Text & UI ---
+    // --- 2D Left-Side Text & Display Modules ---
     biosText: document.getElementById('bios-text'),
     errorText: document.getElementById('error-text'),
     powerLed: document.getElementById('power-led'),
     
-    // --- 2D Left-Side Desktop Widgets ---
+    // --- 2D Left-Side Desktop Telemetry Widgets ---
     widCpuBar: document.getElementById('wid-cpu-bar'),
     widCpuVal: document.getElementById('wid-cpu-val'),
     widRamBar: document.getElementById('wid-ram-bar'),
@@ -161,36 +167,36 @@ const UI = {
     tower3D: document.getElementById('pc-tower'),
     towerPowerBtn: document.getElementById('tower-power-btn'),
     
-    // --- Physics Emitters ---
+    // --- Physics Render Emitters ---
     sparkContainer: document.getElementById('global-spark-container'),
     sparkEmitter: document.getElementById('internal-spark-emitter'),
     
-    // --- Volumetric AIO Pump LCD ---
+    // --- Volumetric AIO Pump LCD Screen Nodes ---
     pumpLcdScreen: document.querySelector('.pump-lcd-screen'),
     pumpLcdText: document.querySelector('.pump-lcd-text'),
     
-    // --- Bottom Data Inspector Panel ---
+    // --- Bottom Data Inspector Panel & Form ---
     selector: document.getElementById('component-selector'),
     title: document.getElementById('comp-title'),
     badge: document.getElementById('comp-badge'),
     desc: document.getElementById('comp-desc'),
     viewer3D: document.getElementById('component-3d-viewer'),
     
-    // --- Aesthetic Target Nodes ---
+    // --- Aesthetic Target Nodes for RGB Cycle Engine ---
     rgbElements: document.querySelectorAll('.ram-rgb-diffuser, .gpu-led-strip, .rgb-header')
 };
 
 // ============================================================================
-// 5. BOOTSTRAP INITIALIZATION
+// 5. CORE BOOTSTRAP INITIALIZATION
 // ============================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
     logTelemetry('SYSTEM', 'INIT', 'DOM fully loaded. Executing exhaustive hardware bootstrap.');
     
-    // 1. Fetch remote 3D models or load local database
+    // 1. Fetch remote 3D models or load local robust database
     fetchHardwareData();
     
-    // 2. Bind all physical interactions
+    // 2. Bind all physical interactions to the DOM
     setupEventListeners();
     
     // 3. Initialize the 3D rotation mathematics
@@ -199,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 4. Start the background telemetry daemon
     startDesktopLoop();
     
-    // 5. Boot the virtual machine
+    // 5. Boot the virtual machine natively
     initiateBootSequence();
     
     // 6. Ignite the RGB lighting mathematically
@@ -207,15 +213,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ============================================================================
-// 6. DIAGNOSTIC TELEMETRY LOGGING
+// 6. DIAGNOSTIC TELEMETRY LOGGING SUBSYSTEM
 // ============================================================================
 
 /**
- * Outputs simulated hardware telemetry to the console.
- * Helpful for tracking state changes during physical component removals.
+ * Outputs simulated hardware telemetry directly to the console.
+ * Highly robust log mechanism for tracking state changes during physical component removals.
  * 
- * @param {string} component - The hardware part generating the log.
- * @param {string} state - The current state (e.g., POWER_CUT, OVERHEAT).
+ * @param {string} component - The hardware part generating the log entry.
+ * @param {string} state - The current active state (e.g., POWER_CUT, OVERHEAT).
  * @param {string} message - Detailed output message.
  */
 function logTelemetry(component, state, message) {
@@ -228,25 +234,25 @@ function logTelemetry(component, state, message) {
 // ============================================================================
 
 /**
- * Attempts to retrieve dynamic GLB references from Firebase.
- * Fails over to the robust local fallback database if external networks are down.
+ * Attempts to retrieve dynamic GLB reference URLs from the Firebase cluster.
+ * Immediately fails over to the robust local fallback database if external networks are blocked.
  */
 async function fetchHardwareData() {
     try {
         logTelemetry('NETWORK', 'FETCH', `Requesting hardware database from: ${FIREBASE_URL}`);
         
-        // Cache buster ensures we always pull fresh configuration logic
+        // Appending timestamp cache buster ensures we always pull fresh configuration logic
         const cacheBusterUrl = `${FIREBASE_URL}&t=${new Date().getTime()}`;
         const response = await fetch(cacheBusterUrl);
         
         if (response.ok) {
-            logTelemetry('NETWORK', 'SUCCESS', 'Remote hardware database acquired.');
+            logTelemetry('NETWORK', 'SUCCESS', 'Remote hardware database successfully acquired.');
             const serverData = await response.json();
             
-            // Merge remote data over local robust fallback
+            // Execute deep merge: Remote data overlays local robust fallback
             dbData = { ...generateAdvancedFallback(), ...serverData };
         } else {
-            logTelemetry('NETWORK', 'FAILED', 'Response rejected. Loading local logic engine.');
+            logTelemetry('NETWORK', 'FAILED', 'HTTP Response rejected. Loading local logic engine directly.');
             dbData = generateAdvancedFallback();
         }
     } catch (error) {
@@ -254,15 +260,16 @@ async function fetchHardwareData() {
         dbData = generateAdvancedFallback();
     }
     
+    // Drop loading flag and push data to inspection panel
     isFetching = false;
     updateInspector(false); 
 }
 
 /**
  * Un-minified, exhaustive local database containing states, descriptions, 
- * and repository links for all 25 volumetric components.
+ * and repository links for all 25 volumetric physical components.
  * 
- * @returns {Object} Extensively detailed hardware object
+ * @returns {Object} Extensively detailed hardware configuration object
  */
 function generateAdvancedFallback() {
     return {
@@ -475,28 +482,28 @@ function generateAdvancedFallback() {
 
 /**
  * Binds mouse and touch events to the specific volumetric chassis container.
- * Calculates differential Y-axis rotation based on drag distance.
+ * Calculates differential Y-axis rotation based on drag distance across the viewport.
  */
 function setupTowerRotation() {
     
-    // Pointer down execution
+    // Pointer down execution logic
     const handleDragStart = (event) => {
         isDraggingTower = true;
         
-        // Normalize touch vs mouse
+        // Normalize touch vs mouse inputs mathematically
         if (event.type.includes('mouse')) {
             startX = event.pageX;
         } else {
             startX = event.touches[0].pageX;
         }
         
-        // Strip CSS transition to allow immediate 1:1 rotation mapping
+        // Strip CSS transition to allow immediate 1:1 rotation mapping without lag
         UI.tower3D.style.transition = 'none'; 
         
-        logTelemetry('CHASSIS', 'INTERACT', 'User initiated manual 3D rotation drag.');
+        logTelemetry('CHASSIS', 'INTERACT', 'User initiated manual 3D rotation drag sequence.');
     };
 
-    // Pointer move execution
+    // Pointer move execution logic
     const handleDragMove = (event) => {
         if (isDraggingTower === false) {
             return;
@@ -515,10 +522,11 @@ function setupTowerRotation() {
         const differential = currentX - startX;
         const targetRotation = currentRotation + (differential * 0.5);
         
+        // Update DOM transform dynamically
         UI.tower3D.style.transform = `rotateY(${targetRotation}deg)`;
     };
 
-    // Pointer up execution
+    // Pointer up execution logic
     const handleDragStop = (event) => {
         if (isDraggingTower === false) {
             return;
@@ -533,13 +541,13 @@ function setupTowerRotation() {
             endX = event.changedTouches[0].pageX;
         }
         
-        // Finalize state geometry
+        // Finalize state geometry variables
         currentRotation += (endX - startX) * 0.5;
         
-        // Re-apply the smooth CSS cubic-bezier transition for cinematic zooms
+        // Re-apply the smooth CSS cubic-bezier transition for upcoming cinematic zooms
         UI.tower3D.style.transition = 'transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)'; 
         
-        logTelemetry('CHASSIS', 'RELEASE', `Rotation settled at ${currentRotation} degrees.`);
+        logTelemetry('CHASSIS', 'RELEASE', `Rotation sequence settled at exactly ${currentRotation} degrees.`);
     };
 
     // Desktop bindings
@@ -547,7 +555,7 @@ function setupTowerRotation() {
     window.addEventListener('mousemove', handleDragMove);
     window.addEventListener('mouseup', handleDragStop);
     
-    // Mobile bindings (Passive: false required for preventDefault)
+    // Mobile bindings (Passive: false explicitly required to permit preventDefault usage)
     UI.towerContainer.addEventListener('touchstart', handleDragStart, { passive: false });
     window.addEventListener('touchmove', handleDragMove, { passive: false });
     window.addEventListener('touchend', handleDragStop);
@@ -558,85 +566,87 @@ function setupTowerRotation() {
 // ============================================================================
 
 /**
- * Binds clicking events to the massive 25-button hardware grid.
- * Synchronizes the visual dropdown state with the clicked button state.
+ * Binds clicking events to the massive 25-button hardware matrix.
+ * Synchronizes the visual dropdown state with the clicked physical button state.
  */
 function setupEventListeners() {
     
-    // Sync dropdown changes to the main engine
+    // Synchronize HTML select dropdown changes back to the main engine
     UI.selector.addEventListener('change', (event) => {
         selectedComponent = event.target.value;
-        logTelemetry('UI', 'SELECT', `Dropdown triggered for ${selectedComponent}`);
+        logTelemetry('UI', 'SELECT', `Dropdown triggered directly for component: ${selectedComponent}`);
         updateInspector(true); 
     });
 
-    // Sync physical hardware grid clicks
+    // Synchronize physical hardware grid clicks to the logic engine
     const physicalButtons = document.querySelectorAll('.cyber-btn');
     
     physicalButtons.forEach(button => {
         button.addEventListener('click', () => {
             const componentKey = button.getAttribute('data-component');
             
-            logTelemetry('PHYSICAL', 'TOGGLE', `User interacted with ${componentKey} physical connection.`);
+            logTelemetry('PHYSICAL', 'TOGGLE', `User physically interacted with ${componentKey} connection point.`);
             
-            // Sync selection dropdown
+            // Sync selection dropdown to match grid
             selectedComponent = componentKey;
             UI.selector.value = componentKey;
             
-            // Push action to physics engine
+            // Push action into the physics engine
             toggleHardware(componentKey, button);
             
-            // Refresh visual UI and trigger 3D cinematic zoom
+            // Refresh visual UI and trigger massive 3D cinematic zoom logic
             updateInspector(true);
         });
     });
 }
 
 // ============================================================================
-// 10. CINEMATIC 3D CAMERA RIG
+// 10. CINEMATIC 3D CAMERA RIG (V4.0 - EXACT 2 SECONDS, LEFT GLASS FOCUS)
 // ============================================================================
 
 /**
  * Automates the volumetric 3D camera pan.
  * Dynamically scales the specific tower container while mathematically translating
- * the X/Y coordinates and rotating the Y axis to perfectly frame the targeted component.
+ * the X/Y coordinates and rotating the Y axis to perfectly frame the targeted component
+ * explicitly through the left transparent glass panel. Highlights for exactly 2 seconds.
  * 
  * @param {string} componentKey - The specific hardware node to target
  */
 function triggerCinematicZoom(componentKey) {
-    // Ensure viewport is scrolled to the top to prevent bounding box issues
+    // Ensure viewport is scrolled to the top to prevent bounding box clipping issues
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
-    logTelemetry('CAMERA', 'ZOOM', `Initiating cinematic camera rig to view ${componentKey}.`);
+    logTelemetry('CAMERA', 'ZOOM', `Initiating cinematic camera rig to view ${componentKey} through left panel.`);
 
-    // Extract exact camera parameters from the cinematic rig dictionary
-    const rigData = cinematicCameraRig[componentKey] || { rotateY: -35, translateX: '0px', translateY: '0px', scale: 1.45 };
+    // Extract exact camera parameters from the cinematic rig configuration dictionary
+    const rigData = cinematicCameraRig[componentKey] || { rotateY: -75, translateX: '0px', translateY: '0px', scale: 1.45 };
     
-    // Apply scale and translation to the wrapper (isolates the left-side monitor)
+    // Apply scale and translation to the wrapper (isolates the left-side monitor completely)
     UI.towerContainer.style.transition = 'transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1)';
     UI.towerContainer.style.transform = `scale(${rigData.scale}) translate(${rigData.translateX}, ${rigData.translateY})`;
     
-    // Apply exact mathematical rotation to the inner 3D object
+    // Apply exact mathematical rotation to the inner 3D object to face the glass
     currentRotation = rigData.rotateY;
     UI.tower3D.style.transform = `rotateY(${currentRotation}deg)`;
 
-    // Automatically zoom out after 6 seconds
+    // V4.0 FIX: Automatically zoom out after exactly 2000ms (2 seconds)
     clearTimeout(zoomTimeout);
     zoomTimeout = setTimeout(() => {
-        logTelemetry('CAMERA', 'RESET', 'Restoring default chassis perspective viewing angle.');
+        logTelemetry('CAMERA', 'RESET', '2 seconds elapsed. Restoring default chassis perspective viewing angle.');
         
+        // Reset scale and translation matrix
         UI.towerContainer.style.transform = 'scale(1) translate(0px, 0px)';
         
-        // Extinguish all active 3D x-ray glow nodes safely
+        // Extinguish all active 3D x-ray glow nodes safely from the DOM
         const highlightedElements = document.querySelectorAll('.xray-highlight');
         highlightedElements.forEach(element => {
             element.classList.remove('xray-highlight');
         });
         
-        // Reset to aesthetic chassis angle
+        // Reset to aesthetic chassis isometric angle (-35deg)
         currentRotation = -35;
         UI.tower3D.style.transform = `rotateY(${currentRotation}deg)`;
-    }, 6000); 
+    }, 2000); // Strict 2 second requirement met
 }
 
 /**
@@ -646,7 +656,7 @@ function triggerCinematicZoom(componentKey) {
  * @param {string} componentKey - The target node to illuminate
  */
 function highlightPhysicalZone(componentKey) {
-    // Scrub existing highlights globally
+    // Scrub existing highlights globally to prevent ghosting
     const highlightedElements = document.querySelectorAll('.xray-highlight');
     highlightedElements.forEach(element => {
         element.classList.remove('xray-highlight');
@@ -658,9 +668,9 @@ function highlightPhysicalZone(componentKey) {
     
     if (targetZoneElement) {
         targetZoneElement.classList.add('xray-highlight');
-        logTelemetry('AESTHETIC', 'HIGHLIGHT', `Illuminated physical node: ${targetZoneId}`);
+        logTelemetry('AESTHETIC', 'HIGHLIGHT', `Illuminated physical node geometry: ${targetZoneId}`);
     } else {
-        logTelemetry('AESTHETIC', 'WARN', `Target node ${targetZoneId} not found in DOM.`);
+        logTelemetry('AESTHETIC', 'WARN', `Target node ${targetZoneId} not found in DOM tree.`);
     }
 }
 
@@ -671,24 +681,24 @@ function highlightPhysicalZone(componentKey) {
 /**
  * Generates highly realistic sparks radiating from the PSU block.
  * Uses trigonometric functions to plot circular explosive vectors, mapping
- * directly into the 3D space of the chassis internals.
+ * directly into the 3D space of the chassis internals without breaking bounds.
  */
 function spawnInternalSparks() {
     if (!UI.sparkEmitter) {
-        logTelemetry('PHYSICS', 'ERROR', 'Spark emitter target node missing from DOM.');
+        logTelemetry('PHYSICS', 'ERROR', 'Spark emitter target node missing from DOM structure.');
         return;
     }
     
     logTelemetry('PHYSICS', 'SPARK', 'Critical power sever detected. Executing spark explosion mathematics.');
     
-    // Randomize explosive yield between 30 and 55 massive spark nodes
+    // Randomize explosive yield between 30 and 55 massive spark nodes for heavy visual impact
     const sparkCount = Math.floor(Math.random() * 25) + 30; 
     
     for(let index = 0; index < sparkCount; index++) {
         let sparkNode = document.createElement('div');
         sparkNode.className = 'spark';
         
-        // Origins relative to the 3D spark emitter div tucked inside the dual-chamber PSU
+        // Origins relative to the 3D spark emitter div tucked inside the dual-chamber PSU void
         sparkNode.style.left = '0px';
         sparkNode.style.top = '0px';
         
@@ -696,7 +706,7 @@ function spawnInternalSparks() {
         // Calculate random explosion angle (0 to 360 degrees in radians)
         let vectorAngle = Math.random() * Math.PI * 2;
         
-        // Calculate blast radius magnitude
+        // Calculate blast radius magnitude (pushing outwards in all directions)
         let radiusMagnitude = Math.random() * 200 + 50;
         
         // Apply Cosine for X translation and Sine for Y translation
@@ -726,28 +736,28 @@ function spawnInternalSparks() {
 /**
  * Loops a color spectrum hue shift dynamically over JavaScript.
  * Ensures the fans, RAM, and GPU strips mathematically cycle through all
- * 360 degrees of the HSL color wheel when power is active.
+ * 360 degrees of the HSL color wheel when core system power is active.
  */
 function startRgbCycle() {
     // Prevent duplicated timers memory leak
     clearInterval(rgbCycleInterval);
     
-    // Validate prerequisites for lighting
+    // Validate prerequisites for lighting (Requires Power + RGB Hub active)
     if (plugStates['RGB'] === false || plugStates['PSU'] === false || plugStates['ATX24'] === false) {
-        logTelemetry('RGB', 'HALT', 'Power or Controller disconnected. Halting light cycle.');
+        logTelemetry('RGB', 'HALT', 'Power or Controller disconnected. Halting light cycle immediately.');
         return;
     }
     
-    logTelemetry('RGB', 'START', 'Initiating global Addressable RGB spectrum calculation.');
+    logTelemetry('RGB', 'START', 'Initiating global Addressable RGB spectrum calculation matrix.');
     
     rgbCycleInterval = setInterval(() => {
-        // Shift hue by 5 degrees per tick, looping at 360
+        // Shift hue by 5 degrees per tick, looping seamlessly at 360
         currentRgbHue = (currentRgbHue + 5) % 360;
         
-        // Format explicit HSL string
+        // Format explicit HSL string for injection
         const computedColor = `hsl(${currentRgbHue}, 100%, 50%)`;
         
-        // Dispatch color to all registered DOM nodes
+        // Dispatch color mathematically to all registered DOM nodes
         updateRgbElements(computedColor);
     }, 50); // Tick rate: 50 milliseconds
 }
@@ -782,29 +792,29 @@ function updateRgbElements(colorValue) {
  * @param {HTMLElement} buttonElement - The DOM node of the physical button.
  */
 function toggleHardware(componentKey, buttonElement) {
-    // 1. Invert hardware plug state in memory
+    // 1. Invert hardware plug state in memory matrix
     plugStates[componentKey] = !plugStates[componentKey];
     const isCurrentlyPlugged = plugStates[componentKey];
 
     // 2. Evaluate physical removal consequences
     if (isCurrentlyPlugged === false) {
-        logTelemetry('PHYSICS', 'REMOVE', `${componentKey} has been forcibly unseated.`);
+        logTelemetry('PHYSICS', 'REMOVE', `${componentKey} has been forcibly unseated from the board.`);
         
-        // Visual button feedback
+        // Visual button feedback update
         buttonElement.classList.replace('plugged', 'unplugged');
         
-        // Consequence A: High voltage sever triggers sparks
+        // Consequence A: High voltage sever triggers sparks physics
         if (powerComponents.includes(componentKey)) {
             spawnInternalSparks();
         }
         
-        // Consequence B: Disconnecting fans cuts animation via CSS class
+        // Consequence B: Disconnecting fans cuts animation via CSS class override
         if (componentKey === 'Fan') {
-            logTelemetry('PHYSICS', 'FANS', 'Cooling fans physical rotation halted.');
+            logTelemetry('PHYSICS', 'FANS', 'Cooling fans physical rotation halted entirely.');
             UI.tower3D.classList.add('power-off');
         }
         
-        // Consequence C: Disconnecting RGB controller halts the loop
+        // Consequence C: Disconnecting RGB controller halts the loop and drops lights
         if (componentKey === 'RGB') {
             clearInterval(rgbCycleInterval);
             updateRgbElements('transparent');
@@ -817,24 +827,24 @@ function toggleHardware(componentKey, buttonElement) {
     } 
     // 3. Evaluate physical insertion consequences
     else {
-        logTelemetry('PHYSICS', 'INSERT', `${componentKey} has been physically seated.`);
+        logTelemetry('PHYSICS', 'INSERT', `${componentKey} has been physically seated into the board.`);
         
-        // Visual button feedback
+        // Visual button feedback update
         buttonElement.classList.replace('unplugged', 'plugged');
         
-        // Consequence A: Restore fan animations if system has power
+        // Consequence A: Restore fan animations if system has baseline power
         if (componentKey === 'Fan' && plugStates['PSU'] === true && plugStates['ATX24'] === true) {
             logTelemetry('PHYSICS', 'FANS', 'Cooling fans physical rotation restored.');
             UI.tower3D.classList.remove('power-off');
         }
         
-        // Consequence B: Restore RGB loop if system has power
+        // Consequence B: Restore RGB loop if system has baseline power
         if (componentKey === 'RGB' && plugStates['PSU'] === true && plugStates['ATX24'] === true) {
             startRgbCycle();
         }
     }
 
-    // 4. Dedicated Thermal Escalation Logic 
+    // 4. Dedicated Thermal Escalation Logic Paths
     if (componentKey === 'PSU' || componentKey === 'ATX24') {
         
         // Sub-branch A: Total power loss neutralizes thermal escalation immediately
@@ -845,37 +855,37 @@ function toggleHardware(componentKey, buttonElement) {
             sysTemp = 25; 
             isThermalShutdown = false;
             
-            // Fan motors and RGB controllers lack power entirely
+            // Fan motors and RGB controllers lack power entirely, disable everything
             UI.tower3D.classList.add('power-off'); 
             clearInterval(rgbCycleInterval);
             updateRgbElements('transparent');
         } 
         // Sub-branch B: Power restored, but cooling is severely compromised
         else {
-            logTelemetry('THERMALS', 'BOOT', 'Power restored. Evaluating cooling capacity.');
+            logTelemetry('THERMALS', 'BOOT', 'Power restored. Evaluating cooling capacity threshold.');
             
             // Restore RGB if plugged in
             if (plugStates['RGB'] === true) {
                 startRgbCycle();
             }
             
-            // Extreme Danger: No fans and no water pump
+            // Extreme Danger: No fans and no water pump connected
             if (plugStates['Fan'] === false && plugStates['WaterPump'] === false) {
                 logTelemetry('THERMALS', 'CRITICAL', 'Zero cooling units active. Extreme thermal escalation initiated.');
                 sysTemp = 40;
-                startThermalClimb(15); // +15 degrees per second
+                startThermalClimb(15); // Escalates +15 degrees per second
                 UI.tower3D.classList.remove('power-off');
             } 
             // Moderate Danger: One cooling unit active, one dead
             else if (plugStates['Fan'] === false || plugStates['WaterPump'] === false) {
                 logTelemetry('THERMALS', 'WARNING', 'Partial cooling failure detected. Moderate thermal escalation initiated.');
                 sysTemp = 40;
-                startThermalClimb(6); // +6 degrees per second
+                startThermalClimb(6); // Escalates +6 degrees per second
                 UI.tower3D.classList.remove('power-off');
             }
         }
     } 
-    // Dedicated Cooling Modification Logic (While System is Powered)
+    // Dedicated Cooling Modification Logic (Triggered while System is Powered On)
     else if (componentKey === 'Fan' || componentKey === 'WaterPump') {
         
         // Sub-branch A: A cooling unit was removed while power is actively flowing
@@ -892,7 +902,7 @@ function toggleHardware(componentKey, buttonElement) {
             
             startThermalClimb(calculatedHeatRate);
         } 
-        // Sub-branch B: Cooling units restored fully
+        // Sub-branch B: Cooling units restored fully while powered
         else if (plugStates['Fan'] === true && plugStates['WaterPump'] === true) {
             logTelemetry('THERMALS', 'SECURE', 'Full cooling capabilities restored. Thermals normalized.');
             clearInterval(heatingInterval);
@@ -901,7 +911,7 @@ function toggleHardware(componentKey, buttonElement) {
         }
     }
 
-    // 5. Route to Bootloader or Hardware evaluation
+    // 5. Route to Bootloader or Hardware evaluation outputs
     if (isPlugged === true && 
        (componentKey === 'PSU' || componentKey === 'ATX24' || componentKey === 'FrontPanel') && 
         plugStates['PSU'] === true && 
@@ -914,24 +924,24 @@ function toggleHardware(componentKey, buttonElement) {
 }
 
 /**
- * Triggers an asynchronous loop pushing temperatures higher.
+ * Triggers an asynchronous loop pushing temperatures higher on a fixed interval.
  * 
  * @param {number} ratePerSecond - Integer defining degrees to jump per second.
  */
 function startThermalClimb(ratePerSecond) {
-    // Clear any existing escalation to prevent exponential compounding
+    // Clear any existing escalation to prevent exponential compounding loops
     clearInterval(heatingInterval);
     
     heatingInterval = setInterval(() => {
         sysTemp += ratePerSecond; 
         logTelemetry('THERMALS', 'CLIMB', `Core Temp reached ${sysTemp}°C`);
         
-        // Validate against critical hardware trip point (110c)
+        // Validate against critical hardware trip point (110c threshold)
         if (sysTemp >= 110) {
             logTelemetry('THERMALS', 'SHUTDOWN', `CRITICAL LIMIT EXCEEDED. INITIATING EMERGENCY HARDWARE HALT.`);
             isThermalShutdown = true;
             clearInterval(heatingInterval);
-            evaluateSystemState(); // Force UI update immediately
+            evaluateSystemState(); // Force UI update immediately to show thermal trip
         }
     }, 1000);
 }
@@ -942,7 +952,7 @@ function startThermalClimb(ratePerSecond) {
 
 /**
  * Updates the bottom data inspector panel with descriptions, badges,
- * and sets the model-viewer URL.
+ * and sets the model-viewer URL based on the current selection.
  * 
  * @param {boolean} shouldZoom - Whether to trigger the cinematic camera pan.
  */
@@ -951,17 +961,17 @@ function updateInspector(shouldZoom) {
         return;
     }
 
-    // Pull correct dictionary data
+    // Pull correct dictionary data from fallback array
     const currentData = dbData[selectedComponent] || {};
     const isCurrentlyPlugged = plugStates[selectedComponent];
     const isSystemDead = plugStates['PSU'] === false || plugStates['ATX24'] === false || isThermalShutdown === true;
     
-    // Inject Title
+    // Inject Title Text
     UI.title.innerText = currentData.title || selectedComponent;
     
-    // Process typewriter description reset
+    // Process typewriter description reset animation
     UI.desc.style.animation = 'none';
-    UI.desc.offsetHeight; // Trigger DOM reflow calculation safely
+    UI.desc.offsetHeight; // Trigger DOM reflow calculation safely to restart anim
     
     if (isCurrentlyPlugged === true) {
         UI.desc.innerText = currentData.descOn || '';
@@ -971,10 +981,10 @@ function updateInspector(shouldZoom) {
     
     UI.desc.style.animation = 'fadeIn 0.5s ease-in';
 
-    // Badge Logic Engine
+    // Badge Logic Engine mapping
     let activeStatusText = isCurrentlyPlugged ? (currentData.statusOn || 'ACTIVE') : (currentData.statusOff || 'DISCONNECTED');
     
-    // Reset base class
+    // Reset base CSS class
     UI.badge.className = 'badge';
     
     if (isCurrentlyPlugged === false || isSystemDead === true) {
@@ -985,7 +995,7 @@ function updateInspector(shouldZoom) {
         UI.badge.classList.add('badge-active');
     }
     
-    // Override badge if system is mid-POST
+    // Override badge if system is currently mid-POST sequence
     if (isBooting === true) {
         UI.badge.innerText = 'BOOTING...';
         UI.badge.classList.replace('badge-active', 'badge-booting');
@@ -993,14 +1003,14 @@ function updateInspector(shouldZoom) {
         UI.badge.innerText = activeStatusText;
     }
 
-    // Feed GLB to external WebGL renderer dynamically
+    // Feed GLB path to external WebGL renderer dynamically
     if (currentData.model_url) {
         UI.viewer3D.setAttribute('src', currentData.model_url);
     } else {
         UI.viewer3D.removeAttribute('src'); 
     }
     
-    // Manage physical DOM highlighting
+    // Manage physical DOM highlighting safely
     highlightPhysicalZone(selectedComponent);
     
     if(shouldZoom === true) {
@@ -1013,8 +1023,8 @@ function updateInspector(shouldZoom) {
 // ============================================================================
 
 /**
- * Triggers the 3-second ExcellentOS loading screen sequence.
- * Fails immediately if power or processing cores are missing.
+ * Triggers the 3-second ExcellentOS loading screen sequence dynamically.
+ * Fails immediately if power or core processing chips are missing.
  */
 function initiateBootSequence() {
     logTelemetry('BIOS', 'POST', 'Initiating pre-boot validation checks.');
@@ -1026,14 +1036,14 @@ function initiateBootSequence() {
         return;
     }
     
-    // Immediate Failure Check B: Zero Processing
+    // Immediate Failure Check B: Zero Processing Power
     if (plugStates['CPU'] === false || plugStates['EPS8'] === false || plugStates['Chipset'] === false) {
         logTelemetry('BIOS', 'HALT', 'Critical execution core missing. Boot sequence aborted.');
         evaluateSystemState();
         return;
     }
 
-    logTelemetry('BIOS', 'BOOT', 'Hardware validated. Spawning OS bootloader.');
+    logTelemetry('BIOS', 'BOOT', 'Hardware validated successfully. Spawning OS bootloader.');
 
     isBooting = true;
     updateInspector(false);
@@ -1058,7 +1068,7 @@ function initiateBootSequence() {
         UI.towerPowerBtn.style.boxShadow = '0 0 10px var(--cyan-glow)';
     }
 
-    // Wait 3 seconds, then evaluate the system state strictly to transition to Desktop or Error
+    // Wait exactly 3 seconds, then evaluate the system state strictly to transition to Desktop or Error
     clearTimeout(bootTimeout);
     bootTimeout = setTimeout(() => {
         logTelemetry('BIOS', 'COMPLETE', 'OS bootloader cycle finished. Evaluating payload transition.');
@@ -1073,14 +1083,14 @@ function initiateBootSequence() {
 }
 
 /**
- * The master visual evaluation logic. Evaluates current variables and 
- * forces the correct 2D monitor output based on specific hardware states.
- * Formatted with explicit if/else chains for readability and exhaustiveness.
+ * The master visual evaluation logic pipeline. Evaluates current physical variables 
+ * and forces the correct 2D monitor output based on specific hardware states.
+ * Formatted with explicit if/else chains for readability, logging, and exhaustiveness.
  */
 function evaluateSystemState() {
     logTelemetry('EVAL', 'CHECK', 'Evaluating global system hardware states against OS logic.');
 
-    // 1. Scrub everything to blank slate
+    // 1. Scrub everything to a completely blank slate
     UI.screenBios.classList.add('hidden');
     UI.screenBoot.classList.add('hidden');
     UI.screenDesktop.classList.add('hidden');
@@ -1090,7 +1100,7 @@ function evaluateSystemState() {
         UI.gpuGlitch.classList.add('hidden');
     }
     
-    // Clean tower LED
+    // Clean tower LED defaults
     if (UI.towerPowerBtn) {
         UI.towerPowerBtn.style.borderColor = '#cbd5e1';
         UI.towerPowerBtn.style.boxShadow = 'inset 0 2px 5px #000';
@@ -1103,7 +1113,7 @@ function evaluateSystemState() {
         logTelemetry('EVAL', 'STATE', 'NO POWER. Monitor completely blank.');
         UI.powerLed.className = 'power-led led-off';
         
-        // Clean the 3D Pump LCD
+        // Clean the 3D Pump LCD physically
         if (UI.pumpLcdText) {
             UI.pumpLcdText.innerText = ''; 
         }
@@ -1111,10 +1121,10 @@ function evaluateSystemState() {
             UI.pumpLcdScreen.style.borderColor = '#1e293b';
             UI.pumpLcdScreen.style.boxShadow = 'inset 0 0 10px #000';
         }
-        return; // Terminal state reached. Halt execution.
+        return; // Terminal state reached. Halt execution tree.
     }
     
-    // Apply successful power to front IO
+    // Apply successful power to front IO visually
     if (plugStates['FrontPanel'] === true && UI.towerPowerBtn) {
         UI.towerPowerBtn.style.borderColor = 'var(--cyan-glow)';
         UI.towerPowerBtn.style.boxShadow = '0 0 10px var(--cyan-glow)';
@@ -1132,7 +1142,7 @@ function evaluateSystemState() {
         UI.errorText.innerText = 'NO SIGNAL DETECTED';
         UI.errorText.style.animation = 'pulse-text 2s infinite';
         
-        return; // Terminal state reached. Halt execution.
+        return; // Terminal state reached. Halt execution tree.
     }
 
     // ------------------------------------------------------------------------
@@ -1155,7 +1165,7 @@ function evaluateSystemState() {
         UI.errorText.innerHTML = thermalString;
         UI.errorText.style.animation = 'none';
         
-        return; // Terminal state reached. Halt execution.
+        return; // Terminal state reached. Halt execution tree.
     }
 
     // ------------------------------------------------------------------------
@@ -1166,13 +1176,13 @@ function evaluateSystemState() {
         
         UI.powerLed.className = 'power-led led-on';
         UI.screenError.classList.remove('hidden');
-        UI.errorText.style.color = '#3b82f6'; // True BSOD aesthetic
+        UI.errorText.style.color = '#3b82f6'; // True BSOD aesthetic hex
         
         const bsodString = ':( <br><br>Your PC ran into a problem and needs to restart.<br><br>Stop code: MEMORY_MANAGEMENT_FAILURE';
         UI.errorText.innerHTML = bsodString;
         UI.errorText.style.animation = 'none';
         
-        return; // Terminal state reached. Halt execution.
+        return; // Terminal state reached. Halt execution tree.
     }
 
     // ------------------------------------------------------------------------
@@ -1189,7 +1199,7 @@ function evaluateSystemState() {
         UI.errorText.innerHTML = cpuHaltString;
         UI.errorText.style.animation = 'none';
         
-        return; // Terminal state reached. Halt execution.
+        return; // Terminal state reached. Halt execution tree.
     }
 
     // ------------------------------------------------------------------------
@@ -1204,7 +1214,7 @@ function evaluateSystemState() {
         const ssdBiosString = 'Excellent BIOS v4.0.1<br>CPU: Detected successfully<br>Memory: OK (64GB)<br><br>ERROR: Boot Device Not Found on PCIe Lanes.<br>Please install an operating system to continue.';
         UI.biosText.innerHTML = ssdBiosString;
         
-        return; // Terminal state reached. Halt execution.
+        return; // Terminal state reached. Halt execution tree.
     }
 
     // ------------------------------------------------------------------------
@@ -1219,7 +1229,7 @@ function evaluateSystemState() {
         const tpmBiosString = 'Excellent BIOS v4.0.1<br>CPU: Detected successfully<br>Memory: OK (64GB)<br><br>ERROR: Trusted Platform Module (TPM 2.0) not detected.<br>ExcellentOS requires TPM architecture for secure boot.';
         UI.biosText.innerHTML = tpmBiosString;
         
-        return; // Terminal state reached. Halt execution.
+        return; // Terminal state reached. Halt execution tree.
     }
 
     // ------------------------------------------------------------------------
@@ -1234,7 +1244,7 @@ function evaluateSystemState() {
         const cmosBiosString = 'Excellent BIOS v4.0.1<br><br>WARNING: CMOS Checksum Error.<br>CMOS Battery Voltage Low or Missing.<br>System Time has been reset to defaults.<br><br>Press F1 to Run SETUP';
         UI.biosText.innerHTML = cmosBiosString;
         
-        return; // Terminal state reached. Halt execution.
+        return; // Terminal state reached. Halt execution tree.
     }
 
     // ------------------------------------------------------------------------
@@ -1242,17 +1252,17 @@ function evaluateSystemState() {
     // ------------------------------------------------------------------------
     logTelemetry('EVAL', 'STATE', 'ALL CHECKS PASSED. Hardware validated.');
 
-    // We only expose the final desktop if it's not currently animating the boot sequence
+    // We only expose the final desktop layer if it's not currently animating the boot sequence
     if (isBooting === true) {
-        logTelemetry('EVAL', 'YIELD', 'Yielding to active bootloader animation.');
+        logTelemetry('EVAL', 'YIELD', 'Yielding to active bootloader animation loop.');
         UI.screenBoot.classList.remove('hidden');
     } else {
-        logTelemetry('EVAL', 'SUCCESS', 'Rendering ExcellentOS GUI.');
+        logTelemetry('EVAL', 'SUCCESS', 'Rendering ExcellentOS GUI Desktop.');
         UI.powerLed.className = 'power-led led-on';
         UI.screenDesktop.classList.remove('hidden');
     }
     
-    // Non-Terminal Aesthetics: If VRM heatsink is removed, display minor graphical artifacts
+    // Non-Terminal Aesthetics: If VRM heatsink is removed, display minor graphical artifacts on desktop
     if (plugStates['VRM'] === false && UI.gpuGlitch && isBooting === false) {
         logTelemetry('EVAL', 'WARNING', 'VRM Missing. Initiating graphical degradation artifacts.');
         UI.gpuGlitch.classList.remove('hidden'); 
@@ -1264,9 +1274,9 @@ function evaluateSystemState() {
 // ============================================================================
 
 /**
- * Spawns an interval that acts as the backbone of the entire UI logic.
+ * Spawns a setInterval that acts as the backbone of the entire UI logic layer.
  * Calculates randomized widget values, checks system temperatures, and 
- * pushes states actively to the 3D Pump LCD.
+ * pushes active states to the 3D Pump LCD physically mapped in the case.
  */
 function startDesktopLoop() {
     
@@ -1295,18 +1305,18 @@ function startDesktopLoop() {
             UI.widTempVal.className = 'wid-val temp-val temp-hot';
         }
 
-        // Push to 2D Monitor Widget
+        // Push formatted string to 2D Monitor Widget
         UI.widTempVal.innerText = formattedTempStr;
 
         // --- 3. Sync Volumetric 3D Pump LCD with physics engine ---
         if (UI.pumpLcdText && UI.pumpLcdScreen) {
             
-            // Explicit conditional chain for power
+            // Explicit conditional chain for absolute power
             if (plugStates['PSU'] === true && plugStates['ATX24'] === true && plugStates['WaterPump'] === true) {
                 
                 UI.pumpLcdText.innerText = formattedTempStr;
                 
-                // Adjust colors based on thermal warnings
+                // Adjust colors based on active thermal warnings dynamically
                 if(currentComputedTemp > 75) {
                     UI.pumpLcdText.style.color = 'var(--red-glow)';
                     UI.pumpLcdText.style.textShadow = '0 0 15px var(--red-glow)';
@@ -1317,7 +1327,7 @@ function startDesktopLoop() {
                     UI.pumpLcdScreen.style.borderColor = 'var(--cyan-glow)';
                 }
             } else {
-                // Device powered down physically
+                // Device powered down physically, blank the screen
                 UI.pumpLcdText.innerText = ''; 
                 UI.pumpLcdScreen.style.borderColor = '#1e293b';
                 UI.pumpLcdScreen.style.boxShadow = 'inset 0 0 10px #000';
@@ -1334,17 +1344,17 @@ function startDesktopLoop() {
         // Generates baseline idle load
         let activeCpuLoad = Math.floor(Math.random() * 12) + 2;
         
-        // Throttling logic overrides standard loop
+        // Throttling logic overrides standard loop if VRM is uncooled
         if (plugStates['VRM'] === false) {
             activeCpuLoad = 100; 
         }
         
-        // Push CSS and Text
+        // Push CSS and Text format
         UI.widCpuBar.style.width = `${activeCpuLoad}%`;
         UI.widCpuVal.innerText = `${activeCpuLoad}%`;
 
         // --- 6. Generate dynamic RAM values based on HDD status ---
-        // Simulate high memory usage if secondary storage drops out
+        // Simulate high memory usage if secondary mass storage drops out
         let activeRamUsage;
         if (plugStates['HDD'] === true) {
             activeRamUsage = 18;
@@ -1352,7 +1362,7 @@ function startDesktopLoop() {
             activeRamUsage = 64; 
         }
         
-        // Push CSS and Text
+        // Push CSS and Text format
         UI.widRamBar.style.width = `${activeRamUsage}%`;
         UI.widRamVal.innerText = `${activeRamUsage}%`;
         
@@ -1381,7 +1391,7 @@ function startDesktopLoop() {
             UI.widNetVal.style.color = 'var(--red-glow)';
         }
         
-    }, 1500); // Internal loop rate locked to 1500 milliseconds for readability
+    }, 1500); // Internal loop rate locked to 1500 milliseconds for absolute readability
 }
 
 // EOF.
