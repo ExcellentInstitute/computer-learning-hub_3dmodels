@@ -1790,54 +1790,68 @@ model-viewer {
         padding: 5px;
     }
 
-    /* 1. PARENT CONTAINER FIX: Stop shrinking the parent so the monitor never clips! */
+    /* 1. TOP PERIPHERALS ZONE (Z-Index setup) */
     .static-peripherals-zone {
-        transform: none; /* Removes the global scale that was crushing everything */
+        transform: none; 
         width: 100%;
         margin-top: 10px;
         margin-bottom: 0px; 
-        gap: 5px; /* CHANGE THIS: Decreasing this brings the Monitor and Keyboard closer together */
+        z-index: 10; /* Keeps the desk IN FRONT of the PC normally */
+        position: relative;
     }
 
-    /* 2. MONITOR SIZE & POSITION */
+    /* 2. THE MONITOR HEIGHT & RATIO FIX */
+    /* CHANGE THIS: 16/9 restores the massive vertical height that was lost on mobile */
+    .monitor-bezel {
+        aspect-ratio: 16 / 9 !important; 
+        padding: 15px 15px 40px 15px !important;
+    }
+
     .bright-monitor-wrapper {
-        transform: scale(0.90); /* CHANGE THIS: Monitor is now scaled smoothly on its own (0.90 = 90% size) */
+        transform: scale(1.0); /* Monitor restores its natural, uncompromised size */
         transform-origin: top center;
-        margin-top: 0px;
-        margin-bottom: -10px;   /* CHANGE THIS: Pulls the keyboard up closer to the monitor stand */
+        margin-bottom: 10px;
     }
 
     /* 3. WIDGETS SIZE INSIDE THE MONITOR */
     .widget-scale-wrapper {
-        transform: scale(0.5) !important; /* CHANGE THIS: Adjusts UI text size inside the monitor */
+        transform: scale(0.45) !important; /* CHANGE THIS: Scales the telemetry down to fit the taller 16:9 ratio */
         top: 15px !important;
         right: 15px !important;
     }
 
     /* 4. KEYBOARD & DESK MAT */
     .desk-mat-2d {
-        /* We scale ONLY the oversized desk mat down to 35%, keeping its 3D angle */
         transform: scale(0.35) perspective(1200px) rotateX(45deg); 
         transform-origin: top center;
-        margin-bottom: -240px; /* CHANGE THIS: Makes the massive negative gap disappear, pulling the CPU up */
+        margin-bottom: -220px; /* Pulls the CPU up so it sits directly behind the desk */
     }
 
-    /* 5. PC TOWER SIZE (PIPEDOWN CPU) */
+    /* 5. PC TOWER (PIPEDOWN & LAYER BEHIND) */
     .dynamic-tower-zone {
-        transform: scale(0.55); /* CHANGE THIS: Shrunk the CPU down significantly as requested */
+        transform: scale(0.55); /* CHANGE THIS: Keeps the CPU smaller ("pipedown") on mobile */
         transform-origin: top center;
-        margin-top: -10px;     /* CHANGE THIS: Adjusts the gap between the CPU and the keyboard */
+        margin-top: -30px;     /* CHANGE THIS: Tucks the CPU slightly *under* the desk */
         margin-bottom: -200px; /* CHANGE THIS: Removes dead space below the tower */
-        z-index: 20; 
+        
+        /* NORMAL STATE: CPU is safely tucked behind the desk */
+        z-index: 1; 
+        position: relative;
+        transition: z-index 0.2s; /* Smooth layering transition */
     }
 
-    /* 6. ZOOM FIX: FORCES CPU TO THE TOP OF THE SCREEN DURING ANIMATION */
+    /* 6. MAGIC Z-INDEX ZOOM POP-OUT */
+    /* When the JS highlights a component to zoom in, this instantly pops the entire CPU tower to the absolute front! */
+    .dynamic-tower-zone:has(.xray-highlight) {
+        z-index: 999 !important;
+    }
+
+    /* 7. ZOOM ANIMATION ORIGIN FIX */
     .tower-3d-wrapper {
-        /* By forcing the origin to the top, the JS cinematic zoom expands downwards instead of pushing out to the middle */
-        transform-origin: top center !important; 
+        transform-origin: top center !important; /* Forces the zooming animation to stay at the top of the screen */
     }
 
-    /* 7. HARDWARE BUTTONS GRID */
+    /* 8. HARDWARE BUTTONS GRID */
     .massive-grid {
         grid-template-columns: repeat(4, 1fr) !important; 
         gap: 8px;
@@ -1859,7 +1873,7 @@ model-viewer {
         letter-spacing: 0.5px;
     }
     
-    /* 8. GLB MODEL VIEWER HEIGHT */
+    /* 9. GLB MODEL VIEWER HEIGHT */
     .bright-chamber {
         height: 250px; 
     }
