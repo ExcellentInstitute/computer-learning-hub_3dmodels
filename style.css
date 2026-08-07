@@ -1811,33 +1811,35 @@ model-viewer {
 
     /* 1. ENTIRE TOP SECTION (MONITOR + DESK MAT) */
     .static-peripherals-zone {
-        transform: scale(0.35); /* CHANGE THIS: Resize the entire desk/keyboard width to fit screen */
+        transform: scale(0.35); /* CHANGE THIS: Adjust to make the desk mat wider/narrower */
         transform-origin: top center;
-        margin-top: 80px;       /* CHANGE THIS: Increase to push the entire desk & monitor DOWN the screen */
-        margin-bottom: -100px;  /* CHANGE THIS: Make more negative (e.g. -150px) to pull the PC tower UP closer to the desk */
+        margin-top: 100px;      /* CHANGE THIS: Pushes the entire assembly down so the monitor doesn't hit the top of the phone */
+        margin-bottom: -220px;  /* CHANGE THIS: Pulls the desk boundary UP to remove the massive empty gap */
     }
 
     /* 2. MONITOR SIZE & POSITION */
     .bright-monitor-wrapper {
-        transform: scale(2.2);  /* CHANGE THIS: Increase to make the monitor LARGER relative to the desk */
-        transform-origin: top center; 
-        margin-bottom: 250px;   /* CHANGE THIS: Increase to push the keyboard further down away from the enlarged monitor */
+        margin-top: 250px;      /* CRITICAL FIX: Creates invisible space ABOVE the monitor so it doesn't get chopped off when scaling up */
+        transform: scale(2.0);  /* CHANGE THIS: Makes the monitor larger/smaller relative to the keyboard */
+        transform-origin: bottom center; /* Anchors to the desk, growing UPWARDS safely into the margin-top space */
+        margin-bottom: 30px;    /* CHANGE THIS: Space between monitor stand and keyboard */
     }
 
     /* 3. WIDGETS SIZE INSIDE THE MONITOR */
     .widget-scale-wrapper {
-        transform: scale(0.35); /* CHANGE THIS: Decrease to make the UI widgets SMALLER inside the screen */
+        transform: scale(0.3) !important; /* CHANGE THIS: Shrinks the UI widgets inside the huge monitor */
         transform-origin: top right;
-        top: 40px;              /* CHANGE THIS: Adjust if widgets hit the top edge */
-        right: 40px;            /* CHANGE THIS: Adjust if widgets hit the right edge */
+        top: 20px !important;
+        right: 20px !important;
     }
 
-    /* 4. PC TOWER SIZE & POSITION */
+    /* 4. PC TOWER SIZE & POSITION (Closing the gap) */
     .dynamic-tower-zone {
-        transform: scale(0.65); /* CHANGE THIS: Resize the 3D PC Tower */
+        transform: scale(0.70); /* CHANGE THIS: Size of the 3D PC */
         transform-origin: top center;
-        margin-bottom: -120px;  /* CHANGE THIS: Adjust space below the PC tower */
-        margin-top: 0px;        /* CHANGE THIS: Adjust to pull PC tower away from the desk */
+        margin-top: -60px;      /* CHANGE THIS: Pulls the PC UP to sit directly under the desk */
+        margin-bottom: -100px;  /* CHANGE THIS: Removes dead space below the PC */
+        z-index: 20;            /* Allows the PC to safely overlap the desk smoothly when zoomed in */
     }
 
     /* 5. HARDWARE BUTTONS GRID */
@@ -1852,12 +1854,12 @@ model-viewer {
     }
 
     .cyber-btn .icon { 
-        font-size: 22px; 
-        margin-bottom: 6px; 
+        font-size: 20px; 
+        margin-bottom: 4px; 
     }
 
     .cyber-btn .label { 
-        font-size: 9px; 
+        font-size: 8px; 
         letter-spacing: 0.5px;
     }
     
