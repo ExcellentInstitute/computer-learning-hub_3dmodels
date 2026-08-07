@@ -1801,21 +1801,21 @@ model-viewer {
     }
 
     /* 2. THE MONITOR HEIGHT & RATIO FIX */
-    /* CHANGE THIS: 16/9 restores the massive vertical height that was lost on mobile */
     .monitor-bezel {
-        aspect-ratio: 16 / 9 !important; 
+        /* HOW TO ADJUST: 16/10 is slightly taller than 16/9. Change to 4/3 if you want it even taller. */
+        aspect-ratio: 16 / 10 !important; 
         padding: 15px 15px 40px 15px !important;
     }
 
     .bright-monitor-wrapper {
-        transform: scale(1.0); /* Monitor restores its natural, uncompromised size */
+        transform: scale(1.0); 
         transform-origin: top center;
         margin-bottom: 10px;
     }
 
     /* 3. WIDGETS SIZE INSIDE THE MONITOR */
     .widget-scale-wrapper {
-        transform: scale(0.45) !important; /* CHANGE THIS: Scales the telemetry down to fit the taller 16:9 ratio */
+        transform: scale(0.45) !important; 
         top: 15px !important;
         right: 15px !important;
     }
@@ -1824,31 +1824,32 @@ model-viewer {
     .desk-mat-2d {
         transform: scale(0.35) perspective(1200px) rotateX(45deg); 
         transform-origin: top center;
-        margin-bottom: -220px; /* Pulls the CPU up so it sits directly behind the desk */
+        margin-bottom: -220px; 
     }
 
     /* 5. PC TOWER (PIPEDOWN & LAYER BEHIND) */
     .dynamic-tower-zone {
-        transform: scale(0.55); /* CHANGE THIS: Keeps the CPU smaller ("pipedown") on mobile */
+        transform: scale(0.55); 
         transform-origin: top center;
-        margin-top: -30px;     /* CHANGE THIS: Tucks the CPU slightly *under* the desk */
-        margin-bottom: -200px; /* CHANGE THIS: Removes dead space below the tower */
+        
+        /* HOW TO ADJUST: To move CPU down, change -10px to 0px or 10px. To move it up, change to -30px. */
+        margin-top: -10px;     
+        margin-bottom: -200px; 
         
         /* NORMAL STATE: CPU is safely tucked behind the desk */
         z-index: 1; 
         position: relative;
-        transition: z-index 0.2s; /* Smooth layering transition */
+        transition: z-index 0.2s; 
     }
 
     /* 6. MAGIC Z-INDEX ZOOM POP-OUT */
-    /* When the JS highlights a component to zoom in, this instantly pops the entire CPU tower to the absolute front! */
     .dynamic-tower-zone:has(.xray-highlight) {
         z-index: 999 !important;
     }
 
     /* 7. ZOOM ANIMATION ORIGIN FIX */
     .tower-3d-wrapper {
-        transform-origin: top center !important; /* Forces the zooming animation to stay at the top of the screen */
+        transform-origin: top center !important; 
     }
 
     /* 8. HARDWARE BUTTONS GRID */
