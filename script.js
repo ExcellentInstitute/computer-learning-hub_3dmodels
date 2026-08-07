@@ -1461,5 +1461,64 @@ function startDesktopLoop() {
         
     }, 1500); // Internal loop rate locked to 1500 milliseconds for absolute readability
 }
+/* ============================================================================
+   17. MOBILE RESPONSIVENESS (SMART SCALING)
+   ============================================================================ */
+@media (max-width: 992px) {
+    /* Stack the monitor on top and the 3D PC on the bottom */
+    .split-workspace {
+        flex-direction: column; 
+        padding: 30px 15px;
+        gap: 0px;
+    }
 
+    /* Scale down the Monitor/Keyboard zone */
+    .static-peripherals-zone {
+        width: 100%;
+        transform: scale(0.6);
+        transform-origin: top center;
+        margin-bottom: -180px; /* Removes the invisible dead space caused by scaling */
+    }
+
+    /* Scale down the 3D PC Tower zone */
+    .dynamic-tower-zone {
+        width: 100%;
+        transform: scale(0.85);
+        transform-origin: top center;
+        margin-bottom: -50px;
+    }
+    
+    .inspection-panel {
+        padding: 20px;
+    }
+}
+
+/* Specific scaling for narrow mobile phone screens */
+@media (max-width: 600px) {
+    .lab-container {
+        padding: 10px;
+    }
+
+    .static-peripherals-zone {
+        transform: scale(0.32); /* Forces the 1000px desk mat to fit a ~350px phone screen */
+        margin-bottom: -320px; 
+    }
+
+    .dynamic-tower-zone {
+        transform: scale(0.65);
+        margin-bottom: -150px;
+        margin-top: 20px;
+    }
+
+    /* Adjust the hardware button grid to 2 columns on phones */
+    .massive-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px;
+    }
+    
+    /* Shrink the floating 3D model viewer */
+    .bright-chamber {
+        height: 250px; 
+    }
+}
 // EOF.
