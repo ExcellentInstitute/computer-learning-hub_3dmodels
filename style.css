@@ -1809,28 +1809,38 @@ model-viewer {
         padding: 10px;
     }
 
+    /* 1. ENTIRE TOP SECTION (MONITOR + DESK MAT) */
     .static-peripherals-zone {
-        transform: scale(0.35); /* Optimizes the desk mat width to exactly fit a mobile screen */
+        transform: scale(0.35); /* CHANGE THIS: Resize the entire desk/keyboard width to fit screen */
         transform-origin: top center;
-        margin-top: 20px; /* Slight bump down from the top edge */
-        margin-bottom: -250px; 
+        margin-top: 80px;       /* CHANGE THIS: Increase to push the entire desk & monitor DOWN the screen */
+        margin-bottom: -100px;  /* CHANGE THIS: Make more negative (e.g. -150px) to pull the PC tower UP closer to the desk */
     }
 
-    /* CRITICAL FIX 1: Safely scale the monitor DOWNWARDS */
+    /* 2. MONITOR SIZE & POSITION */
     .bright-monitor-wrapper {
-        transform: scale(1.5); 
-        transform-origin: top center; /* <--- Anchors the top, forcing expansion downwards so it never clips */
-        margin-bottom: 160px; /* <--- Pushes the keyboard down to make room for the expanded monitor */
+        transform: scale(2.2);  /* CHANGE THIS: Increase to make the monitor LARGER relative to the desk */
+        transform-origin: top center; 
+        margin-bottom: 250px;   /* CHANGE THIS: Increase to push the keyboard further down away from the enlarged monitor */
     }
 
+    /* 3. WIDGETS SIZE INSIDE THE MONITOR */
+    .widget-scale-wrapper {
+        transform: scale(0.35); /* CHANGE THIS: Decrease to make the UI widgets SMALLER inside the screen */
+        transform-origin: top right;
+        top: 40px;              /* CHANGE THIS: Adjust if widgets hit the top edge */
+        right: 40px;            /* CHANGE THIS: Adjust if widgets hit the right edge */
+    }
+
+    /* 4. PC TOWER SIZE & POSITION */
     .dynamic-tower-zone {
-        transform: scale(0.65);
+        transform: scale(0.65); /* CHANGE THIS: Resize the 3D PC Tower */
         transform-origin: top center;
-        margin-bottom: -120px;
-        margin-top: 0px;
+        margin-bottom: -120px;  /* CHANGE THIS: Adjust space below the PC tower */
+        margin-top: 0px;        /* CHANGE THIS: Adjust to pull PC tower away from the desk */
     }
 
-    /* CRITICAL FIX 2: Fit 4 buttons per row instead of 2 */
+    /* 5. HARDWARE BUTTONS GRID */
     .massive-grid {
         grid-template-columns: repeat(4, 1fr) !important; 
         gap: 8px;
@@ -1851,7 +1861,7 @@ model-viewer {
         letter-spacing: 0.5px;
     }
     
-    /* Shrink the floating 3D model viewer */
+    /* 6. GLB MODEL VIEWER HEIGHT */
     .bright-chamber {
         height: 250px; 
     }
