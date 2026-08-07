@@ -1810,24 +1810,27 @@ model-viewer {
     }
 
     .static-peripherals-zone {
-        transform: scale(0.40); /* Optimizes the desk mat width to exactly fit a mobile screen */
-        margin-bottom: -220px; 
+        transform: scale(0.35); /* Optimizes the desk mat width to exactly fit a mobile screen */
+        transform-origin: top center;
+        margin-top: 20px; /* Slight bump down from the top edge */
+        margin-bottom: -250px; 
     }
 
-    /* CRITICAL FIX 1: Counter-scale the monitor UP so it becomes massive and legible on mobile */
+    /* CRITICAL FIX 1: Safely scale the monitor DOWNWARDS */
     .bright-monitor-wrapper {
-        transform: scale(1.6); 
-        transform-origin: bottom center;
-        margin-bottom: 60px; /* Prevents the now-larger monitor from overlapping the keyboard */
+        transform: scale(1.5); 
+        transform-origin: top center; /* <--- Anchors the top, forcing expansion downwards so it never clips */
+        margin-bottom: 160px; /* <--- Pushes the keyboard down to make room for the expanded monitor */
     }
 
     .dynamic-tower-zone {
         transform: scale(0.65);
+        transform-origin: top center;
         margin-bottom: -120px;
         margin-top: 0px;
     }
 
-    /* CRITICAL FIX 2: Fit 4 buttons per row instead of 2, and shrink their padding to look like app icons */
+    /* CRITICAL FIX 2: Fit 4 buttons per row instead of 2 */
     .massive-grid {
         grid-template-columns: repeat(4, 1fr) !important; 
         gap: 8px;
@@ -1845,7 +1848,7 @@ model-viewer {
 
     .cyber-btn .label { 
         font-size: 9px; 
-        letter-spacing: 1px;
+        letter-spacing: 0.5px;
     }
     
     /* Shrink the floating 3D model viewer */
