@@ -666,9 +666,22 @@ function triggerCinematicZoom(componentKey) {
     // Extract exact camera parameters from the cinematic rig configuration dictionary
     const rigData = cinematicCameraRig[componentKey] || { rotateY: 75, translateX: '20px', translateY: '0px', scale: 1.45 };
     
+    // NEW: Screen awareness for flawless mobile panning to prevent out-of-bounds clipping
+    const isMobile = window.innerWidth <= 600;
+    const finalScale = isMobile ? (rigData.scale * 0.8) : rigData.scale;
+    
+    // Parse the translation strings safely and halve them for mobile to prevent off-screen panning
+    const finalTx = isMobile ? (parseInt(rigData.translateX) * 0.5) + 'px' : rigData.translateX;
+    const finalTy = isMobile ? (parseInt(rigData.translateY) * 0.5) + 'px' : rigData.translateY;
+
     // Force transition and transform using setProperty overriding any CSS sheet specificity
     UI.towerContainer.style.setProperty('transition', 'transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1)', 'important');
-    UI.towerContainer.style.setProperty('transform', `scale(${rigData.scale}) translate(${rigData.translateX}, ${rigData.translateY})`, 'important');
+    
+    // ORIGINAL LINE COMMENTED OUT TO PREVENT DELETION
+    // UI.towerContainer.style.setProperty('transform', `scale(${rigData.scale}) translate(${rigData.translateX}, ${rigData.translateY})`, 'important');
+    
+    // Use dynamically scaled mobile mathematics
+    UI.towerContainer.style.setProperty('transform', `scale(${finalScale}) translate(${finalTx}, ${finalTy})`, 'important');
     
     // Apply exact mathematical rotation to the inner 3D object to face the glass
     currentRotation = rigData.rotateY;
@@ -679,8 +692,12 @@ function triggerCinematicZoom(componentKey) {
     zoomTimeout = setTimeout(() => {
         logTelemetry('CAMERA', 'RESET', '2 seconds elapsed. Restoring default chassis perspective viewing angle.');
         
-        // Reset scale and translation matrix with important flags
-        UI.towerContainer.style.setProperty('transform', 'scale(1) translate(0px, 0px)', 'important');
+        // ORIGINAL LINE COMMENTED OUT TO PREVENT DELETION
+        // UI.towerContainer.style.setProperty('transform', 'scale(1) translate(0px, 0px)', 'important');
+        
+        // NEW: Removing the inline property entirely allows the CSS media queries to smoothly retake control, 
+        // returning the tower exactly to its mobile 0.55 scale without any popping glitches!
+        UI.towerContainer.style.removeProperty('transform');
         
         // Extinguish all active 3D x-ray glow nodes safely from the DOM
         const highlightedElements = document.querySelectorAll('.xray-highlight');
@@ -1461,4 +1478,5 @@ function startDesktopLoop() {
         
     }, 1500); // Internal loop rate locked to 1500 milliseconds for absolute readability
 }
+
 // EOF.
