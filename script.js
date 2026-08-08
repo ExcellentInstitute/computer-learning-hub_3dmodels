@@ -683,6 +683,11 @@ function triggerCinematicZoom(componentKey) {
     // Use dynamically scaled mobile mathematics
     UI.towerContainer.style.setProperty('transform', `scale(${finalScale}) translate(${finalTx}, ${finalTy})`, 'important');
     
+    // NEW: Add the zoom-active class to the parent container so it pops to the front!
+    if (UI.towerContainer.parentElement) {
+        UI.towerContainer.parentElement.classList.add('zoom-active');
+    }
+
     // Apply exact mathematical rotation to the inner 3D object to face the glass
     currentRotation = rigData.rotateY;
     UI.tower3D.style.setProperty('transform', `rotateY(${currentRotation}deg)`, 'important');
@@ -699,6 +704,11 @@ function triggerCinematicZoom(componentKey) {
         // returning the tower exactly to its mobile 0.55 scale without any popping glitches!
         UI.towerContainer.style.removeProperty('transform');
         
+        // NEW: Remove the zoom-active class so it drops back under the monitor safely
+        if (UI.towerContainer.parentElement) {
+            UI.towerContainer.parentElement.classList.remove('zoom-active');
+        }
+
         // Extinguish all active 3D x-ray glow nodes safely from the DOM
         const highlightedElements = document.querySelectorAll('.xray-highlight');
         highlightedElements.forEach(element => {
