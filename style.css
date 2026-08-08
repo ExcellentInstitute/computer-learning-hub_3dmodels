@@ -1771,6 +1771,7 @@ model-viewer {
     transform: translateY(-3px); 
     background: #5a1529; 
 }
+
 /* ============================================================================
    17. MOBILE RESPONSIVENESS (SMART SCALING)
    ============================================================================ */
@@ -1815,9 +1816,9 @@ model-viewer {
 
     /* 3. WIDGETS SIZE INSIDE THE MONITOR */
     .widget-scale-wrapper {
-        transform: scale(0.45) !important; 
-        top: 15px !important;
-        right: 15px !important;
+        transform: scale(0.35) !important; 
+        top: 10px !important;
+        right: 10px !important;
     }
 
     /* 4. KEYBOARD & DESK MAT */
@@ -1878,5 +1879,37 @@ model-viewer {
     .bright-chamber {
         height: 250px; 
     }
+
+    /* 10. INNER MONITOR SCALING FIXES */
+    /* Dynamically shrinks internal text and images so they fit the mobile screen ratio */
+    .rotating-logo { 
+        width: 60px; 
+        height: 60px; 
+        margin-bottom: 20px; 
+        border-width: 2px; 
+    }
+    .boot-text-pulse { 
+        font-size: 14px; 
+        letter-spacing: 2px; 
+    }
+    .bios-env { 
+        padding: 20px; 
+    }
+    .bios-text { 
+        font-size: 11px; 
+        line-height: 1.4; 
+    }
+    .os-watermark { 
+        font-size: 12px; 
+        bottom: 15px; 
+        right: 15px; 
+        letter-spacing: 2px; 
+    }
+    .error-env { 
+        padding: 20px; 
+    }
+    .error-text { 
+        font-size: 16px; 
+        line-height: 1.4; 
+    }
 }
-/* EOF */
